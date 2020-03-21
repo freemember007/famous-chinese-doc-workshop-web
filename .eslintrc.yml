@@ -1,0 +1,163 @@
+# https://cn.eslint.org/docs/user-guide/
+---
+env :
+  browser : true
+  es6     : true
+  node    : true
+
+extends :
+  # - "standard"
+  - "eslint:recommended"
+  - "plugin:react/recommended"
+  - "plugin:react-pug/all"
+
+plugins :
+  - react # @see: http://npm.taobao.org/package/eslint-plugin-react-pug
+  - react-pug
+  # - import # 啥玩意？
+  - react-hooks # yarn add eslint-plugin-react-hooks --dev
+  - babel # @see: https://github.com/babel/eslint-plugin-babel
+  - react-directives
+
+settings :
+  react :
+    createClass : createReactClass
+    pragma      : React
+    version     : detect
+    flowVersion : 0.53
+  propWrapperFunctions :
+      - forbidExtraProps
+      -
+        property : freeze
+        object   : Object
+      - property : myFavoriteWrapper
+  linkComponents :
+    - Hyperlink
+    -
+      name          : Link
+      linkAttribute : to
+
+globals :
+  React               : readonly
+  defineBinaryOperator: readonly
+
+parserOptions :
+  ecmaFeatures :
+    jsx: true
+  ecmaVersion : 2020
+  sourceType  : module
+
+parser : babel-eslint
+
+
+rules :  # off | 0 , warn | 1 , error | 2
+
+  # https://cn.eslint.org/docs/rules/ 打钩的是默认规则, 除以下覆盖的, 其他都生效
+
+  # 解除严格模式要求
+  strict                         : 0
+  camelcase                      : 0
+  no-unused-vars                 : 0 # 方便调试中使用 改为警告
+  no-undef                       : 0
+  react-directives/no-unused-vars : 1
+  react-directives/no-undef       : 2
+  no-unused-labels               : 0 # 允许：log:
+  space-before-function-paren    : 0
+  no-constant-condition          : 0 # 要允许if(true),否则test不方便
+  no-throw-literal               : 0 # 要允许throw,否则test不方便
+  generator-star-spacing         : 0 # 允许function*
+  # json 对象对齐需要
+  no-multi-spaces                : 0
+  key-spacing                    : 0
+
+
+  # 解决import svg-react-loader?!报错问题
+  import/no-webpack-loader-syntax: 0
+
+  space-in-parens                : 0
+
+  # 解除 "react类不能使用this"
+  no-class-assign                : 2
+
+  # 解除 "函数首行禁止空行"
+  padded-blocks                  : 0
+
+  # 设置缩进为空2格
+  indent                         :
+    - 1
+    - 2
+    # 强制switch中case缩进
+    - SwitchCase: 1
+
+  # 禁止混用tab和空格缩进
+  no-mixed-spaces-and-tabs       :
+    - 2
+    - false
+
+  # 全局禁止tab字符
+  no-tabs                        : 1
+
+  # 强制使用unix换行符(LF)
+  linebreak-style                :
+    - 2
+    - unix
+
+  # 强制文件尾换行, 且要求使用lf,
+  eol-last                       :
+    - 2
+    - always
+
+  # yarn add eslint-plugin-react-hooks --dev
+  # react-hooks 规则
+  react-hooks/rules-of-hooks     : 0 # pug模板下检测不到组件从而报错
+  react-hooks/exhaustive-deps    : 0 # useEffect的[]
+
+
+  no-console                     : 0
+  no-new                         : 0
+  new-cap                        : 0
+
+  # 解除 "禁止出现空语句块"
+  # no-empty: off
+
+  # 解除 "禁止对 function 声明重新赋值"
+  no-func-assign                 : 0
+
+  # 如果写了jsdoc, 则强制写正确的
+  valid-jsdoc                    : 0
+
+  # 要求 switch 语句中有 default 分支
+  default-case                   : 1
+
+  # 要求使用 === 和 !==
+  eqeqeq                         : 2
+
+  # 要求 for-in 循环中有一个 if 语句
+  guard-for-in                   : 1
+
+  # 禁止 if 语句中 return 语句之后有 else 块
+  no-else-return                 : 2
+
+  # 禁止在没有类型检查操作符的情况下与 null 进行
+  no-eq-null                     : 2
+
+  # 无法到达的code
+  no-unreachable                 : 1
+
+  # 要求使用 let 或 const 而不是 var
+  no-var                         : 2
+  # 对象多行最末行始终加逗号
+  comma-dangle                   : [ 1, only-multiline]
+  # 最大两行空行
+  no-multiple-empty-lines        : [ 2, { max : 2 }]
+  # 代码块{}前空格
+  space-before-blocks            : [ 1, always]
+  # // 或 */ 注释符前面空格
+  spaced-comment                 : 0
+  # 允许callback(true/false)
+  standard/no-callback-literal   : 0
+  react/jsx-uses-react: 2
+  react/jsx-uses-vars: 2
+  react/display-name: 0
+  react/prop-types: 0
+  no-prototype-builtins: 0
