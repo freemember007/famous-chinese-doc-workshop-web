@@ -63,59 +63,57 @@ const plugins = [
 
   // 对浏览器低版本的支持
   // @see: https://babeljs.io/docs/en/babel-plugin-transform-runtime#docsNav
-  // [
-  //   '@babel/plugin-transform-runtime',
-  //   {
-  //     absoluteRuntime: false, // 没事别改true
+  [
+    '@babel/plugin-transform-runtime',
+    {
+      absoluteRuntime: false, // 没事别改true
 
-  //     // polyfill相关
-  //     // yarn add @babel/runtime
-  //     // 与preset-env中的corejs有何关系？
-  //     corejs: { version: 3, proposals: true },
+      // polyfill相关
+      // yarn add @babel/runtime
+      // 与preset-env中的corejs有何关系？
+      corejs: { version: 3, proposals: true },
 
-  //     helpers: true,
-  //     regenerator: true,
-  //     useESModules: false, // 没事别改true
-  //   },
-  // ],
+      helpers: true,
+      regenerator: true,
+      useESModules: false, // 没事别改true
+    },
+  ],
 
 
   /*
    * antd等UI组件按需引入
    * @see:https://ant.design/docs/react/getting-started-cn#按需加载
    */
-  // [
-  //   'import',
-  //   {
-  //     libraryName: 'antd',
-  //     libraryDirectory: 'es',
-  //     // style: 'less',
-  //     // style: true, //引入less文件, 貌似这样按需引入就失败，待查
-  //   },
-  //   'antd', // 这名字好像无所谓
-  // ],
+  [
+    'import',
+    {
+      libraryName: 'antd-mobile',
+      libraryDirectory: 'lib',
+      style: true,
+    },
+    'antd-mobile',
+  ],
 
   // [
-  //   'import',
+  //   "import",
   //   {
-  //     libraryName: 'react-use',
-  //     libraryDirectory: 'lib',
-  //     camel2DashComponentName: false,
+  //     "libraryName": "react-use",
+  //     "libraryDirectory": "lib",
+  //     "camel2DashComponentName": false
   //   },
   //   'react-use',
   // ],
-
   // // /*
   // //  * styled-components支持
   // //  * @see: https://github.com/styled-components/styled-components
   // //  */
   // ['styled-components', { ssr: true }],
 
-  // //  * styled-jsx支持，及styled-jsx-stylus
-  // //  * @see: https://github.com/zeit/styled-jsx
-  // //  * @see: https://github.com/omardelarosa/styled-jsx-plugin-stylus
+  //  * styled-jsx支持，及styled-jsx-stylus
+  //  * @see: https://github.com/zeit/styled-jsx
+  //  * @see: https://github.com/omardelarosa/styled-jsx-plugin-stylus
 
-  // ['styled-jsx/babel', { plugins: ['styled-jsx-plugin-stylus'] }],
+  ['styled-jsx/babel', { plugins: ['styled-jsx-plugin-stylus'] }],
 
   // /*
   //  * 用于import()惰性加载组件
@@ -127,8 +125,8 @@ const plugins = [
   //  * 支持classProperties和对象解析语法(很多第三方的基于class的库会用到)
   //  * 可能跟预设/polyfill有重复，不管，多加点总不会错
   //  */
-  // '@babel/plugin-proposal-class-properties',
-  // '@babel/plugin-proposal-object-rest-spread',
+  '@babel/plugin-proposal-class-properties',
+  '@babel/plugin-proposal-object-rest-spread',
   // '@babel/plugin-transform-object-assign',
   // // Object.entries & Object.values polyfill
   // 'transform-es2017-object-entries',

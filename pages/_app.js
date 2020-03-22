@@ -3,6 +3,7 @@ import App, { /*Container*/ /* Container已非预期*/} from 'next/app'
 import Head from 'next/head'
 import '../styles/spectre.styl'
 import '../vant/index.less'
+import 'normalize.css/normalize.css'
 
 export default class MyApp extends App {
   render () {
