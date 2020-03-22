@@ -1,0 +1,71 @@
+// Animations class
+.slide-down
+  animation slide-down .2s ease 1
+.fade-in
+  animation .3s fade-in
+.fade-out
+  animation .3s fade-out
+.slide-up-in
+  animation slide-up-in .3s both ease
+.slide-up-out
+  animation slide-up-out .3s both ease
+.slide-down-in
+  animation slide-down-in .3s both ease
+.slide-down-out
+  animation slide-down-out .3s both ease
+.slide-left-in
+  animation slide-left-in .3s both ease
+.slide-left-out
+  animation slide-left-out .3s both ease
+.slide-right-in
+  animation slide-right-in .3s both ease
+.slide-right-out
+  animation slide-right-out .3s both ease
+
+// Animations define
+@keyframes loading
+  from 
+    transform rotate(0deg)
+  to
+    transform rotate(360deg)
+@keyframes slide-down
+  from
+    opacity 0
+    transform translateY(-($unit-8))
+  to
+    opacity 1
+    transform translateY(0)
+@keyframes fade-in
+  from
+    opacity 0
+  to
+    opacity 1
+@keyframes fade-out
+  from
+    opacity 1
+  to
+    opacity 0
+@keyframes slide-up-in
+  from
+    transform translate3d(0, 100%, 0)
+@keyframes slide-up-out
+  to
+    transform translate3d(0, 100%, 0)
+@keyframes slide-down-in
+  from
+    transform translate3d(0, -100%, 0)
+@keyframes slide-down-out
+  to
+    transform translate3d(0, -100%, 0)
+@keyframes slide-left-in
+  from
+    transform translate3d(-100%, 0, 0)
+@keyframes slide-left-out
+  to
+    transform translate3d(-100%, 0, 0)
+@keyframes slide-right-in
+  from
+    transform translate3d(100%, 0, 0)
+@keyframes slide-right-out
+  to
+    transform translate3d(100%, 0, 0)

@@ -1,0 +1,52 @@
+// Navbar
+$navbar-height = 46px
+$navbar-border-color = lighten($border-color, 40%) //导航的border更轻些，参考vant: #ebedf0
+
+.navbar
+  position relative
+  user-select none
+  text-align center
+  height $navbar-height
+  line-height $navbar-height
+  background-color $light-color
+  border-bottom 1px solid $navbar-border-color
+
+  .icon
+    color $primary-color
+    vertical-align middle
+  &-arrow
+    min-width 1em
+    font-size $font-size-lg
+
+    + .navbar-text
+      margin-left -20px
+      padding-left 25px
+  &-fixed
+    top 0
+    left 0
+    width 100%
+    position fixed
+  &-title
+    margin 0 auto
+    max-width 60%
+    color $body-font-color
+    font-size $font-size-lg
+    font-weight 500
+  &-left,
+  &-right
+    bottom 0
+    font-size $font-size
+    position absolute
+  &-left
+    left 15px
+  &-right
+    right 15px
+  &-text
+    color $primary-color
+    margin 0 -15px
+    padding 0 15px
+    display inline-block
+    vertical-align middle
+
+    &:active
+      background-color $gray-color-light

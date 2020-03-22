@@ -4,7 +4,7 @@
 
 ## 环境
 
-使用create-next-app构建，next9，babel7相关包已装，未重新安装。
+使用create-next-app构建，版本为next9，babel7，webpack相关包已集成，无需重新安装。
 
 ## IDE
 

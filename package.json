@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "antd-mobile": "^2.3.1",
     "babel-plugin-macros": "^2.8.0",
     "date-fns": "^2.11.0",
     "date.js": "^0.3.3",
@@ -17,13 +18,18 @@
     "param.macro": "^3.2.1",
     "ramda": "^0.27.0",
     "react": "16.13.1",
-    "react-dom": "16.13.1"
+    "react-dom": "16.13.1",
+    "vant": "^2.5.7",
+    "vue": "^2.6.11",
+    "vuera": "^0.2.7"
   },
   "devDependencies": {
     "@babel/plugin-proposal-function-bind": "^7.8.3",
     "@babel/plugin-proposal-optional-chaining": "^7.9.0",
     "@babel/plugin-proposal-pipeline-operator": "^7.8.3",
     "@babel/plugin-proposal-throw-expressions": "^7.8.3",
+    "@zeit/next-less": "^1.0.1",
+    "@zeit/next-stylus": "^1.0.1",
     "babel-eslint": "11.0.0-beta.2",
     "babel-plugin-react-directives": "^1.1.1",
     "babel-plugin-transform-react-pug": "^7.0.1",
@@ -33,6 +39,8 @@
     "eslint-plugin-react": "^7.19.0",
     "eslint-plugin-react-directives": "^1.0.1",
     "eslint-plugin-react-hooks": "^2.5.1",
-    "eslint-plugin-react-pug": "^0.8.4"
+    "eslint-plugin-react-pug": "^0.8.4",
+    "less": "^3.11.1",
+    "stylus": "^0.54.7"
   }
 }

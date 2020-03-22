@@ -1,8 +1,8 @@
 import React from 'react'
 import App, { /*Container*/ /* Container已非预期*/} from 'next/app'
 import Head from 'next/head'
-// import '../styles/spectre.styl'
-// import '../vant/index.less'
+import '../styles/spectre.styl'
+import '../vant/index.less'
 
 export default class MyApp extends App {
   render () {

@@ -1,0 +1,41 @@
+# browserslistrc
+# 浏览器兼容约定
+# @see: 详细配置介绍: https://juejin.im/post/5b8cff326fb9a019fd1474d6
+# @see: 浏览器兼容性检测工具: https://caniuse.com
+# @see: 浏览器全球占比分布: https://browserl.ist
+# @see: 友盟移动端趋势: https://compass.umeng.com/trend
+#
+# 目前已知遵循此约定的工具:
+# - Autoprefixer
+# - Babel
+#
+#
+# 此配置可写在package.json中(但不推荐,json没法做注释)
+# {
+#   "browserslist": [
+#     "last 1 version",
+#     "> 1%",
+#     "maintained node versions",
+#     "not dead"
+#   ]
+# }
+
+
+# 查看当前配置支持的浏览器清单（在项目根目录下执行）：
+# ```
+# npx browserslist
+# ```
+
+# 每个浏览器最近的几个版本
+# last 10000 version
+
+# 基于全球使用率统计而选择的浏览器版本范围
+# > 0.3%
+
+# 所有还被node基金会维护的node版本
+# maintained node versions
+
+# dead指全球使用率低于0.5%并且官方声明不在维护
+# not dead
+
+# since 2014
