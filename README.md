@@ -34,6 +34,12 @@ vi node_modules\antd-mobile\lib\style\index.js
 yarn fixant
 ```
 
+### react-dom-server
+
+在现在next9框架下，ReactDOMServer does not yet support Suspense，故某些使用suspense的库如，use-http, rest-hook均不可用。
+
+https://spectrum.chat/next-js/general/suspense-support~f83c5c32-cb4d-419e-ba3d-f08948e63584
+
 ## IDE
 
 为在模板中正确显示pug, 尤其是if, each等，应安装pug-tmbundle，并选择pypug语法, 不要pug和sublime-pug-extened

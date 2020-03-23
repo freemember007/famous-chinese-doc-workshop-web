@@ -1,39 +1,48 @@
 // 不自定义babel时，不需要显示引入react，@todo: 可用alias解决
 import React from 'react'
-import { inc } from 'ramda'
-import { Button as Abutton } from 'antd-mobile'
+import { Button, NavBar, Icon } from 'antd-mobile'
+import { useGet } from "restful-react"
+import { useAxios } from 'use-axios-client'
+import { DDYYAPI_BASE_URL } from '@/constant'
+// import agent from '@/util/request'
+// import { it/*, _*/ } from 'param.macro'
 // import { matchPairs, ANY } from 'pampy'
-// import { it, _ } from 'param.macro'
-import { VueWrapper } from 'vuera'
-// import Navbar from '../components/Navbar'
-// import Modal from '../components/Modal'
-import Button from '../vant/button'
-import Dialog from '../vant/dialog'
-import NavBar from '../vant/nav-bar'
-// import Field from 'vant/lib/field' // 原为1.6，现升级2.5，应有各种问题
+// import { inc } from 'ramda'
 
 // main
 function Main(/*props*/) {
 
-  // const aaa = 1 |> inc(11, _) |> console.log
-  const loaded = 1 |> inc |> console.log
-  console.log([1,2,3]?.[0])
+  // const { data: surveys } = useGet({ path: 'common-biz/rest/survey' })
+  const { data: surveys } = useGet('common-biz/rest/survey')
+  const { data: survey, error, loading } = useAxios({
+    url: DDYYAPI_BASE_URL + 'common-biz/rest/survey?select=*,a',
+  })
+  console.log(survey)
+
+  const icon = pug`
+    Icon(type="left")
+  `
 
   return pug`
-    VueWrapper(component=NavBar title="首页" left-text="返回" left-arrow="" @click-left="onClickLeft" @click-right="onClickRight")
-    each i,index in [1,2,3, 4, 5, 1, 7, 8]
-      p(key=index) 第#{i}
-      div
+    NavBar(mode="light",leftContent="返回",icon=icon) 问卷列表
 
-    if !loaded
-      Abutton(type="primary") aaa
+    section.p3
+      each i,index in (surveys || [])
+        p(key=index) #{i.title}
 
-    else
-      div.pt2
+      if loading
+        p loading...
 
-    VueWrapper(component=Button,type="primary") I'm Vant!
-    div
-      button.btn Click Me!
+      else if error
+        - console.log({error})
+        p #{error.toString()} ${error?.response?.data?.message}
+
+      else
+        p ok
+        each i,index in (survey || [])
+          p(key=index) #{i.title}
+
+      Button(type="primary") 提交
   `
 }
 

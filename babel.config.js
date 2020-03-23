@@ -79,6 +79,15 @@ const plugins = [
     },
   ],
 
+  // 相对于根目录@输入
+  [
+    'babel-plugin-root-import',
+    {
+      rootPathSuffix : './',
+      rootPathPrefix : '@/', // 斜杠不可少,否则会导致以@开头的包出问题
+    }
+  ],
+
 
   /*
    * antd等UI组件按需引入
