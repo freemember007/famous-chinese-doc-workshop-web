@@ -14,23 +14,30 @@ export async function getServerSideProps() {
 
 // main
 function Main(props) {
+  return pug`
+    Nav
+    Body(questions=props.questions)
+  `
+}
 
+//- 导航
+function Nav() {
+  const icon = pug`
+    Icon(type="left")
+  `
+  return pug`
+    NavBar(mode="light",leftContent="返回",icon=icon) 问卷列表
+  `
+}
+
+function Body({questions = []}) {
   const { data: surveys, loading, error } = useGet({
     path        : 'common-biz/rest/survey',
     queryParams : {id: 'in.(1)'},
     resolve     : res => res,
     // requestOptions: { headers: { Accept: 'application/vnd.pgrst.object+json' } },
   })
-  console.log({surveys})
-
-  const icon = pug`
-    Icon(type="left")
-  `
-  // return (<Get path='common-biz/rest/option'> {({options}) => <p>1</p>}</Get>)
   return pug`
-    //- 导航
-    NavBar(mode="light",leftContent="返回",icon=icon) 问卷列表
-
     section.p3
       //- 问卷列表
       section
@@ -39,17 +46,12 @@ function Main(props) {
         else if error
           p #{error.toString()}
         else
-          each i,index in (surveys || [])
+          each i,index in (surveys)
             p(key=index) #{i.title}
 
       //- 问题列表
-      each i,index in (props.questions || [])
+      each i,index in (questions)
         p(key=index) #{i.title}
-
-      //- 选项列表
-      //- Get(path="/option")
-        //- each i,index in (options || [])
-          p(key=index) #{i.text}
 
       //- 提交按钮
       Button(type="primary") 提交
