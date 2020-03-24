@@ -26,6 +26,8 @@
 // 边距
 .t0
   top 0
+.t46 // 有navbar
+  top 46px
 .r0
   right 0
 .b0
@@ -93,8 +95,16 @@
   align-items baseline
 .a-stretch //flex默认值
   align-items stretch
+.s-start
+  align-self flex-start
+.s-end
+  align-self flex-end
 .s-center
   align-self center
+.s-baseline
+  align-self baseline
+.s-stretch //flex默认值
+  align-self stretch
 .xy-center
   flex-direction row
   justify-content center
@@ -585,3 +595,7 @@ bg-color-variant(".bg-white", #ffffff)
     background darken(@background, 7%)
     border-color darken(@background, 10%)
     color @color
+
+// // .has-nav
+//   top 45px
+//   bottom 0px

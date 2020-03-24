@@ -113,11 +113,12 @@ const plugins = [
   //   },
   //   'react-use',
   // ],
-  // // /*
-  // //  * styled-components支持
-  // //  * @see: https://github.com/styled-components/styled-components
-  // //  */
-  // ['styled-components', { ssr: true }],
+
+  /*
+   * styled-components支持
+   * @see: https://github.com/styled-components/styled-components
+   */
+  ['styled-components', { ssr: true }],
 
   //  * styled-jsx支持，及styled-jsx-stylus
   //  * @see: https://github.com/zeit/styled-jsx

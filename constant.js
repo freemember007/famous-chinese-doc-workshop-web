@@ -19,3 +19,10 @@ export const COMMONBIZ_REST_URL = DDYYAPI_BASE_URL + 'common-biz/rest/'
 
 // weixin base url
 export const WX_URL = DDYYAPI_BASE_URL + 'util/weixin/app/'
+
+
+//--------------------------------------------------
+// 其他
+//--------------------------------------------------
+// 默认占位图
+export const PLACEHOLDER_IMAGE = 'http://img.diandianys.com/Fh-6zclmUBp1TDOWTMXskCEeVJ4x'

@@ -1,11 +1,13 @@
 import React from 'react'
-import { NavBar, Icon } from 'antd-mobile'
-import { useGet } from "restful-react"
-import agent from '@/util/request'
+import { NavBar, Icon, Button } from 'antd-mobile'
+// import styled from 'styled-components'
+// import { useGet } from "restful-react"
 import { it/*, _*/ } from 'param.macro'
-import { formatDateTimeM2 } from '@/util/date'
 // import { matchPairs, ANY } from 'pampy'
 // import { always } from 'ramda'
+import agent from '@/util/request'
+// import { formatDateTimeM2 } from '@/util/date'
+import { imagePlaceholder } from '@/util/filters'
 
 export async function getServerSideProps() {
   return { props: {
@@ -14,7 +16,7 @@ export async function getServerSideProps() {
 }
 
 // main
-function Main(props) {
+function Main$(props) {
   return (
     <section>
       <Nav$ />
@@ -26,23 +28,33 @@ function Main(props) {
 //- 导航
 function Nav$() {
   return (
-    <NavBar mode="light" leftContent="返回" icon={<Icon type="left" />} >
+    <NavBar mode="light" leftContent="" icon={<Icon type="left" />} >
       问卷列表
     </NavBar>
   )
 }
 
 function Body$(props) {
+  // const List  = styled.div``
+  // const Item  = styled.div``
+  // const Right = styled.div``
   return (
-    <section className="p4">
+    <ul className="absolute t46 l0 r0 b0 w100 bg-white p4">
       {props.surveys.map(survey =>
-        <div className="__flex j-between" key="index">
-          <div> {survey.title} </div>
-          <div> {survey.created_at |> formatDateTimeM2}</div>
-        </div>
+        <li className="py3 bg-white bb __flex" key={survey.id}>
+          <img width="80px" height="80px" src={survey.image |> imagePlaceholder} />
+          <section className="ml2 flex1 __flex col j-between a-start">
+            <div> {survey.title} </div>
+            {/*<div className="gray"> {survey.created_at |> formatDateTimeM2}</div>*/}
+            <div className="f4 gray"> {'2345人测过'}</div>
+            <div className="s-end">
+              <Button type="primary" size="small">我要测试</Button>
+            </div>
+          </section>
+        </li>
       )}
-    </section>
+    </ul>
   )
 }
 
-export default Main
+export default Main$
