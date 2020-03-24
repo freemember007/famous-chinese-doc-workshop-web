@@ -10,9 +10,13 @@
   },
   "dependencies": {
     "@rest-hooks/legacy": "^1.0.12",
+    "abortcontroller-polyfill": "^1.4.0",
     "antd-mobile": "^2.3.1",
+    "axios": "^0.19.2",
+    "babel-polyfill": "^6.26.0",
     "date-fns": "^2.11.0",
     "date.js": "^0.3.3",
+    "es6-promise": "^4.2.8",
     "lodash": "^4.17.15",
     "next": "9.3.1",
     "pampy": "^0.0.6",
@@ -20,6 +24,7 @@
     "ramda": "^0.27.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",
+    "react-query": "^1.0.35",
     "rest-hooks": "^4.5.9",
     "restful-react": "^10.0.0",
     "superagent": "^5.2.2",
@@ -29,7 +34,8 @@
     "use-http": "^0.3.9",
     "vant": "^2.5.7",
     "vue": "^2.6.11",
-    "vuera": "^0.2.7"
+    "vuera": "^0.2.7",
+    "whatwg-fetch": "^3.0.0"
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.8.3",

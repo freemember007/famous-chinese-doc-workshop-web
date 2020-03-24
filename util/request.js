@@ -11,7 +11,7 @@ agent.use(request => {
   //--------------------------------------------------
   // request rewrite
   //--------------------------------------------------
-  console.log('request', request)
+  // console.log('request', request)
   // url处理
   request.url = matchPairs(request.url,
     [startsWith('http') , request.url],

@@ -54,51 +54,51 @@ module.exports = withPlugins([ withCss, withStylus, withLess, withTM],{
   },
 
 
-  // /**
-  //  * webpack相关
-  //  */
-  // webpack: (config /*{ buildId, dev, isServer, defaultLoaders }*/) => {
+  /**
+   * webpack相关
+   */
+  webpack: (config /*{ buildId, dev, isServer, defaultLoaders }*/) => {
 
-  //   // 查看next默认的js/mjs/jsx文件rule
-  //   console.log(config.module.rules)
+    // 查看next默认的js/mjs/jsx文件rule
+    // console.log(config.module.rules)
 
-  //   // config.module.rules.push(
+    config.module.rules.push(
 
-  //     // 覆盖next默认的js/mjs/jsx文件loader(next-babel-loader)
-  //     // @see: node_modules/next/dist/build/webpack/loaders/next-babel-loader.js
-  //     // {
-  //     //   test: /\.(js|mjs|jsx)$/,
-  //     //   include:
-  //     //     [ path.resolve(__dirname),
-  //     //       /next-server\/dist\/lib/, //next自己写的打包用的
-  //     //     ],
-  //     //   // 有些包直接使用ES6语法，需要转一下，否则低版本浏览器报错
-  //     //   // exclude: /node_modules/,
-  //     //   exclude: /node_modules\/(?!(antd-mobile))/,
-  //     //   use:
-  //     //   {
-  //     //     loader: 'babel-loader',
-  //     //   }
-  //     // },
-  //     // {
-  //     //   test: /\.css$/,
-  //     //   use: [ "css-loader",{
-  //     //     options: {
-  //     //       includePaths: ['./node_modules/normalize.css']
-  //     //     }
-  //     //   }]
-  //     // }
-  //   // )
+      // 覆盖next默认的js/mjs/jsx文件loader(next-babel-loader)
+      // @see: node_modules/next/dist/build/webpack/loaders/next-babel-loader.js
+      // {
+      //   test: /\.(js|mjs|jsx)$/,
+      //   include:
+      //     [ path.resolve(__dirname),
+      //       /next-server\/dist\/lib/, //next自己写的打包用的
+      //     ],
+      //   // 有些包直接使用ES6语法，需要转一下，否则低版本浏览器报错
+      //   exclude: /node_modules/,
+      //   // exclude: /node_modules\/(?!(antd-mobile))/,
+      //   use:
+      //   {
+      //     loader: 'babel-loader',
+      //   }
+      // },
+      // {
+      //   test: /\.css$/,
+      //   use: [ "css-loader",{
+      //     options: {
+      //       includePaths: ['./node_modules/normalize.css']
+      //     }
+      //   }]
+      // }
+    )
 
-  //   // config.plugins.push(
-  //   //   // 在babel按需引入的基础上进一步通过语义分析最小化loadash
-  //   //   new LodashModuleReplacementPlugin,
-  //   // )
+    // config.plugins.push(
+    //   // 在babel按需引入的基础上进一步通过语义分析最小化loadash
+    //   new LodashModuleReplacementPlugin,
+    // )
 
 
-  //   return config
+    return config
 
-  // },
+  },
 
 
   /**

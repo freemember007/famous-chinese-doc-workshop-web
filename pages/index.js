@@ -2,57 +2,56 @@
 import React from 'react'
 import { Button, NavBar, Icon } from 'antd-mobile'
 import { useGet } from "restful-react"
-import { useAxios } from 'use-axios-client'
-// import useSWR from 'swr'
-import { DDYYAPI_BASE_URL } from '@/constant'
 import agent from '@/util/request'
 import { it/*, _*/ } from 'param.macro'
 // import { matchPairs, ANY } from 'pampy'
-// import { inc } from 'ramda'
+// import { always } from 'ramda'
 
 export async function getServerSideProps() {
-  const data = await agent.get('common-biz/rest/question').then(it.body)
-  return { props: { data } }
+  const questions = await agent.get('common-biz/rest/question').then(it.body)
+  return { props: { questions } }
 }
 
 // main
 function Main(props) {
 
-  const { data: surveys } = useGet({ path: 'common-biz/rest/survey' })
-  // const { data: surveys } = useGet('common-biz/rest/survey')
-  const { data: survey, error, loading } = useAxios({
-    url: DDYYAPI_BASE_URL + 'common-biz/rest/survey?select=*,a',
+  const { data: surveys, loading, error } = useGet({
+    path        : 'common-biz/rest/survey',
+    queryParams : {id: 'in.(1)'},
+    resolve     : res => res,
+    // requestOptions: { headers: { Accept: 'application/vnd.pgrst.object+json' } },
   })
-  // const { data: questions, error: err } = useSWR(
-  //   'common-biz/rest/question',
-  //   agent.get('common-biz/rest/question').then(res=>{
-  //     console.log(res)
-  //     // return res.body
-  //   }, { initialData: []})
-  // )
-
-  // console.log({questions})
+  console.log({surveys})
 
   const icon = pug`
     Icon(type="left")
   `
-
+  // return (<Get path='common-biz/rest/option'> {({options}) => <p>1</p>}</Get>)
   return pug`
+    //- 导航
     NavBar(mode="light",leftContent="返回",icon=icon) 问卷列表
 
     section.p3
-      each i,index in (surveys || [])
+      //- 问卷列表
+      section
+        if loading
+          p loading...
+        else if error
+          p #{error.toString()}
+        else
+          each i,index in (surveys || [])
+            p(key=index) #{i.title}
+
+      //- 问题列表
+      each i,index in (props.questions || [])
         p(key=index) #{i.title}
 
-      if loading
-        p loading...
-      else if error
-        - console.log({error})
-        p #{error.toString()} ${error?.response?.data?.message}
+      //- 选项列表
+      //- Get(path="/option")
+        //- each i,index in (options || [])
+          p(key=index) #{i.text}
 
-      each i,index in (props.data || [])
-        p(key=index) #{i.title}
-
+      //- 提交按钮
       Button(type="primary") 提交
   `
 }

@@ -37,12 +37,13 @@ const presets = [
    * @babel/preset-react 对react/jsx支持
    * @see: https://babeljs.io/docs/en/babel-preset-react
    */
-  [
-    '@babel/preset-react',
-    // {
-    //   development: process.env.BABEL_ENV === 'development',
-    // },
-  ],
+  ["next/babel"],
+  // [
+  //   '@babel/preset-react',
+  //   // {
+  //   //   development: process.env.BABEL_ENV === 'development',
+  //   // },
+  // ],
 ]
 
 /* ------------------------------------------------------.

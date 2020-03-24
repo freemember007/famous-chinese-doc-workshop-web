@@ -162,3 +162,4 @@ rules :  # off | 0 , warn | 1 , error | 2
   react/prop-types: 0
   no-prototype-builtins: 0
   react-pug/empty-lines: 0
+  react-pug/prop-types : 0 # 忽略props验证
