@@ -1,4 +1,5 @@
 // 因webpack打包时应用，故修改后要重新编译才生效
+// 颜色与尺寸全部按spectre保持一致
 
 @hd: 1px; // 基本单位
 
@@ -8,13 +9,19 @@
 // 色彩
 // ---
 // 文字色
-@color-text-base: #000;                  // 基本
+// @color-text-base: #000;                  // 基本
+// @color-text-secondary: #a4a9b0;          // 辅助色
+// @color-text-placeholder: #bbb;           // 文本框提示
+// @color-text-disabled: #bbb;              // 失效
+// @color-text-caption: #888;               // 辅助描述
+// @color-text-paragraph: #333;             // 段落
+@color-text-base: #303742;                  // 基本
 @color-text-base-inverse: #fff;          // 基本 - 反色
-@color-text-secondary: #a4a9b0;          // 辅助色
-@color-text-placeholder: #bbb;           // 文本框提示
-@color-text-disabled: #bbb;              // 失效
-@color-text-caption: #888;               // 辅助描述
-@color-text-paragraph: #333;             // 段落
+@color-text-secondary: lighten(@color-text-base, 55%);          // 辅助色
+@color-text-placeholder: lighten(@color-text-secondary, 20%);           // 文本框提示
+@color-text-disabled:  @color-text-placeholder;              // 失效
+@color-text-caption: @color-text-placeholder;               // 辅助描述
+@color-text-paragraph: @color-text-base;             // 段落
 @color-link: @brand-primary;             // 链接
 
 // 背景色
@@ -39,44 +46,64 @@
 @brand-wait: #108ee9;
 
 // 边框色
-@border-color-base: #ddd;
+@border-color-base: lighten(@color-text-base, 65%);
+// @border-color-base: #ddd;
 
 // 字体尺寸
 // ---
-@font-size-icontext: 10 * @hd;
-@font-size-caption-sm: 12 * @hd;
-@font-size-base: 14 * @hd;
-@font-size-subhead: 15 * @hd;
-@font-size-caption: 16 * @hd;
-@font-size-heading: 17 * @hd;
+// @font-size-icontext: 10 * @hd;
+// @font-size-caption-sm: 12 * @hd;
+// @font-size-base: 14 * @hd;
+// @font-size-subhead: 15 * @hd;
+// @font-size-caption: 16 * @hd;
+// @font-size-heading: 17 * @hd;
+@font-size-icontext: 0.6rem;
+@font-size-caption-sm: 0.7rem;
+@font-size-base: 0.8rem;
+@font-size-subhead: 0.9rem;
+@font-size-caption: 1.0rem;
+@font-size-heading: 1.1rem;
+
 
 // 圆角
 // ---
-@radius-xs: 2 * @hd;
-@radius-sm: 3 * @hd;
-@radius-md: 5 * @hd;
-@radius-lg: 7 * @hd;
+// @radius-xs: 2 * @hd;
+// @radius-sm: 3 * @hd;
+// @radius-md: 5 * @hd;
+// @radius-lg: 7 * @hd;
+@radius-xs: 0.1rem;
+@radius-sm: 0.2rem;
+@radius-md: 0.3rem;
+@radius-lg: 0.4rem;
 @radius-circle: 50%;
 
 // 边框尺寸
 // ---
-@border-width-sm: 1PX;
-@border-width-md: 1PX;
-@border-width-lg: 2 * @hd;
+@border-width-sm: 1px;
+@border-width-md: 1px;
+@border-width-lg: 2px;
 
 // 间距
 // ---
 // 水平间距
-@h-spacing-sm: 5 * @hd;
-@h-spacing-md: 8 * @hd;
-@h-spacing-lg: 15 * @hd;
+// @h-spacing-sm: 5 * @hd;
+// @h-spacing-md: 8 * @hd;
+// @h-spacing-lg: 15 * @hd;
+@h-spacing-sm: 0.2rem;
+@h-spacing-md: 0.4rem;
+@h-spacing-lg: 0.8rem;
 
 // 垂直间距
-@v-spacing-xs: 3 * @hd;
-@v-spacing-sm: 6 * @hd;
-@v-spacing-md: 9 * @hd;
-@v-spacing-lg: 15 * @hd;
-@v-spacing-xl: 21 * @hd;
+// @v-spacing-xs: 3 * @hd;
+// @v-spacing-sm: 6 * @hd;
+// @v-spacing-md: 9 * @hd;
+// @v-spacing-lg: 15 * @hd;
+// @v-spacing-xl: 21 * @hd;
+@v-spacing-xs: 0.1rem;
+@v-spacing-sm: 0.2rem;
+@v-spacing-md: 0.4rem;
+@v-spacing-lg: 0.8rem;
+@v-spacing-xl: 1rem;
 
 // 高度
 // ---
@@ -85,11 +112,16 @@
 
 // 图标尺寸
 // ---
-@icon-size-xxs: 15 * @hd;
-@icon-size-xs: 18 * @hd;
-@icon-size-sm: 21 * @hd;
-@icon-size-md: 22 * @hd;       // 导航条上的图标、grid的图标大小
-@icon-size-lg: 36 * @hd;
+// @icon-size-xxs: 15 * @hd;
+// @icon-size-xs: 18 * @hd;
+// @icon-size-sm: 21 * @hd;
+// @icon-size-md: 22 * @hd;       // 导航条上的图标、grid的图标大小
+// @icon-size-lg: 36 * @hd;
+@icon-size-xxs: 0.8rem;
+@icon-size-xs: 0.9rem;
+@icon-size-sm: 1.0rem;
+@icon-size-md: 1.1rem;       // 导航条上的图标、grid的图标大小
+@icon-size-lg: 1.8rem;
 
 // 动画缓动
 // ---
@@ -98,15 +130,21 @@
 // 组件变量
 // ---
 
-@actionsheet-item-height: 50 * @hd;
-@actionsheet-item-font-size: 18 * @hd;
+// @actionsheet-item-height: 50 * @hd;
+// @actionsheet-item-font-size: 18 * @hd;
+@actionsheet-item-height: 2.5rem;
+@actionsheet-item-font-size: 0.9rem;
 
 // button
-@button-height: 47 * @hd;
-@button-font-size: 18 * @hd;
+@button-height: 2.4rem;
+@button-font-size: 0.9rem;
+// @button-height: 47 * @hd;
+// @button-font-size: 18 * @hd;
 
-@button-height-sm: 30 * @hd;
-@button-font-size-sm: 13 * @hd;
+@button-height-sm: 1.5rem;
+@button-font-size-sm: 0.6rem;
+// @button-height-sm: 30 * @hd;
+// @button-font-size-sm: 13 * @hd;
 
 @primary-button-fill: @brand-primary;
 @primary-button-fill-tap: @brand-primary-tap;
@@ -118,55 +156,72 @@
 @warning-button-fill-tap: #d24747;
 
 @link-button-fill-tap: #ddd;
-@link-button-font-size: 16 * @hd;
+@link-button-font-size: 0.8rem;
+// @link-button-font-size: 16 * @hd;
 
 // menu
 @menu-multi-select-btns-height: @button-height;
 
 // modal
-@modal-font-size-heading: 18 * @hd;
-@modal-button-font-size: 18 * @hd; // 按钮字号
-@modal-button-height: 50 * @hd; // 按钮高度
+@modal-font-size-heading: 0.9rem;
+@modal-button-font-size: 0.9rem; // 按钮字号
+@modal-button-height: 2.5rem; // 按钮高度
+// @modal-font-size-heading: 18 * @hd;
+// @modal-button-font-size: 18 * @hd; // 按钮字号
+// @modal-button-height: 50 * @hd; // 按钮高度
 
 // list
-@list-title-height: 30 * @hd;
-@list-item-height-sm: 35 * @hd;
-@list-item-height: 44 * @hd;
+@list-title-height: 1.5rem;
+@list-item-height-sm: 1.8rem;
+@list-item-height: 2.2rem;
+// @list-title-height: 30 * @hd;
+// @list-item-height-sm: 35 * @hd;
+// @list-item-height: 44 * @hd;
 
 // input
-@input-label-width: 17 * @hd;       // InputItem、TextareaItem 文字长度基础值
-@input-font-size: 17 * @hd;
+@input-label-width: 0.8rem;       // InputItem、TextareaItem 文字长度基础值
+@input-font-size: 0.8rem;
+// @input-label-width: 17 * @hd;       // InputItem、TextareaItem 文字长度基础值
+// @input-font-size: 17 * @hd;
 @input-color-icon: #ccc; // input clear icon 的背景色
 @input-color-icon-tap: @brand-primary;
 
 // tabs
 @tabs-color: @brand-primary;
-@tabs-height: 43.5 * @hd;
-@tabs-font-size-heading: 15 * @hd;
+@tabs-height: 2.2rem;
+@tabs-font-size-heading: 0.8rem;
+// @tabs-height: 43.5 * @hd;
+// @tabs-font-size-heading: 15 * @hd;
 @tabs-ink-bar-height: @border-width-lg;
 
 // segmented-control
 @segmented-control-color: @brand-primary;  // 同时应用于背景、文字颜色、边框色
-@segmented-control-height: 27 * @hd;
+// @segmented-control-height: 27 * @hd;
+@segmented-control-height: 1.4rem;
 @segmented-control-fill-tap: fade(@brand-primary, 0.1);
 
 // tab-bar
 @tab-bar-fill: #ebeeef;
-@tab-bar-height: 50 * @hd;
+// @tab-bar-height: 50 * @hd;
+@tab-bar-height: 2.8rem;
 
 // toast
 @toast-fill: rgba(58, 58, 58, 0.9); // toast, activity-indicator 的背景颜色
 
 // search-bar
 @search-bar-fill: #efeff4;
-@search-bar-height: 44 * @hd;
-@search-bar-input-height: 28 * @hd;
-@search-bar-font-size: 15 * @hd;
+@search-bar-height: 2.2rem;
+@search-bar-input-height: 1.4rem;
+@search-bar-font-size: 0.8rem;
+// @search-bar-height: 44 * @hd;
+// @search-bar-input-height: 28 * @hd;
+// @search-bar-font-size: 15 * @hd;
 @search-color-icon: #bbb; // input search icon 的背景色
 
 // notice-bar
 @notice-bar-fill: #fefcec;
-@notice-bar-height: 36 * @hd;
+// @notice-bar-height: 36 * @hd;
+@notice-bar-height: 1.8rem;
 @notice-bar-color: #f76a24;
 
 // switch
@@ -174,8 +229,10 @@
 @switch-fill-android: @brand-primary;
 
 // tag
-@tag-height: 25 * @hd;
-@tag-height-sm: 15 * @hd;
+@tag-height: 1.2rem;
+@tag-height-sm: 0.8rem;
+// @tag-height: 25 * @hd;
+// @tag-height-sm: 15 * @hd;
 @tag-color: @brand-primary;
 
 // keyboard
@@ -183,7 +240,8 @@
 @keyboard-confirm-tap-color: @brand-primary-tap;
 
 // picker
-@option-height: 42 * @hd;           // picker 标题的高度
+@option-height: 2.1rem;           // picker 标题的高度
+// @option-height: 42 * @hd;           // picker 标题的高度
 
 // z-index
 @progress-zindex: 2000;

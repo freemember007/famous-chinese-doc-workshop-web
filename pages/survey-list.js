@@ -36,7 +36,7 @@ function Body$(props) {
   return (
     <section className="p4">
       {props.surveys.map(survey =>
-        <div className="f3 __flex j-between" key="index">
+        <div className="__flex j-between" key="index">
           <div> {survey.title} </div>
           <div> {survey.created_at |> formatDateTimeM2}</div>
         </div>
