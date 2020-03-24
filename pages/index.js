@@ -3,21 +3,35 @@ import React from 'react'
 import { Button, NavBar, Icon } from 'antd-mobile'
 import { useGet } from "restful-react"
 import { useAxios } from 'use-axios-client'
+// import useSWR from 'swr'
 import { DDYYAPI_BASE_URL } from '@/constant'
-// import agent from '@/util/request'
-// import { it/*, _*/ } from 'param.macro'
+import agent from '@/util/request'
+import { it/*, _*/ } from 'param.macro'
 // import { matchPairs, ANY } from 'pampy'
 // import { inc } from 'ramda'
 
-// main
-function Main(/*props*/) {
+export async function getServerSideProps() {
+  const data = await agent.get('common-biz/rest/question').then(it.body)
+  return { props: { data } }
+}
 
-  // const { data: surveys } = useGet({ path: 'common-biz/rest/survey' })
-  const { data: surveys } = useGet('common-biz/rest/survey')
+// main
+function Main(props) {
+
+  const { data: surveys } = useGet({ path: 'common-biz/rest/survey' })
+  // const { data: surveys } = useGet('common-biz/rest/survey')
   const { data: survey, error, loading } = useAxios({
     url: DDYYAPI_BASE_URL + 'common-biz/rest/survey?select=*,a',
   })
-  console.log(survey)
+  // const { data: questions, error: err } = useSWR(
+  //   'common-biz/rest/question',
+  //   agent.get('common-biz/rest/question').then(res=>{
+  //     console.log(res)
+  //     // return res.body
+  //   }, { initialData: []})
+  // )
+
+  // console.log({questions})
 
   const icon = pug`
     Icon(type="left")
@@ -32,15 +46,12 @@ function Main(/*props*/) {
 
       if loading
         p loading...
-
       else if error
         - console.log({error})
         p #{error.toString()} ${error?.response?.data?.message}
 
-      else
-        p ok
-        each i,index in (survey || [])
-          p(key=index) #{i.title}
+      each i,index in (props.data || [])
+        p(key=index) #{i.title}
 
       Button(type="primary") 提交
   `

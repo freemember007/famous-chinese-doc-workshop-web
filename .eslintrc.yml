@@ -161,3 +161,4 @@ rules :  # off | 0 , warn | 1 , error | 2
   react/display-name: 0
   react/prop-types: 0
   no-prototype-builtins: 0
+  react-pug/empty-lines: 0
