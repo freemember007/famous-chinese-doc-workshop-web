@@ -1,6 +1,6 @@
 import React from 'react'
 import { NavBar, Icon, Button } from 'antd-mobile'
-// import styled from 'styled-components'
+import styled from 'styled-components'
 // import { useGet } from "restful-react"
 import { it/*, _*/ } from 'param.macro'
 // import { matchPairs, ANY } from 'pampy'
@@ -35,11 +35,11 @@ function Nav$() {
 }
 
 function Body$(props) {
-  // const List  = styled.div``
-  // const Item  = styled.div``
-  // const Right = styled.div``
+  const List  = styled.div``
+  const Item  = styled.div``
+  const Right = styled.div``
   return (
-    <ul className="absolute t46 l0 r0 b0 w100 bg-white p4">
+    <ul className="absolute t46 l0 r0 b0 px4 w100 bg-white">
       {props.surveys.map(survey =>
         <li className="py3 bg-white bb __flex" key={survey.id}>
           <img width="80px" height="80px" src={survey.image |> imagePlaceholder} />

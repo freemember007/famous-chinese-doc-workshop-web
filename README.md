@@ -19,6 +19,8 @@ plugin-transform-runtime
 styled-jsx
 ```
 
+### ui
+
 ### css
 
 antd-mobile require normalize.css导致编译报错bug,
@@ -29,6 +31,25 @@ vi node_modules\antd-mobile\lib\style\index.js
 // 去除此项，如需要在_app.js import 'normalize.css/normalize.css'
 // require('normalize.css/normalize.css');
 ```
+
+### animate
+
+https://github.com/alexvcasillas/animated-styled-components
+
+### icon
+
+https://github.com/jacobwgillespie/styled-icons
+
+### 其他
+
+https://github.com/rebassjs/rebass
+
+https://github.com/Fausto95/styled-grid-component
+
+https://github.com/SaraVieira/styled-flex-component
+
+https://www.smooth-code.com/open-source/smooth-ui/docs/theming/
+
 
 ```bash
 yarn fixant
