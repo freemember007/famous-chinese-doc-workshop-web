@@ -24,5 +24,5 @@ export const WX_URL = DDYYAPI_BASE_URL + 'util/weixin/app/'
 //--------------------------------------------------
 // 其他
 //--------------------------------------------------
-// 默认占位图
+// 默认占位图 1*1px
 export const PLACEHOLDER_IMAGE = 'http://img.diandianys.com/Fh-6zclmUBp1TDOWTMXskCEeVJ4x'

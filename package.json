@@ -27,6 +27,7 @@
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-query": "^1.0.35",
+    "rebass": "^4.0.7",
     "rest-hooks": "^4.5.9",
     "restful-react": "^10.0.0",
     "styled-components": "^5.0.1",
