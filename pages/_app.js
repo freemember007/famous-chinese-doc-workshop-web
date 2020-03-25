@@ -10,9 +10,10 @@ import '@/styles/spectre.styl'
 // import 'normalize.css/normalize.css'
 import { DDYYAPI_BASE_URL } from '@/constant'
 
-export default class MyApp extends App {
+class MyApp extends App {
   render () {
     const { Component, pageProps } = this.props
+    console.log({pageProps})
     return pug`
       RestfulProvider(base=DDYYAPI_BASE_URL)
         Head
@@ -23,3 +24,5 @@ export default class MyApp extends App {
     `
   }
 }
+
+export default (MyApp)

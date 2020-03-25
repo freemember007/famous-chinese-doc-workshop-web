@@ -10,6 +10,9 @@
   },
   "dependencies": {
     "@rest-hooks/legacy": "^1.0.12",
+    "@styled-icons/evaicons-outline": "^10.2.0",
+    "@styled-icons/feather": "^10.0.0",
+    "@styled-icons/heroicons-outline": "^10.0.0",
     "abortcontroller-polyfill": "^1.4.0",
     "animate-css-styled-components": "^1.0.2",
     "antd-mobile": "^2.3.1",

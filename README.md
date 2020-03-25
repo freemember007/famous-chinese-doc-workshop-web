@@ -40,6 +40,20 @@ https://github.com/alexvcasillas/animated-styled-components
 
 https://github.com/jacobwgillespie/styled-icons
 
+```bash
+# 最好
+# https://akveo.github.io/eva-icons/#/
+yarn add @styled-icons/evaicons-outline
+# https://github.com/refactoringui/heroicons/tree/master/src/outline-md
+yarn add @styled-icons/heroicons-outline
+# https://ionicons.com/
+yarn add @styled-icons/ionicons-outline #安装不成功
+
+# 其他
+yarn add @styled-icons/feather
+yarn add @styled-icons/foundation
+```
+
 ### 其他
 
 https://github.com/rebassjs/rebass
