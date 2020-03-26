@@ -10,7 +10,6 @@ const autoprefixer = require('autoprefixer')
 const poststylus   = require('poststylus')
 // 插件/补丁...
 const withPlugins = require("next-compose-plugins")
-const withTM      = require('next-transpile-modules')
 const lessToJS    = require('less-vars-to-js')
 const fs          = require('fs')
 const path        = require('path')
@@ -23,6 +22,11 @@ const IS_DEV = process.env.NODE_ENV !== 'production'
 if (typeof require !== 'undefined') {
   require.extensions['.less'] = (/*file*/) => {}
 }
+
+// 需要被next-babel-loader处理，避免被exclude
+// @see: https://www.cnblogs.com/1wen/p/10793868.html
+// @see: https://github.com/martpie/next-transpile-modules
+const withTM = require('next-transpile-modules')(['antd-mobile'])
 
 module.exports = withPlugins([ withCss, withStylus, withLess, withTM],{
 
@@ -60,35 +64,64 @@ module.exports = withPlugins([ withCss, withStylus, withLess, withTM],{
   webpack: (config /*{ buildId, dev, isServer, defaultLoaders }*/) => {
 
     // 查看next默认的js/mjs/jsx文件rule
-    // console.log(config.module.rules)
+    // console.log(config.module.rules[0].use.options)
+    // require('shelljs').exec(`echo ${_rules} > rules.json`)
 
-    config.module.rules.push(
+    // config.module.rules.push(
+    // config.module.rules.push(
 
-      // 覆盖next默认的js/mjs/jsx文件loader(next-babel-loader)
-      // @see: node_modules/next/dist/build/webpack/loaders/next-babel-loader.js
-      // {
-      //   test: /\.(js|mjs|jsx)$/,
-      //   include:
-      //     [ path.resolve(__dirname),
-      //       /next-server\/dist\/lib/, //next自己写的打包用的
-      //     ],
-      //   // 有些包直接使用ES6语法，需要转一下，否则低版本浏览器报错
-      //   exclude: /node_modules/,
-      //   // exclude: /node_modules\/(?!(antd-mobile))/,
-      //   use:
-      //   {
-      //     loader: 'babel-loader',
-      //   }
-      // },
-      // {
-      //   test: /\.css$/,
-      //   use: [ "css-loader",{
-      //     options: {
-      //       includePaths: ['./node_modules/normalize.css']
-      //     }
-      //   }]
-      // }
-    )
+    // 覆盖next默认的js/mjs/jsx文件loader(next-babel-loader)
+    // @see: node_modules/next/dist/build/webpack/loaders/next-babel-loader.js
+
+    // {
+    //   test: /\.(tsx|ts|js|mjs|jsx)$/,
+    //   include: [
+    //     path.resolve(__dirname),
+    //     /next[\\/]dist[\\/]next-server[\\/]lib/,
+    //     /next[\\/]dist[\\/]client/,
+    //     /next[\\/]dist[\\/]pages/,
+    //     // /node_modules[\\/](antd-mobile)/,
+    //     /[\\/](strip-ansi|ansi-regex)[\\/]/
+    //   ],
+    //   exclude: /node_modules\/(?!(antd-mobile))/,
+    //   use: {
+    //     loader: 'next-babel-loader',
+    //     options: {
+    //       isServer: false,
+    //       distDir: path.resolve(__dirname, '.next'),
+    //       pagesDir: path.resolve(__dirname, 'pages'),
+    //       cwd: path.resolve(__dirname),
+    //       cache: true,
+    //       babelPresetPlugins: [],
+    //       hasModern: false,
+    //       development: IS_DEV
+    //     }
+    //   }
+    // },
+
+    // {
+    //   test: /\.(js|mjs|jsx)$/,
+    //   include:
+    //     [ path.resolve(__dirname),
+    //       /next-server\/dist\/lib/, //next自己写的打包用的
+    //     ],
+    //   // 有些包直接使用ES6语法，需要转一下，否则低版本浏览器报错
+    //   exclude: /node_modules/,
+    //   // exclude: /node_modules\/(?!(antd-mobile))/,
+    //   use:
+    //   {
+    //     loader: 'babel-loader',
+    //   }
+    // },
+    // {
+    //   test: /\.css$/,
+    //   use: [ "css-loader",{
+    //     options: {
+    //       includePaths: ['./node_modules/normalize.css']
+    //     }
+    //   }]
+    // }
+    // )
 
     // config.plugins.push(
     //   // 在babel按需引入的基础上进一步通过语义分析最小化loadash

@@ -7,7 +7,6 @@ import { RestfulProvider } from "restful-react"
 import App, { /*Container*/ /* Container已非预期*/} from 'next/app'
 import Head from 'next/head'
 import '@/styles/spectre.styl'
-// import 'normalize.css/normalize.css'
 import { DDYYAPI_BASE_URL } from '@/constant'
 
 class MyApp extends App {
