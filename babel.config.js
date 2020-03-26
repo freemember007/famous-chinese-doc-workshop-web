@@ -21,11 +21,10 @@ const presets = [
       useBuiltIns: 'usage',
       corejs: { version: 3, proposals: true },
 
-      // // 浏览器兼容选项，请勿设，走根目录下.browserslistrc设置
       // targets: {
       //   // 仅支持支持es模块的浏览器，千万不要用true，否则会导致很多node_modules包在低端浏览器出错
       //   esmodules: false
-      // }
+      // },
 
       // exclude: ['@babel/plugin-transform-regenerator'], //排除那些插件
 
@@ -37,13 +36,13 @@ const presets = [
    * @babel/preset-react 对react/jsx支持
    * @see: https://babeljs.io/docs/en/babel-preset-react
    */
-  ["next/babel"],
-  // [
-  //   '@babel/preset-react',
-  //   // {
-  //   //   development: process.env.BABEL_ENV === 'development',
-  //   // },
-  // ],
+  // ["next/babel"],
+  [
+    '@babel/preset-react',
+    {
+      development: process.env.BABEL_ENV === 'development',
+    },
+  ],
 ]
 
 /* ------------------------------------------------------.

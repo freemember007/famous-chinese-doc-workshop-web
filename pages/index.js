@@ -1,61 +1,66 @@
 // 不自定义babel时，不需要显示引入react，@todo: 可用alias解决
 import React from 'react'
-import { Button, NavBar, Icon } from 'antd-mobile'
-import { useGet } from "restful-react"
-import agent from '@/util/request'
-import { it/*, _*/ } from 'param.macro'
-// import { matchPairs, ANY } from 'pampy'
-// import { always } from 'ramda'
-
-export async function getServerSideProps() {
-  const questions = await agent.get('common-biz/rest/question').then(it.body)
-  return { props: { questions } }
-}
+import Link from 'next/link'
+import { Button, NavBar } from 'antd-mobile'
+import { useGet, Get } from "restful-react"
+import { join } from 'ramda'
 
 // main
-function Main(props) {
-  return pug`
-    Nav
-    Body(questions=props.questions)
-  `
+function Main() {
+  return (
+    <section>
+      <Nav$ />
+      <Body$ />
+      {<Questions$ />}
+    </section>
+  )
 }
 
 //- 导航
-function Nav() {
-  const icon = pug`
-    Icon(type="left")
-  `
-  return pug`
-    NavBar(mode="light",leftContent="返回",icon=icon) 问卷列表
-  `
+function Nav$() {
+  return (
+    <NavBar mode="light">
+      问卷首页
+    </NavBar>
+  )
 }
 
-function Body({questions = []}) {
+function Body$() {
   const { data: surveys, loading, error } = useGet({
     path        : 'common-biz/rest/survey',
-    queryParams : {id: 'in.(1)'},
+    queryParams : {id: 'in.(1, 2, 3, 4)', select: '*, a'},
     resolve     : res => res,
-    // requestOptions: { headers: { Accept: 'application/vnd.pgrst.object+json' } },
   })
-  return pug`
-    section.p3
-      //- 问卷列表
-      section
-        if loading
-          p loading...
-        else if error
-          p #{error.toString()}
-        else
-          each i,index in (surveys)
-            p(key=index) #{i.title}
+  return (
+    <section className="m3 p3">
+      { loading && <p>loading</p> }
+      { error   && <p>{ error.message }</p> }
+      { surveys && surveys.map((survey, index) =>
+        <p key={ index }>{ survey.title }</p>
+      )}
+      <Link href={{ pathname: '/survey-list' }}>
+        <Button type="primary"> 问卷列表 </Button>
+      </Link>
+    </section>
+  )
+}
 
-      //- 问题列表
-      each i,index in (questions)
-        p(key=index) #{i.title}
-
-      //- 提交按钮
-      Button(type="primary") 提交
-  `
+function Questions$() {
+  return (
+    <Get path="common-biz/rest/questions?select=*">
+      { (questions, { loading, error }) => {
+        return (
+          <section className="m3 p3">
+            { loading   && <p>loading</p> }
+            { error     && <p>{ [error?.message, error?.data?.message] |> join(', ') }</p> }
+            { questions && questions.map((survey, index) =>
+              <p key={ index }>{ survey.title }</p>
+            )}
+          </section>
+        )
+      }}
+    </Get>
+  )
 }
 
 export default Main

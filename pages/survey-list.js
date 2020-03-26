@@ -1,4 +1,5 @@
 import React from 'react'
+import Router from 'next/router'
 import Link from 'next/link'
 import { NavBar, Icon } from 'antd-mobile'
 import { SlideInRight } from 'animate-css-styled-components'
@@ -27,7 +28,12 @@ function Main$(props) {
 //- 导航
 function Nav$() {
   return (
-    <NavBar mode="light" leftContent="" icon={<Icon type="left" />} >
+    <NavBar
+      mode="light"
+      leftContent="返回"
+      icon={<Icon type="left" />}
+      onClick={ Router.back }
+    >
       问卷列表
     </NavBar>
   )

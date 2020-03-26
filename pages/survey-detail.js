@@ -1,4 +1,5 @@
 import React from 'react'
+import Router from 'next/router'
 import { NavBar, Icon, Button } from 'antd-mobile'
 import { it/*, _*/ } from 'param.macro'
 import agent from '@/util/request'
@@ -28,7 +29,12 @@ function Main$(props) {
 //- 导航
 function Nav$() {
   return (
-    <NavBar mode="light" leftContent="" icon={<Icon type="left" />} >
+    <NavBar
+      mode="light"
+      leftContent="返回"
+      icon={<Icon type="left" />}
+      onClick={ Router.back }
+    >
       问卷详情
     </NavBar>
   )

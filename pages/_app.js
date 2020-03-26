@@ -1,7 +1,9 @@
 // require('babel-polyfill')
 // require('es6-promise').polyfill()
+import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only'
+// import 'core-js/stable'
 // import 'whatwg-fetch'
-// import 'abortcontroller-polyfill'
+// import 'unfetch/polyfill'
 import React from 'react'
 import { RestfulProvider } from "restful-react"
 import App, { /*Container*/ /* Container已非预期*/} from 'next/app'
@@ -12,7 +14,6 @@ import { DDYYAPI_BASE_URL } from '@/constant'
 class MyApp extends App {
   render () {
     const { Component, pageProps } = this.props
-    console.log({pageProps})
     return pug`
       RestfulProvider(base=DDYYAPI_BASE_URL)
         Head

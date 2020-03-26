@@ -64,6 +64,30 @@ https://github.com/SaraVieira/styled-flex-component
 
 https://www.smooth-code.com/open-source/smooth-ui/docs/theming/
 
+### query库比较
+
+很多库用到fetch库，需要abortcontroller-polyfill
+
+```javascript
+import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only'
+```
+
+首选：
+
+restful-react: 简单，并且可直接写在dom中
+
+use-axios-client：可注入axios实例，有refetch
+
+其他：
+
+use-http: 有简单的时间cache，不执行
+
+swa/react-query: 需要设定cache key，不执行
+
+swr: 需要设定cache key，不执行
+
+rest-hook: 编译问题，如果要状态，写法没有优势，反倒要定义resource
+
 
 ```bash
 yarn fixant
