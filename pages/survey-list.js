@@ -9,6 +9,7 @@ import agent from '@/util/request'
 // import { formatDateTimeM2 } from '@/util/date'
 import { imagePlaceholder, omit } from '@/util/filters'
 import { _list, _item, _left, _right } from '@/util/semantic-tags'
+
 export async function getServerSideProps() {
   return { props: {
     surveys: await agent.get('common-biz/rest/survey').then(it.body)

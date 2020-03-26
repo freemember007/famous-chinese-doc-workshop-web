@@ -74,19 +74,23 @@ import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only'
 
 首选：
 
-restful-react: 简单，并且可直接写在dom中
+restful-react: 简单，可直接写dom，状态也可在dom维护
 
-use-axios-client：可注入axios实例，有refetch
+有特色的：
+
+use-axios-client：可注入axios实例，有refetch功能
+
+rest-hook: 定义resource，可直接写dom，如果要状态，写法没有优势
 
 其他：
 
-use-http: 有简单的时间cache，不执行
+use-http: 有简单的时间cache
 
-swa/react-query: 需要设定cache key，不执行
+swa/react-query: 需要设定cache key
 
-swr: 需要设定cache key，不执行
+swr: 需要设定cache key
 
-rest-hook: 编译问题，如果要状态，写法没有优势，反倒要定义resource
+
 
 
 ```bash

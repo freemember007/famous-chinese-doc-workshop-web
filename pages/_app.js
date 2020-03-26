@@ -1,9 +1,4 @@
-// require('babel-polyfill')
-// require('es6-promise').polyfill()
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only'
-// import 'core-js/stable'
-// import 'whatwg-fetch'
-// import 'unfetch/polyfill'
 import React from 'react'
 import { RestfulProvider } from "restful-react"
 import App, { /*Container*/ /* Container已非预期*/} from 'next/app'

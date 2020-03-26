@@ -2,8 +2,11 @@
 import React from 'react'
 import Link from 'next/link'
 import { Button, NavBar } from 'antd-mobile'
-import { useGet, Get } from "restful-react"
+import { FadeOutDown } from 'animate-css-styled-components'
+import Flex from 'styled-flex-component'
+import { useGet, Get, Mutate } from "restful-react"
 import { join } from 'ramda'
+import {_list, _item } from '@/util/semantic-tags'
 
 // main
 function Main() {
@@ -32,33 +35,54 @@ function Body$() {
     resolve     : res => res,
   })
   return (
-    <section className="m3 p3">
+    <_list className="m3 p3">
       { loading && <p>loading</p> }
       { error   && <p>{ error.message }</p> }
       { surveys && surveys.map((survey, index) =>
-        <p key={ index }>{ survey.title }</p>
+        <_item key={ index }>{ survey.title }</_item>
       )}
       <Link href={{ pathname: '/survey-list' }}>
         <Button type="primary"> 问卷列表 </Button>
       </Link>
-    </section>
+    </_list>
   )
 }
 
 function Questions$() {
   return (
-    <Get path="common-biz/rest/questions?select=*">
+    <Get path="common-biz/rest/question" queryParams={{
+      id     : 'in.1,2,3,4',
+      select : '*,survey(*),options:option(*)',
+    }}>
       { (questions, { loading, error }) => {
         return (
-          <section className="m3 p3">
+          <_list className="p3">
             { loading   && <p>loading</p> }
             { error     && <p>{ [error?.message, error?.data?.message] |> join(', ') }</p> }
             { questions && questions.map((survey, index) =>
-              <p key={ index }>{ survey.title }</p>
+              <_item className="p2" key={ index }>
+                <p>{ survey.title }</p>
+                <Mutate
+                  verb="PATCH"
+                  queryParams={{ id: 'eq.1' }}
+                  requestOptions={{ headers: { Prefer: 'return=representation'} }}
+                >
+                  { (mutate, { loading, error }) => {
+                    return (
+                      <Flex column className="p3">
+                        { loading && <p>loading</p> }
+                        { error   && <FadeOutDown duration="0.3s" delay="1s">{ [error?.message, error?.data?.message] |> join(', ') }</FadeOutDown> }
+                        <Button onClick={ () => mutate({ titlse: survey.title + '1' })}>修改标题</Button>
+                      </Flex>
+                    )
+                  }}
+                </Mutate>
+              </_item>
             )}
-          </section>
+          </_list>
         )
       }}
+
     </Get>
   )
 }

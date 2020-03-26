@@ -11,3 +11,4 @@ export const _subTitle = styled.div``
 export const _text = styled.div``
 export const _flex = styled.div``
 export const _container = styled.div``
+export const Flex = styled.div``
