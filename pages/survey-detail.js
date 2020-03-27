@@ -1,5 +1,6 @@
 import React from 'react'
 import Router from 'next/router'
+import Link from 'next/link'
 import { NavBar, Icon, Button } from 'antd-mobile'
 import { it/*, _*/ } from 'param.macro'
 import agent from '@/util/request'
@@ -55,8 +56,9 @@ function Body$({ survey }) {
       <_text className="dark lh2">
         { survey.intro }
       </_text>
-
-      <Button className="my4" type="primary" >开始测试</Button>
+      <Link href={{ pathname: '/survey-result', query: { id: survey.id }}}>
+        <Button className="my4" type="primary" >开始测试</Button>
+      </Link>
     </article>
   )
 }

@@ -1,20 +1,33 @@
 // 不自定义babel时，不需要显示引入react，@todo: 可用alias解决
 import React from 'react'
+import { store as createStore, view } from 'react-easy-state'
+import globalStore from '@/globalStore'
+import sleep from 'await-sleep'
 import Link from 'next/link'
 import { Button, NavBar } from 'antd-mobile'
-import { FadeOutDown } from 'animate-css-styled-components'
+import { FadeOut } from 'animate-css-styled-components'
 import Flex from 'styled-flex-component'
 import { useGet, Get, Mutate } from "restful-react"
 import { join } from 'ramda'
 import {_list, _item } from '@/util/semantic-tags'
 
+const store = createStore({
+  place: '定位中...',
+
+  async getPlace() {
+    await sleep(100)
+    store.place = 'hangzhou'
+  },
+})
+
 // main
-function Main() {
+function Main$() {
   return (
     <section>
       <Nav$ />
       <Body$ />
-      {<Questions$ />}
+      <StoreTest$ />
+      <Questions$ />
     </section>
   )
 }
@@ -48,6 +61,16 @@ function Body$() {
   )
 }
 
+function StoreTest$() {
+  return (
+    <section className="p2">
+      <p onClick={ store.getPlace }>{ store.place }</p>
+      <p onClick={ globalStore.getPlace }>{ globalStore.place }</p>
+    </section>
+  )
+}
+StoreTest$ = view(StoreTest$)
+
 function Questions$() {
   return (
     <Get path="common-biz/rest/question" queryParams={{
@@ -57,7 +80,7 @@ function Questions$() {
       { (questions, { loading, error }) => {
         return (
           <_list className="p3">
-            { loading   && <p>loading</p> }
+            { loading   && <p>loading...</p> }
             { error     && <p>{ [error?.message, error?.data?.message] |> join(', ') }</p> }
             { questions && questions.map((survey, index) =>
               <_item className="p2" key={ index }>
@@ -70,8 +93,8 @@ function Questions$() {
                   { (mutate, { loading, error }) => {
                     return (
                       <Flex column className="p3">
-                        { loading && <p>loading</p> }
-                        { error   && <FadeOutDown duration="0.3s" delay="1s">{ [error?.message, error?.data?.message] |> join(', ') }</FadeOutDown> }
+                        { loading && <p>loading...</p> }
+                        { error   && <FadeOut duration="0.3s" delay="1s"><p>{ [error?.message, error?.data?.message] |> join(', ') }</p></FadeOut> }
                         <Button onClick={ () => mutate({ titlse: survey.title + '1' })}>修改标题</Button>
                       </Flex>
                     )
@@ -87,4 +110,4 @@ function Questions$() {
   )
 }
 
-export default Main
+export default Main$
