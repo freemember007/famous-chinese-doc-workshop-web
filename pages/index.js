@@ -6,6 +6,8 @@ import sleep from 'await-sleep'
 import Link from 'next/link'
 import { Button, NavBar } from 'antd-mobile'
 import { FadeOut } from 'animate-css-styled-components'
+// import Linkify from 'react-linkify'
+import Linkify from 'linkifyjs/react'
 import Flex from 'styled-flex-component'
 import { useGet, Get, Mutate } from "restful-react"
 import { join } from 'ramda'
@@ -28,6 +30,7 @@ function Main$() {
       <Body$ />
       <StoreTest$ />
       <Questions$ />
+      <LinkifyTest$ />
     </section>
   )
 }
@@ -110,4 +113,11 @@ function Questions$() {
   )
 }
 
+function LinkifyTest$() {
+  return (
+    <Linkify>
+      See source code at github.com/tasti/react-linkify/.
+    </Linkify>
+  )
+}
 export default Main$

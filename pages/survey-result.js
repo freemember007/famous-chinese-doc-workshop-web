@@ -1,11 +1,17 @@
+// framework
 import React from 'react'
 import Router from 'next/router'
-import { NavBar, Icon, Button } from 'antd-mobile'
-import Flex from 'styled-flex-component'
+// component
+import { NavBar, Icon } from 'antd-mobile'
+// import Flex from 'styled-flex-component'
+// fp
+import { find } from 'ramda'
+import { inRange } from 'lodash/fp'
 import { it/*, _*/ } from 'param.macro'
+// util
 import agent from '@/util/request'
 import ensure from '@/util/ensure'
-import { _title, _box, _text } from '@/util/semantic-tags'
+import { _title, _subTitle, _box, _text } from '@/util/semantic-tags'
 
 export async function getServerSideProps({ /*req, res, */query}) {
   ensure(query?.id, 'query参数(问卷结果)id不能为空')
@@ -46,6 +52,8 @@ function Nav$() {
 }
 
 function Body$({ survey_result }) {
+  const matchedExplain = survey_result.survey.explain
+    |> find(i => inRange(i.score_gte, i.score_lte + 1, survey_result.score))
   return (
     <article className="absolute t46 l0 r0 b0 p4 w100 bg-white">
 
@@ -55,15 +63,20 @@ function Body$({ survey_result }) {
         <span>得分：</span>
       </_title>
 
-      <_box className="w100 vh20 my4 white bg-success __flex j-center a-center">
+      <_box className="w100 vh20 my4 white __flex j-center a-center" x-class={matchedExplain.is_ok ? 'bg-success' : 'bg-error'}>
         <div style={{ fontSize: '60px' }}> { survey_result.score }</div>
       </_box>
-      <Flex justifyBetween className="mt2 f4 gray">
+      <_subTitle className="mt2 f4 gray __flex j-between">
         <div> {'本问卷由' + '点点云科室' + '提供'}</div>
         <div> {'23452人测过'}</div>
-      </Flex>
+      </_subTitle>
 
-      <Button className="my4" type="default" >找医生</Button>
+      <_title className="my4">
+        <span>您的状态: </span>
+        <span>{matchedExplain.result}</span>
+      </_title>
+      <_text className="lh2">{matchedExplain.describe}</_text>
+
     </article>
   )
 }
