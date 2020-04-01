@@ -14,7 +14,7 @@ import ensure from '@/util/ensure'
 import { _title, _subTitle, _box, _text } from '@/util/semantic-tags'
 
 export async function getServerSideProps({ /*req, res, */query}) {
-  ensure(query?.id, 'query参数(问卷结果)id不能为空')
+  ensure(query?.id, '请求参数(问卷结果id)不能为空')
   const survey_result = await agent
     .get('common-biz/rest/survey_result')
     .set({ Accept: 'application/vnd.pgrst.object+json' })

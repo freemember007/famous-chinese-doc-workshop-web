@@ -60,6 +60,9 @@ function Body$() {
       <Link href={{ pathname: '/survey-list' }}>
         <Button type="primary"> 问卷列表 </Button>
       </Link>
+      <Link href={{ pathname: '/survey-do' }}>
+        <Button type="primary"> 做问卷 </Button>
+      </Link>
     </_list>
   )
 }
