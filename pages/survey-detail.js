@@ -56,7 +56,7 @@ function Body$({ survey }) {
       <_text className="dark lh2">
         { survey.intro }
       </_text>
-      <Link href={{ pathname: '/survey-result', query: { id: survey.id }}}>
+      <Link href={{ pathname: '/survey-do', query: { id: survey.id }}}>
         <Button className="my4" type="primary" >开始测试</Button>
       </Link>
     </article>

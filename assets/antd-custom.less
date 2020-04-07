@@ -18,7 +18,8 @@
 @color-text-base: #303742;                  // 基本
 @color-text-base-inverse: #fff;          // 基本 - 反色
 @color-text-secondary: lighten(@color-text-base, 55%);          // 辅助色
-@color-text-placeholder: lighten(@color-text-secondary, 20%);           // 文本框提示
+@color-text-placeholder: @color-text-secondary;           // 文本框提示
+// @color-text-placeholder: lighten(@color-text-secondary, 20%);           // 文本框提示
 @color-text-disabled:  @color-text-placeholder;              // 失效
 @color-text-caption: @color-text-placeholder;               // 辅助描述
 @color-text-paragraph: @color-text-base;             // 段落

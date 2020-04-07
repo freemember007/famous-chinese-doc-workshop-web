@@ -146,14 +146,20 @@ rules :  # off | 0 , warn | 1 , error | 2
 
   # 要求使用 let 或 const 而不是 var
   no-var                         : 2
+
   # 对象多行最末行始终加逗号
-  comma-dangle                   : [ 1, only-multiline]
+  # comma-dangle                   : [ 1, only-multiline]
+  comma-dangle                   : 0
+
   # 最大两行空行
   no-multiple-empty-lines        : [ 2, { max : 2 }]
+
   # 代码块{}前空格
   space-before-blocks            : [ 1, always]
+
   # // 或 */ 注释符前面空格
   spaced-comment                 : 0
+
   # 允许callback(true/false)
   standard/no-callback-literal   : 0
   react/jsx-uses-react: 2

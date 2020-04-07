@@ -1,15 +1,21 @@
 // framework
 import React, { useState } from 'react'
 import Router from 'next/router'
+// import produce from 'immer'
 // component
-import { NavBar, Icon } from 'antd-mobile'
+import { NavBar, Button, Icon, List, Checkbox, Radio, TextareaItem } from 'antd-mobile'
 import { SlideInRight } from 'animate-css-styled-components'
+import Flex from 'styled-flex-component'
 // fp
+// import { without } from 'ramda'
+// import { match, matchPairs, ANY } from 'pampy'
+import { includes } from 'lodash/fp'
 import { it/*, _*/ } from 'param.macro'
 // util
 import agent from '@/util/request'
 import ensure from '@/util/ensure'
-import { _list, _item, _title } from '@/util/semantic-tags'
+import { percent, concatOrWithout } from '@/util/filters'
+// import { _list, _item, _title, _step } from '@/util/semantic-tags'
 
 export async function getServerSideProps({ /*req, res, */query}) {
   ensure(query?.id, '请求参数(问卷id)不能为空')
@@ -52,24 +58,106 @@ function Nav$() {
 function Body$({ survey }) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const currentQuestion = survey.questions[currentQuestionIndex] || {}
+  const [questionsResult, setQuestionsResult] = useState({})
 
   return (
-    <article className="absolute t46 l0 r0 b0 px4 w100 bg-white">
+    <article className="absolute t46 l0 r0 b0 px4 w12 bg-white">
 
-      <_title className="py2 f2 tc"> {currentQuestion.title} </_title>
+      {/* 进度区 */}
+      <Flex alignCenter className="my4" >
+        {/* 进度数 */}
+        <div className="gray"> { [currentQuestionIndex + 1, survey.questions.length].join('/') } </div>
+        {/* 进度条 */}
+        <div className="flex1 relative ml4" style={{ height: '5px' }}>
+          <div className="absolute h100 z2 round bg-primary" style={{ width: (currentQuestionIndex + 1)/survey.questions.length |> percent }}></div>
+          <div className="absolute h100 z1 round w12 bg-gray"></div>
+        </div>
+      </Flex>
 
-      <_list className="absolute t46 l0 r0 b0 px4 w100 bg-white">
-        <SlideInRight duration="0.3s" delay="0.1s" >
-          {(currentQuestion.options).map(option =>
-            <_item className="py3 bg-white bb __flex j-between a-center">
-              { option.text }
+      {/* 问题区 */}
+      <SlideInRight duration="0.3s" delay="0.1s" >
+        {/* 问题标题 */}
+        <div className="py2 f2 bold"> {currentQuestion.title} </div>
 
-            </_item>
-          )}
+        {/* 问题选项 */}
+        <List className="f3">
 
-        </SlideInRight>
-      </_list>
+          {/* 如果是单选 */}
+          {currentQuestion.type === 'radio' &&
+            currentQuestion.options.map(function RadioItem$(option) {
+              return <Radio.RadioItem
+                key={ option.id }
+                checked={questionsResult[currentQuestion.id] === option.id}
+                onChange={ () => {
+                  setQuestionsResult({
+                    ...questionsResult,
+                    [currentQuestion.id]: option.id,
+                  })
+                  // 单选选择后，自动跳到下一题
+                  if(currentQuestionIndex < survey.questions.length - 1) setCurrentQuestionIndex(currentQuestionIndex + 1)
+                } }>
+                { option.text }
+              </Radio.RadioItem>
+            })
+          }
+          {/* 如果是多选 */}
+          {currentQuestion.type === 'check' &&
+            currentQuestion.options.map(option =>
+              <Checkbox.CheckboxItem
+                key={option.id}
+                checked={ questionsResult[currentQuestion.id] |> includes(option.id) }
+                onChange={ (/*target*/) => setQuestionsResult(
+                  {
+                    ...questionsResult,
+                    [currentQuestion.id] : questionsResult[currentQuestion.id]
+                      |> concatOrWithout(option.id)
+                  }
+                )}>
+                { option.text }
+              </Checkbox.CheckboxItem>
+            )
+          }
+          {/* 如果是开放问题 */}
+          {currentQuestion.type === 'input' &&
+            <TextareaItem
+              autoHeight
+              placeholder="请输入..."
+              labelNumber={5}
+              rows={ 3 }
+              value={ questionsResult[currentQuestion.id] }
+              onChange={ value => setQuestionsResult({
+                ...questionsResult,
+                [currentQuestion.id]: value,
+              })}
+            />
+          }
+        </List>
 
+        {/* btnGroup */}
+        <Flex className="mt4">
+          <Button
+            x-if={ currentQuestionIndex > 0 }
+            disabled={ !questionsResult[currentQuestion.id] }
+            className="mx2 flex1"
+            type="primary"
+            onClick={ () => setCurrentQuestionIndex(currentQuestionIndex - 1) }
+          >上一题</Button>
+          <Button
+            x-if={ currentQuestionIndex < survey.questions.length - 1 }
+            disabled={ !questionsResult[currentQuestion.id] }
+            className="mx2 flex1"
+            type="primary"
+            onClick={ () => setCurrentQuestionIndex(currentQuestionIndex + 1) }
+          >下一题</Button>
+          <Button
+            x-if={ currentQuestionIndex === survey.questions.length - 1 }
+            disabled={ !questionsResult[currentQuestion.id] }
+            className="mx2 flex1"
+            type="primary"
+            onClick={ () => setCurrentQuestionIndex(currentQuestionIndex + 1) }
+          >提交</Button>
+        </Flex>
+      </SlideInRight>
 
     </article>
   )
