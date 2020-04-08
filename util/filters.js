@@ -1,7 +1,9 @@
 // 柯里化函数结合管道符使用充当过滤器
 import { PLACEHOLDER_IMAGE } from '@/constant'
 import { truncate } from 'lodash'
-import { ifElse, includes, without, concat, isEmpty } from 'ramda'
+import { isArray } from 'lodash/fp'
+import { prepend, append } from 'rambdax'
+import { ifElse, includes, without, concat, isEmpty, map, when, join, compose } from 'ramda'
 
 // 默认图像占位
 export const imagePlaceholder = imageUrl => {
@@ -36,3 +38,17 @@ export const concatOrWithout = item => list => {
   const _list2 = ifElse(includes(item), without([item]), concat([item]))(_list)
   return isEmpty(_list2) ? undefined : _list2
 }
+
+// 将对象中json数组值转为pg array string
+export const transJsonArrayValueToPgArrayStr = (input = {}) => {
+  return map(
+    when(
+      isArray,
+      compose(prepend('{'), append('}'), join(','))
+    )
+  )(input)
+}
+
+// test
+process?.argv[1]?.endsWith('filters.js')
+ && console.log(transJsonArrayValueToPgArrayStr({a: [1, 'aa'], b: 1, c: 'str'}))

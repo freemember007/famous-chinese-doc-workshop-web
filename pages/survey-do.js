@@ -14,7 +14,7 @@ import { it/*, _*/ } from 'param.macro'
 // util
 import agent from '@/util/request'
 import ensure from '@/util/ensure'
-import { percent, concatOrWithout } from '@/util/filters'
+import { percent, concatOrWithout/*, transJsonArrayValueToPgArrayStr*/ } from '@/util/filters'
 // import { _list, _item, _title, _step } from '@/util/semantic-tags'
 
 export async function getServerSideProps({ /*req, res, */query}) {
@@ -64,15 +64,17 @@ function Body$({ survey }) {
     <article className="absolute t46 l0 r0 b0 px4 w12 bg-white">
 
       {/* 进度区 */}
-      <Flex alignCenter className="my4" >
-        {/* 进度数 */}
-        <div className="gray"> { [currentQuestionIndex + 1, survey.questions.length].join('/') } </div>
-        {/* 进度条 */}
-        <div className="flex1 relative ml4" style={{ height: '5px' }}>
-          <div className="absolute h100 z2 round bg-primary" style={{ width: (currentQuestionIndex + 1)/survey.questions.length |> percent }}></div>
-          <div className="absolute h100 z1 round w12 bg-gray"></div>
-        </div>
-      </Flex>
+      { (function Step$() {
+        return <Flex alignCenter className="my4" >
+          {/* 进度数 */}
+          <div className="gray"> { [currentQuestionIndex + 1, survey.questions.length].join('/') } </div>
+          {/* 进度条 */}
+          <div className="flex1 relative ml4" style={{ height: '5px' }}>
+            <div className="absolute h100 z2 round bg-primary" style={{ width: (currentQuestionIndex + 1)/survey.questions.length |> percent }}></div>
+            <div className="absolute h100 z1 round w12 bg-gray"></div>
+          </div>
+        </Flex>
+      })()}
 
       {/* 问题区 */}
       <SlideInRight duration="0.3s" delay="0.1s" >
@@ -83,11 +85,11 @@ function Body$({ survey }) {
         <List className="f3">
 
           {/* 如果是单选 */}
-          {currentQuestion.type === 'radio' &&
+          { currentQuestion.type === 'radio' &&
             currentQuestion.options.map(function RadioItem$(option) {
               return <Radio.RadioItem
                 key={ option.id }
-                checked={questionsResult[currentQuestion.id] === option.id}
+                checked={ questionsResult[currentQuestion.id] === option.id }
                 onChange={ () => {
                   setQuestionsResult({
                     ...questionsResult,
@@ -102,9 +104,9 @@ function Body$({ survey }) {
           }
           {/* 如果是多选 */}
           {currentQuestion.type === 'check' &&
-            currentQuestion.options.map(option =>
-              <Checkbox.CheckboxItem
-                key={option.id}
+            currentQuestion.options.map(function CheckItem$(option) {
+              return <Checkbox.CheckboxItem
+                key={ option.id }
                 checked={ questionsResult[currentQuestion.id] |> includes(option.id) }
                 onChange={ (/*target*/) => setQuestionsResult(
                   {
@@ -115,14 +117,14 @@ function Body$({ survey }) {
                 )}>
                 { option.text }
               </Checkbox.CheckboxItem>
-            )
+            })
           }
           {/* 如果是开放问题 */}
-          {currentQuestion.type === 'input' &&
+          { currentQuestion.type === 'input' &&
             <TextareaItem
               autoHeight
               placeholder="请输入..."
-              labelNumber={5}
+              labelNumber={ 5 }
               rows={ 3 }
               value={ questionsResult[currentQuestion.id] }
               onChange={ value => setQuestionsResult({
@@ -134,29 +136,40 @@ function Body$({ survey }) {
         </List>
 
         {/* btnGroup */}
-        <Flex className="mt4">
-          <Button
-            x-if={ currentQuestionIndex > 0 }
-            disabled={ !questionsResult[currentQuestion.id] }
-            className="mx2 flex1"
-            type="primary"
-            onClick={ () => setCurrentQuestionIndex(currentQuestionIndex - 1) }
-          >上一题</Button>
-          <Button
-            x-if={ currentQuestionIndex < survey.questions.length - 1 }
-            disabled={ !questionsResult[currentQuestion.id] }
-            className="mx2 flex1"
-            type="primary"
-            onClick={ () => setCurrentQuestionIndex(currentQuestionIndex + 1) }
-          >下一题</Button>
-          <Button
-            x-if={ currentQuestionIndex === survey.questions.length - 1 }
-            disabled={ !questionsResult[currentQuestion.id] }
-            className="mx2 flex1"
-            type="primary"
-            onClick={ () => setCurrentQuestionIndex(currentQuestionIndex + 1) }
-          >提交</Button>
-        </Flex>
+        { (function BtnGroup$() {
+          return <Flex className="mt4">
+            <Button
+              x-if={ currentQuestionIndex > 0 }
+              disabled={ !questionsResult[currentQuestion.id] }
+              className="mx2 flex1"
+              type="primary"
+              onClick={ () => setCurrentQuestionIndex(currentQuestionIndex - 1) }
+            >上一题</Button>
+            <Button
+              x-if={ currentQuestionIndex < survey.questions.length - 1 }
+              disabled={ !questionsResult[currentQuestion.id] }
+              className="mx2 flex1"
+              type="primary"
+              onClick={ () => setCurrentQuestionIndex(currentQuestionIndex + 1) }
+            >下一题</Button>
+            <Button
+              x-if={ currentQuestionIndex === survey.questions.length - 1 }
+              disabled={ !questionsResult[currentQuestion.id] }
+              className="mx2 flex1"
+              type="primary"
+              onClick={ function saveSurveyResult() {
+                agent.post('common-biz/rest/rpc/graph_insert_survey_result')
+                  .send({
+                    survey_id: 1,
+                    questions_result_data: questionsResult,
+                  })
+                  .set({ Accept: 'application/vnd.pgrst.object+json' })
+                  .then(res => res.ok
+                    && Router.push({ pathname: '/survey-result', query: { id: res.body.id } }))
+              } }
+            >提交</Button>
+          </Flex>
+        })() }
       </SlideInRight>
 
     </article>
