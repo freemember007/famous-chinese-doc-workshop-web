@@ -1,6 +1,7 @@
 // framework
 import React, { useState } from 'react'
 import Router from 'next/router'
+import { useMutate } from "restful-react"
 // import produce from 'immer'
 // component
 import { NavBar, Button, Icon, List, Checkbox, Radio, TextareaItem } from 'antd-mobile'
@@ -28,7 +29,7 @@ export async function getServerSideProps({ /*req, res, */query}) {
     })
     .then(it.body)
   console.log(survey)
-  return { props: { survey } }
+  return { props: { survey, query } }
 }
 
 // main
@@ -55,7 +56,7 @@ function Nav$() {
   )
 }
 
-function Body$({ survey }) {
+function Body$({ survey, query }) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [questionsResult, setQuestionsResult] = useState({})
   const currentQuestion = survey.questions[currentQuestionIndex] || {}
@@ -104,10 +105,15 @@ function Body$({ survey }) {
   }
 
   function BtnGroup$() {
+    const { mutate, loading, /*error*/ } = useMutate({
+      verb : 'POST',
+      path : 'common-biz/rest/rpc/graph_insert_survey_result',
+    })
+
     return <Flex className="mt4">
       <Button
         x-if={ currentQuestionIndex > 0 }
-        disabled={ !questionsResult[currentQuestion.id] }
+        disabled={ !questionsResult[currentQuestion.id] || loading}
         className="mx2 flex1"
         type="primary"
         onClick={ () => setCurrentQuestionIndex(currentQuestionIndex - 1) }
@@ -121,27 +127,22 @@ function Body$({ survey }) {
       >下一题</Button>
       <Button
         x-if={ currentQuestionIndex === survey.questions.length - 1 }
-        disabled={ !questionsResult[currentQuestion.id] }
+        disabled={!questionsResult[currentQuestion.id] || loading}
         className="mx2 flex1"
         type="primary"
-        onClick={saveSurveyResult}
+        loading={loading}
+        onClick={function saveSurveyResult() {
+          mutate({
+            survey_id: query.id,
+            questions_result_data: questionsResult,
+          }).then(res => Router.push({ pathname: '/survey-result', query: { id: res?.[0]?.id } }))
+        }}
       >提交</Button>
     </Flex>
   }
 
-  function saveSurveyResult() {
-    agent.post('common-biz/rest/rpc/graph_insert_survey_result')
-      .send({
-        survey_id: 1,
-        questions_result_data: questionsResult,
-      })
-      .set({ Accept: 'application/vnd.pgrst.object+json' })
-      .then(res => res.ok
-        && Router.push({ pathname: '/survey-result', query: { id: res.body.id } }))
-  }
-
   return (
-    <article className="absolute t46 l0 r0 b0 px4 w12 bg-white">
+    <div className="absolute t46 l0 r0 b0 px4 w12 bg-white">
 
       <Step$ />
 
@@ -181,7 +182,7 @@ function Body$({ survey }) {
 
       </SlideInRight>
 
-    </article>
+    </div>
   )
 }
 

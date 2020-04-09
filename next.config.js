@@ -26,7 +26,9 @@ if (typeof require !== 'undefined') {
 // 需要被next-babel-loader处理，避免被exclude
 // @see: https://www.cnblogs.com/1wen/p/10793868.html
 // @see: https://github.com/martpie/next-transpile-modules
-const withTM = require('next-transpile-modules')(['antd-mobile'])
+const withTM = require('next-transpile-modules')([
+  'antd-mobile',
+])
 
 module.exports = withPlugins([ withCss, withStylus, withLess, withTM],{
 

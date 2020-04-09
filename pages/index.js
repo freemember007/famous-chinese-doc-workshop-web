@@ -1,17 +1,23 @@
+// framework
 // 不自定义babel时，不需要显示引入react，@todo: 可用alias解决
 import React from 'react'
 import { store as createStore, view } from 'react-easy-state'
 import globalStore from '@/globalStore'
-import sleep from 'await-sleep'
 import Link from 'next/link'
-import { Button, NavBar } from 'antd-mobile'
-import { FadeOut } from 'animate-css-styled-components'
-// import Linkify from 'react-linkify'
-import Linkify from 'linkifyjs/react'
-import Flex from 'styled-flex-component'
 import { useGet, Get, Mutate } from "restful-react"
+// components
+import { Button, NavBar, ActivityIndicator } from 'antd-mobile'
+import { FadeOut } from 'animate-css-styled-components'
+import Skeleton from "react-loading-skeleton"
+import Flex from 'styled-flex-component'
+import Linkify from 'linkifyjs/react'
+import LazyLoad from 'react-lazyload'
+import Image from 'react-shimmer'
+// fp
 import { join } from 'ramda'
+// util
 import {_list, _item } from '@/util/semantic-tags'
+import sleep from 'await-sleep'
 
 const store = createStore({
   place: '定位中...',
@@ -26,8 +32,24 @@ const store = createStore({
 function Main$() {
   return (
     <section>
-      <Nav$ />
+      {/*<ActivityIndicator toast text="正在加载" />*/}
+      <LazyLoad height={200}>
+        <Nav$ />
+      </LazyLoad>
+      <div className="bg-white" >
+        <p className="f1 tc w10" style={{ fontSize: "48px" }}>{null || <Skeleton />}</p>
+        <p className="f4 w12">{null || <Skeleton count={3} />}</p>
+        <Flex>
+          <div className="flex1 mx2"> {null || <Skeleton count={2} />} </div>
+          <div className="flex1 mx2"> {null || <Skeleton count={2} />} </div>
+        </Flex>
+      </div>
       <Body$ />
+      <Image
+        src="https://newevolutiondesigns.com/images/freebies/tropical-beach-background-8.jpg"
+        width={320} height={240}
+        style={{ objectFit: 'cover' }}
+      />
       <StoreTest$ />
       <Questions$ />
       <LinkifyTest$ />
@@ -60,7 +82,7 @@ function Body$() {
       <Link href={{ pathname: '/survey-list' }}>
         <Button type="primary"> 问卷列表 </Button>
       </Link>
-      <Link href={{ pathname: '/survey-do' }}>
+      <Link href={{ pathname: '/survey-do', query: { id: 1 }}}>
         <Button type="primary"> 做问卷 </Button>
       </Link>
     </_list>
@@ -118,9 +140,12 @@ function Questions$() {
 
 function LinkifyTest$() {
   return (
-    <Linkify>
-      See source code at github.com/tasti/react-linkify/.
-    </Linkify>
+    <LazyLoad height={200}>
+      <Linkify>
+        See source code at github.com/tasti/react-linkify/.
+      </Linkify>
+    </LazyLoad>
+
   )
 }
 export default Main$

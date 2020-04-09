@@ -1,8 +1,14 @@
+// framework
 import React from 'react'
 import Router from 'next/router'
 import Link from 'next/link'
+// components
 import { NavBar, Icon, Button } from 'antd-mobile'
+import ContainerDimensions from 'react-container-dimensions'
+import Image from 'react-shimmer'
+// fp
 import { it/*, _*/ } from 'param.macro'
+// util
 import agent from '@/util/request'
 import { formatDateTimeM2 } from '@/util/date'
 import { imagePlaceholder } from '@/util/filters'
@@ -43,23 +49,28 @@ function Nav$() {
 
 function Body$({ survey }) {
   return (
-    <article className="absolute t46 l0 r0 b0 px4 w100 bg-white">
-      <img width="100%" height="200" src={survey.image |> imagePlaceholder } />
+    <div className="absolute t46 l0 r0 b0 w12 bg-white">
+      <ContainerDimensions>
+        {({ width }) => (
+          <Image width={width} height={200} style={{ width: '100%', height: '200px' }} src={survey.image |> imagePlaceholder } />
+        )}
+      </ContainerDimensions>
+      <div className="mt2 px4">
+        <_title className="py2 f1 tc"> {survey.title} </_title>
 
-      <_title className="py2 f1 tc"> {survey.title} </_title>
+        <_subTitle className="py2 f4 gray __flex j-center">
+          <div> {survey.created_at |> formatDateTimeM2}</div>
+          <div className="ml2"> {'23452人测过'}</div>
+        </_subTitle>
 
-      <_subTitle className="py2 f4 gray __flex j-center">
-        <div> {survey.created_at |> formatDateTimeM2}</div>
-        <div className="ml2"> {'23452人测过'}</div>
-      </_subTitle>
-
-      <_text className="dark lh2">
-        { survey.intro }
-      </_text>
-      <Link href={{ pathname: '/survey-do', query: { id: survey.id }}}>
-        <Button className="my4" type="primary" >开始测试</Button>
-      </Link>
-    </article>
+        <_text className="dark lh2">
+          { survey.intro }
+        </_text>
+        <Link href={{ pathname: '/survey-do', query: { id: survey.id }}}>
+          <Button className="my4" type="primary" >开始测试</Button>
+        </Link>
+      </div>
+    </div>
   )
 }
 
