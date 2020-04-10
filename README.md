@@ -90,7 +90,8 @@ swa/react-query: 需要设定cache key
 
 swr: 需要设定cache key
 
-
+## 日志
+tracer不支持服务端渲染
 
 
 ```bash

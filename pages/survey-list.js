@@ -2,32 +2,25 @@
 import React from 'react'
 import Router from 'next/router'
 import Link from 'next/link'
+import { useGet } from "restful-react"
 // components
 import { NavBar, Icon } from 'antd-mobile'
 import { SlideInRight } from 'animate-css-styled-components'
 import { ArrowIosForwardOutline as RightIcon } from '@styled-icons/evaicons-outline'
 import Image from 'react-shimmer'
-// import Skeleton from 'react-loading-skeleton'
+import Skeleton from 'react-loading-skeleton'
 // fp
-import { it/*, _*/ } from 'param.macro'
+// import { it/*, _*/ } from 'param.macro'
 // util
-import agent from '@/util/request'
-// import { formatDateTimeM2 } from '@/util/date'
 import { imagePlaceholder, omit } from '@/util/filters'
 import { _list, _item, _left, _right, _wrap } from '@/util/semantic-tags'
 
-export async function getServerSideProps() {
-  return { props: {
-    surveys: await agent.get('common-biz/rest/survey').then(it.body)
-  } }
-}
-
 // main
-function Main$(props) {
+function Main$() {
   return (
     <section>
       <Nav$ />
-      <Body$ {...props} />
+      <Body$ />
     </section>
   )
 }
@@ -46,23 +39,29 @@ function Nav$() {
   )
 }
 
-function Body$(props) {
+function Body$() {
+  const { data: surveys, /*error*/ } = useGet({
+    path        : 'common-biz/rest/survey',
+    resolve     : res => res,
+  })
+
   return (
     <_list className="absolute t46 l0 r0 b0 px4 w100 bg-white">
       <SlideInRight duration="0.3s" delay="0.1s" >
 
-        {props.surveys.map(survey =>
+        {(surveys || [{}, {}, {}, {}]).map(survey =>
           <Link href={{ pathname: '/survey-detail', query: { id: survey.id }}} key={survey.id}>
-            <_item className="py3 bg-white bb __flex j-between a-center">
+            <_item className=" py3 bg-white bb __flex j-between a-center">
 
               {/* 左侧内容 */}
-              <_left className="__flex">
+              <_left className="flex1 __flex">
                 <_wrap style={{ width: '80px', height: '80px', background: "#eee" }}>
                   <Image src={survey.image |> imagePlaceholder} width={80} height={80} style={{ objectFit: 'cover' }} />
                 </_wrap>
                 <_right className="ml2 flex1 __flex col j-between a-start">
-                  <div> { survey.title |> omit(36) } </div>
-                  <div className="f4 gray"> {'23452人测过'}</div>
+
+                  <div className="w12"> {(survey.title |> omit(36)) || <Skeleton />} </div>
+                  <div className="w4 f4 gray"> {survey.test_cnt !== undefined ? survey.test_cnt + '人测过' : <Skeleton />}</div>
                 </_right>
               </_left>
 
