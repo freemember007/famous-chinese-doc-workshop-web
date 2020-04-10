@@ -15,7 +15,7 @@ class MyApp extends App {
     return pug`
       RestfulProvider(base=DDYYAPI_BASE_URL)
         Head
-          title next-demo
+          title 点点医院量表问卷系统
           meta(charSet="utf-8")
           meta(name="viewport", content="width=device-width,initial-scale=1,user-scalable=0")
         SkeletonTheme(color="#eee",highlightColor="#ddd")
