@@ -37,9 +37,8 @@ function Body$() {
     ensure(id, '请求参数(问卷结果id)不能为空')
   }, [])
 
-
   // useGet
-  const { data: survey_result, /*error*/ } = useGet({
+  const { data, /*error*/ } = useGet({
     path        : 'common-biz/rest/survey_result',
     queryParams : {
       id     : 'eq.' + id,
@@ -47,7 +46,8 @@ function Body$() {
     },
     resolve     : res => res[0],
   })
-  const survey = survey_result?.survey || {}
+  const survey_result = data || {}
+  const survey = survey_result.survey || {}
 
   const QuestionListSkeleton$ = () => <>
     {[1,2,3,4,5].map(i=>
@@ -83,7 +83,7 @@ function Body$() {
       />
 
     return <div>
-      {survey_result?.questionResults.map((questionResult, index) => {
+      {survey_result.questionResults.map((questionResult, index) => {
         const _question = questionResult.question
         return <_list key={index} className="my4">
           {/* 问题标题 */}
@@ -112,11 +112,11 @@ function Body$() {
       <_subTitle className="py2 w12 f4 gray __flex j-center">
         { isEmpty(survey) ? <div className="w6"><Skeleton/></div> :
           <div>
-            <span>{'测试时间: ' + (survey_result?.created_at |> formatDateTimeM2)}</span>
+            <span>{'测试时间: ' + (survey_result.created_at |> formatDateTimeM2)}</span>
           </div>
         }
       </_subTitle>
-      {isEmpty(survey_result?.questionResults) ? <QuestionListSkeleton$ /> : <QuestionList$ />}
+      {isEmpty(survey_result.questionResults) ? <QuestionListSkeleton$ /> : <QuestionList$ />}
 
     </div>
   )
