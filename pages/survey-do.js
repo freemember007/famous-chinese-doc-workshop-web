@@ -13,6 +13,7 @@ import { includes } from 'lodash/fp'
 import { it/*, _*/ } from 'param.macro'
 // util
 import agent from '@/util/request'
+import sleep from 'await-sleep'
 import ensure from '@/util/ensure'
 import { percent, concatOrWithout/*, transJsonArrayValueToPgArrayStr*/ } from '@/util/filters'
 // import { _list, _item, _title, _step } from '@/util/semantic-tags'
@@ -76,11 +77,12 @@ function Body$({ survey, query }) {
     return <Radio.RadioItem
       key={ option.id }
       checked={ questionsResult[currentQuestion.id] === option.id }
-      onChange={ () => {
+      onChange={ async () => {
         setQuestionsResult({
           ...questionsResult,
           [currentQuestion.id]: option.id,
         })
+        await sleep(200)
         // 单选选择后，自动跳到下一题
         if(currentQuestionIndex < survey.questions.length - 1) setCurrentQuestionIndex(currentQuestionIndex + 1)
       } }>
@@ -112,7 +114,7 @@ function Body$({ survey, query }) {
     return <Flex className="mt4">
       <Button
         x-if={ currentQuestionIndex > 0 }
-        disabled={ !questionsResult[currentQuestion.id] || loading}
+        disabled={!questionsResult[currentQuestion.id] || loading}
         className="mx2 flex1"
         type="primary"
         onClick={ () => setCurrentQuestionIndex(currentQuestionIndex - 1) }
