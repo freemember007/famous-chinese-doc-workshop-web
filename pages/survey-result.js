@@ -1,84 +1,129 @@
 // framework
 import React from 'react'
 import Router from 'next/router'
-// component
-import { NavBar, Icon } from 'antd-mobile'
-// import Flex from 'styled-flex-component'
-// fp
-import { find } from 'ramda'
-import { inRange } from 'lodash/fp'
-import { it/*, _*/ } from 'param.macro'
-// util
-import agent from '@/util/request'
-import ensure from '@/util/ensure'
-import { _title, _subTitle, _box, _text } from '@/util/semantic-tags'
+import { useGet } from "restful-react"
+import { useUrlSearchParams } from "use-url-search-params"
 
-export async function getServerSideProps({ /*req, res, */query}) {
-  ensure(query?.id, '请求参数(问卷结果id)不能为空')
-  const survey_result = await agent
-    .get('common-biz/rest/survey_result')
-    .set({ Accept: 'application/vnd.pgrst.object+json' })
-    .query({
-      id     : 'eq.' + query.id,
-      select : 'id, score, survey(id, title, explain)'
-    })
-    .then(it.body)
-  return { props: { query, survey_result } }
+// component
+import { NavBar, Icon, List, Checkbox, Radio, TextareaItem } from 'antd-mobile'
+import Skeleton from 'react-loading-skeleton'
+import { BulletList } from 'react-content-loader'
+import { _title, _subTitle, _list } from '@/util/semantic-tags'
+
+// fp
+import { includes, isEmpty, random } from 'lodash/fp'
+// import { without } from 'ramda'
+// import { match, matchPairs, ANY } from 'pampy'
+// import { it, _ } from 'param.macro'
+
+// util
+import ensure from '@/util/ensure'
+import { formatDateTimeM2 } from '@/util/date'
+
+//- 导航
+function Nav$() {
+  return <NavBar mode="light" leftContent="返回" icon={<Icon type="left" />} onClick={ Router.back }>
+    问卷评测结果
+  </NavBar>
+}
+
+function Body$() {
+  // queryParams
+  const [ params/*, setParams*/ ] = useUrlSearchParams({ id: 23 /*defaultValue*/})
+  ensure(params.id, '请求参数(问卷结果id)不能为空')
+
+  // useGet
+  const { data: survey_result, /*error*/ } = useGet({
+    path        : 'common-biz/rest/survey_result',
+    queryParams : {
+      id     : 'eq.' + params.id,
+      select : '*, survey(*, questions:question(*, options:option(*))), questionResults:question_result(*, question(*, options:option(*)))',
+    },
+    resolve     : res => res[0],
+  })
+  const survey = survey_result?.survey || {}
+
+  const QuestionListSkeleton$ = () => <>
+    {[1,2,3,4,5].map(i=>
+      <div key={i} className="my4">
+        <div className={'w' + random(11, 12)}> <Skeleton height={24} /> </div>
+        <BulletList/>
+      </div>
+    )}
+  </>
+
+  const QuestionList$ = () => {
+    const RadioItem$ = questionResult => option =>
+      <Radio.RadioItem
+        key={ option.id }
+        checked={ questionResult.option_id === option.id }
+      >
+        <div className="f3 gray">{ option.text }</div>
+      </Radio.RadioItem>
+
+    const CheckItem$ = questionResult => option =>
+      <Checkbox.CheckboxItem
+        key={ option.id }
+        checked={ questionResult.option_ids |> includes(option.id) }
+      >
+        <div className="f3 gray">{ option.text }</div>
+      </Checkbox.CheckboxItem>
+
+    const InputItem$ = questionResult =>
+      <TextareaItem
+        autoHeight
+        prefixListCls="f5"
+        value={ questionResult.input }
+      />
+
+    return <div>
+      {survey_result?.questionResults.map((questionResult, index) => {
+        const _question = questionResult.question
+        return <_list key={index} className="my4">
+          {/* 问题标题 */}
+          <div className="py4 f2 bold"> {_question.title} </div>
+
+          {/* 如果是单选 */}
+          <List x-if={_question.type === 'radio'}>
+            {_question.options.map(RadioItem$(questionResult))}
+          </List>
+          {/* 如果是多选 */}
+          <List x-if={_question.type === 'check'}>
+            {_question.options.map(CheckItem$(questionResult ))}
+          </List>
+          {/* 如果是开放问题 */}
+          {_question.type === 'input' && InputItem$(questionResult) }
+
+        </_list>
+      })}
+    </div>
+  }
+
+  return (
+    <div className="absolute t46 l0 r0 b0 pt4 px4 w12 bg-white">
+      <_title className="py2 f1 tc"> {survey.title || <Skeleton/>} </_title>
+
+      <_subTitle className="py2 w12 f4 gray __flex j-center">
+        { isEmpty(survey) ? <div className="w6"><Skeleton/></div> :
+          <div>
+            <span>{'测试时间: ' + (survey_result?.created_at |> formatDateTimeM2)}</span>
+          </div>
+        }
+      </_subTitle>
+      {isEmpty(survey_result?.questionResults) ? <QuestionListSkeleton$ /> : <QuestionList$ />}
+
+    </div>
+  )
 }
 
 // main
-function Main$(props) {
-  console.log({props})
+function SurveyResult$() {
   return (
     <section>
       <Nav$ />
-      <Body$ {...props} />
+      <Body$ />
     </section>
   )
 }
 
-//- 导航
-function Nav$() {
-  return (
-    <NavBar
-      mode="light"
-      leftContent="返回"
-      icon={<Icon type="left" />}
-      onClick={ () => Router.replace('/survey-list') }
-    >
-      测试结果
-    </NavBar>
-  )
-}
-
-function Body$({ survey_result }) {
-  const matchedExplain = survey_result.survey.explain
-    |> find(i => inRange(i.score_gte, i.score_lte + 1, survey_result.score))
-  return (
-    <article className="absolute t46 l0 r0 b0 p4 w100 bg-white">
-
-      <_title className="py2 f2 tc">
-        <span>您的</span>
-        <span className="">{ survey_result.survey.title } </span>
-        <span>得分：</span>
-      </_title>
-
-      <_box className="w100 vh20 my4 white __flex j-center a-center" x-class={matchedExplain.is_ok ? 'bg-success' : 'bg-error'}>
-        <div style={{ fontSize: '60px' }}> { survey_result.score }</div>
-      </_box>
-      <_subTitle className="mt2 f4 gray __flex j-between">
-        <div> {'本问卷由' + '点点云科室' + '提供'}</div>
-        <div> {'23452人测过'}</div>
-      </_subTitle>
-
-      <_title className="my4">
-        <span>您的状态: </span>
-        <span>{matchedExplain.result}</span>
-      </_title>
-      <_text className="lh2">{matchedExplain.describe}</_text>
-
-    </article>
-  )
-}
-
-export default Main$
+export default SurveyResult$

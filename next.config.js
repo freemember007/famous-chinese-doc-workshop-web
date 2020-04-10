@@ -6,8 +6,8 @@
 const withCss      = require('@zeit/next-css')
 const withLess     = require('@zeit/next-less')
 const withStylus   = require('@zeit/next-stylus')
-const autoprefixer = require('autoprefixer')
-const poststylus   = require('poststylus')
+// const autoprefixer = require('autoprefixer')
+// const poststylus   = require('poststylus')
 // 插件/补丁...
 const withPlugins = require("next-compose-plugins")
 const lessToJS    = require('less-vars-to-js')
@@ -28,6 +28,7 @@ if (typeof require !== 'undefined') {
 // @see: https://github.com/martpie/next-transpile-modules
 const withTM = require('next-transpile-modules')([
   'antd-mobile',
+  'use-url-search-params',
 ])
 
 module.exports = withPlugins([ withCss, withStylus, withLess, withTM],{
@@ -39,13 +40,13 @@ module.exports = withPlugins([ withCss, withStylus, withLess, withTM],{
    */
 
   // stylusLoader选项
-  stylusLoaderOptions: {
-    use: [
-      poststylus([ //stylus专用的postcss插件(不用也行,因有全局postcss),好处是会带编译警告
-        autoprefixer({ flexbox: 'no-2009' }),
-      ]),
-    ],
-  },
+  // stylusLoaderOptions: {
+  //   use: [
+  //     poststylus([ //stylus专用的postcss插件(不用也行,因有全局postcss),好处是会带编译警告
+  //       autoprefixer({ flexbox: 'no-2009' }),
+  //     ]),
+  //   ],
+  // },
 
   // 解决antd-mobile less加载报错
   transpileModules: ["antd-mobile"],
