@@ -15,16 +15,6 @@ import Skeleton from 'react-loading-skeleton'
 import { imagePlaceholder, omit } from '@/util/filters'
 import { _list, _item, _left, _right, _wrap } from '@/util/semantic-tags'
 
-// main
-function Main$() {
-  return (
-    <section>
-      <Nav$ />
-      <Body$ />
-    </section>
-  )
-}
-
 //- 导航
 function Nav$() {
   return (
@@ -79,4 +69,14 @@ function Body$() {
   )
 }
 
-export default Main$
+// main
+function SurveyList$() {
+  return (
+    <section>
+      <Nav$ />
+      <Body$ />
+    </section>
+  )
+}
+
+export default SurveyList$
