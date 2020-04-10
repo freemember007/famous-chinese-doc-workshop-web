@@ -5,7 +5,7 @@ import { useMutate } from "restful-react"
 // import produce from 'immer'
 // component
 import { NavBar, Button, Icon, List, Checkbox, Radio, TextareaItem } from 'antd-mobile'
-import { SlideInRight } from 'animate-css-styled-components'
+import { FadeIn } from 'animate-css-styled-components'
 import Flex from 'styled-flex-component'
 // fp
 // import { without } from 'ramda'
@@ -147,7 +147,7 @@ function Body$({ survey, query }) {
       <Step$ />
 
       {/* 问题区 */}
-      <SlideInRight duration="0.3s" delay="0.1s" >
+      <FadeIn duration="0.3s" delay="0.1s" >
         {/* 问题标题 */}
         <div className="py2 f2 bold"> {currentQuestion.title} </div>
 
@@ -180,7 +180,7 @@ function Body$({ survey, query }) {
 
         <BtnGroup$ />
 
-      </SlideInRight>
+      </FadeIn>
 
     </div>
   )

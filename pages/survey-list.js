@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useGet } from "restful-react"
 // components
 import { NavBar, Icon } from 'antd-mobile'
-import { SlideInRight } from 'animate-css-styled-components'
+import { FadeIn } from 'animate-css-styled-components'
 import { ArrowIosForwardOutline as RightIcon } from '@styled-icons/evaicons-outline'
 import Image from 'react-shimmer'
 import Skeleton from 'react-loading-skeleton'
@@ -37,7 +37,7 @@ function Body$() {
 
   return (
     <_list className="absolute t46 l0 r0 b0 px4 w100 bg-white">
-      <SlideInRight duration="0.3s" delay="0.1s" >
+      <FadeIn duration="0.3s" delay="0.1s" >
 
         {(surveys || [{}, {}, {}, {}]).map((survey, index) =>
           <Link href={{ pathname: 'survey-detail', query: { id: survey.id }}} key={index}>
@@ -64,7 +64,7 @@ function Body$() {
           </Link>
         )}
 
-      </SlideInRight>
+      </FadeIn>
     </_list>
   )
 }
