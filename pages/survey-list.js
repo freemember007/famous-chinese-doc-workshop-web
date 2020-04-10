@@ -43,9 +43,12 @@ function Body$() {
 
             {/* 左侧内容 */}
             <_left className="flex1 __flex">
-              <_wrap style={{ width: '80px', height: '80px', background: "#eee" }}>
+              { !survey.image ? <Skeleton width={80} height={80} /> :
+                <img src={survey.image |> imagePlaceholder} width={80} height={80} style={{ objectFit: 'cover' }} />
+              }
+              {/*<_wrap style={{ width: '80px', height: '80px', background: "#eee" }}>
                 <Image src={survey.image |> imagePlaceholder} width={80} height={80} style={{ objectFit: 'cover' }} />
-              </_wrap>
+              </_wrap>*/}
               <_right className="ml2 flex1 __flex col j-between a-start">
 
                 <div className="w12"> {(survey.title |> omit(36)) || <Skeleton />} </div>
