@@ -40,7 +40,7 @@ function Body$() {
       <SlideInRight duration="0.3s" delay="0.1s" >
 
         {(surveys || [{}, {}, {}, {}]).map((survey, index) =>
-          <Link href={{ pathname: './survey-detail', query: { id: survey.id }}} key={index}>
+          <Link href={{ pathname: 'survey-detail', query: { id: survey.id }}} key={index}>
             <_item className=" py3 bg-white bb __flex j-between a-center">
 
               {/* 左侧内容 */}

@@ -62,7 +62,7 @@ function Body$() {
         <_text className="dark lh2">
           { survey.intro || <Skeleton count={5} />}
         </_text>
-        <Link href={{ pathname: './survey-do', query: { id: survey.id }}}>
+        <Link href={{ pathname: 'survey-do', query: { id: survey.id }}}>
           <Button className="my4" type="primary" disabled={isEmpty(survey)}>开始测试</Button>
         </Link>
       </div>
