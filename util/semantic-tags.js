@@ -16,3 +16,5 @@ export const Flex = styled.div``
 export const _box = styled.div``
 export const _step = styled.div``
 export const _buttonGroup = styled.div``
+export const _wrap = styled.div``
+

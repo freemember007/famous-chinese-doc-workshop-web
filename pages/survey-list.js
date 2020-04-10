@@ -14,7 +14,7 @@ import { it/*, _*/ } from 'param.macro'
 import agent from '@/util/request'
 // import { formatDateTimeM2 } from '@/util/date'
 import { imagePlaceholder, omit } from '@/util/filters'
-import { _list, _item, _left, _right } from '@/util/semantic-tags'
+import { _list, _item, _left, _right, _wrap } from '@/util/semantic-tags'
 
 export async function getServerSideProps() {
   return { props: {
@@ -57,7 +57,9 @@ function Body$(props) {
 
               {/* 左侧内容 */}
               <_left className="__flex">
-                <Image width={80} height={80} src={survey.image |> imagePlaceholder} />
+                <_wrap style={{ width: '80px', height: '80px', background: "#eee" }}>
+                  <Image src={survey.image |> imagePlaceholder} width={80} height={80} style={{ objectFit: 'cover' }} />
+                </_wrap>
                 <_right className="ml2 flex1 __flex col j-between a-start">
                   <div> { survey.title |> omit(36) } </div>
                   <div className="f4 gray"> {'23452人测过'}</div>

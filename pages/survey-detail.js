@@ -12,7 +12,7 @@ import { it/*, _*/ } from 'param.macro'
 import agent from '@/util/request'
 import { formatDateTimeM2 } from '@/util/date'
 import { imagePlaceholder } from '@/util/filters'
-import { _title, _subTitle, _text } from '@/util/semantic-tags'
+import { _title, _subTitle, _text, _wrap } from '@/util/semantic-tags'
 
 export async function getServerSideProps({ /*req, res, */query}) {
   const survey = await agent
@@ -50,11 +50,13 @@ function Nav$() {
 function Body$({ survey }) {
   return (
     <div className="absolute t46 l0 r0 b0 w12 bg-white">
-      <ContainerDimensions>
-        {({ width }) => (
-          <Image width={width} height={200} style={{ width: '100%', height: '200px' }} src={survey.image |> imagePlaceholder } />
-        )}
-      </ContainerDimensions>
+      <_wrap style={{ width: "100%", height: '200px', background: "#eee" }}>
+        <ContainerDimensions>
+          {({ width }) => (
+            <Image src={survey.image |> imagePlaceholder } width={width} height={200} style={{ objectFit: 'cover' }} />
+          )}
+        </ContainerDimensions>
+      </_wrap>
       <div className="mt2 px4">
         <_title className="py2 f1 tc"> {survey.title} </_title>
 
