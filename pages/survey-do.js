@@ -5,7 +5,6 @@ import { useMutate } from "restful-react"
 // import produce from 'immer'
 // component
 import { NavBar, Button, Icon, List, Checkbox, Radio, TextareaItem } from 'antd-mobile'
-import { FadeIn } from 'animate-css-styled-components'
 import Flex from 'styled-flex-component'
 // fp
 // import { without } from 'ramda'
@@ -147,40 +146,37 @@ function Body$({ survey, query }) {
       <Step$ />
 
       {/* 问题区 */}
-      <FadeIn duration="0.3s" delay="0.1s" >
-        {/* 问题标题 */}
-        <div className="py2 f2 bold"> {currentQuestion.title} </div>
+      {/* 问题标题 */}
+      <div className="py2 f2 bold"> {currentQuestion.title} </div>
 
-        {/* 问题选项 */}
-        <List className="f3">
+      {/* 问题选项 */}
+      <List className="f3">
 
-          {/* 如果是单选 */}
-          { currentQuestion.type === 'radio' &&
-            currentQuestion.options.map(RadioItem$)
-          }
-          {/* 如果是多选 */}
-          {currentQuestion.type === 'check' &&
-            currentQuestion.options.map(CheckItem$)
-          }
-          {/* 如果是开放问题 */}
-          { currentQuestion.type === 'input' &&
-            <TextareaItem
-              autoHeight
-              placeholder="请输入..."
-              labelNumber={ 5 }
-              rows={ 3 }
-              value={ questionsResult[currentQuestion.id] }
-              onChange={ value => setQuestionsResult({
-                ...questionsResult,
-                [currentQuestion.id]: value,
-              })}
-            />
-          }
-        </List>
+        {/* 如果是单选 */}
+        { currentQuestion.type === 'radio' &&
+          currentQuestion.options.map(RadioItem$)
+        }
+        {/* 如果是多选 */}
+        {currentQuestion.type === 'check' &&
+          currentQuestion.options.map(CheckItem$)
+        }
+        {/* 如果是开放问题 */}
+        { currentQuestion.type === 'input' &&
+          <TextareaItem
+            autoHeight
+            placeholder="请输入..."
+            labelNumber={ 5 }
+            rows={ 3 }
+            value={ questionsResult[currentQuestion.id] }
+            onChange={ value => setQuestionsResult({
+              ...questionsResult,
+              [currentQuestion.id]: value,
+            })}
+          />
+        }
+      </List>
 
-        <BtnGroup$ />
-
-      </FadeIn>
+      <BtnGroup$ />
 
     </div>
   )

@@ -6,7 +6,7 @@ import globalStore from '@/globalStore'
 import Link from 'next/link'
 import { useGet, Get, Mutate } from "restful-react"
 // components
-import { Button, NavBar, ActivityIndicator } from 'antd-mobile'
+import { Button, NavBar } from 'antd-mobile'
 import { FadeOut } from 'animate-css-styled-components'
 import Skeleton from "react-loading-skeleton"
 import Flex from 'styled-flex-component'
