@@ -135,7 +135,7 @@ function Body$({ survey, query }) {
           mutate({
             survey_id: query.id,
             questions_result_data: questionsResult,
-          }).then(res => Router.push({ pathname: '/survey-explain', query: { id: res?.[0]?.id } }))
+          }).then(res => Router.push({ pathname: '/ddyy-common-business-react/survey-explain', query: { id: res?.[0]?.id } }))
         }}
       >提交</Button>
     </Flex>
