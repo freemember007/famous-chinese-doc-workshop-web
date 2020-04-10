@@ -155,12 +155,12 @@ module.exports = withPlugins([ withCss, withStylus, withLess, withTM],{
     IS_DEV,
   },
 
-  // env: {
-  //   SERVER_HOST: 'https://sites.diandianys.com/wechat/book-home/'
-  // },
+  env: {
+    SERVER_HOST: 'https://api.diandianyy.com/ddyy-common-business-react/'
+  },
 
   // 定义生产环境下页面路由的根路径，重要，否则nginx location反向代理会不成功
-  assetPrefix: './',
+  assetPrefix: './ddyy-common-business-react/',
 
   // // bundleAnalyzer 打包尺寸可视化分析，仅yarn build时
   // // @see: https://cnpmjs.org/package/webpack-bundle-analyzer

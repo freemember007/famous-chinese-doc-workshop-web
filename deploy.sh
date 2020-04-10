@@ -27,4 +27,4 @@ fi
 echo '>>> 测试一下'
 # --------------------
 sleep 3 #待待服务启动或重启完成
-curl http://api.diandianyy.com/ddyy-common-business-react
+curl https://api.diandianyy.com/ddyy-common-business-react/
