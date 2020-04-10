@@ -1,8 +1,9 @@
 // framework
-import React from 'react'
+import React, { useEffect } from 'react'
 import Router from 'next/router'
 import { useGet } from "restful-react"
-import { useUrlSearchParams } from "use-url-search-params"
+import { useSearchParam } from 'react-use'
+// import { useUrlSearchParams } from "use-url-search-params"
 
 // component
 import { NavBar, Icon, List, Checkbox, Radio, TextareaItem } from 'antd-mobile'
@@ -28,15 +29,20 @@ function Nav$() {
 }
 
 function Body$() {
-  // queryParams
-  const [ params/*, setParams*/ ] = useUrlSearchParams({ id: 23 /*defaultValue*/})
-  ensure(params.id, '请求参数(问卷结果id)不能为空')
+  // 该库导致需多次返回才可返回
+  // const [ params/*, setParams*/ ] = useUrlSearchParams({ id: 1 /*defaultValue*/})
+  const id = useSearchParam('id')
+
+  useEffect(() => {
+    ensure(id, '请求参数(问卷结果id)不能为空')
+  }, [])
+
 
   // useGet
   const { data: survey_result, /*error*/ } = useGet({
     path        : 'common-biz/rest/survey_result',
     queryParams : {
-      id     : 'eq.' + params.id,
+      id     : 'eq.' + id,
       select : '*, survey(*, questions:question(*, options:option(*))), questionResults:question_result(*, question(*, options:option(*)))',
     },
     resolve     : res => res[0],
