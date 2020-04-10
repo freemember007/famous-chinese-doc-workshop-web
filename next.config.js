@@ -156,6 +156,7 @@ module.exports = withPlugins([ withCss, withStylus, withLess, withTM],{
   },
 
   env: {
+    // 仅备注用
     SERVER_HOST: 'https://api.diandianyy.com/ddyy-common-business-react/'
   },
 
