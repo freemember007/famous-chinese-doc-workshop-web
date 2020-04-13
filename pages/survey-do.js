@@ -24,11 +24,12 @@ export async function getServerSideProps({ /*req, res, */query}) {
     .get('common-biz/rest/survey')
     .set({ Accept: 'application/vnd.pgrst.object+json' })
     .query({
-      id     : 'eq.' + query.id,
-      select : '*, questions:question(*, options:option(*))'
+      id                      : 'eq.' + query.id,
+      select                  : '*, questions:question(*, options:option(*))',
+      'question.option.order' : 'order_num',
     })
     .then(it.body)
-  console.log(survey)
+  // console.log(survey)
   return { props: { survey, query } }
 }
 

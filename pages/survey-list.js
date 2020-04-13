@@ -2,17 +2,24 @@
 import React from 'react'
 import Router from 'next/router'
 import Link from 'next/link'
-import { useGet } from "restful-react"
+// import { useGet } from "restful-react"
 // components
 import { NavBar, Icon } from 'antd-mobile'
 import { ArrowIosForwardOutline as RightIcon } from '@styled-icons/evaicons-outline'
-import Image from 'react-shimmer'
 import Skeleton from 'react-loading-skeleton'
 // fp
-// import { it/*, _*/ } from 'param.macro'
+import { it/*, _*/ } from 'param.macro'
 // util
+import agent from '@/util/request'
 import { imagePlaceholder, omit } from '@/util/filters'
-import { _list, _item, _left, _right, _wrap } from '@/util/semantic-tags'
+import { _list, _item, _left, _right } from '@/util/semantic-tags'
+
+// props
+export async function getServerSideProps() {
+  return { props: {
+    surveys: await agent.get('common-biz/rest/survey').then(it.body)
+  } }
+}
 
 //- 导航
 function Nav$() {
@@ -28,11 +35,7 @@ function Nav$() {
   )
 }
 
-function Body$() {
-  const { data: surveys, /*error*/ } = useGet({
-    path        : 'common-biz/rest/survey',
-    resolve     : res => res,
-  })
+function Body$({ surveys }) {
 
   return (
     <_list className="absolute t46 l0 r0 b0 px4 w100 bg-white">
@@ -70,11 +73,11 @@ function Body$() {
 }
 
 // main
-function SurveyList$() {
+function SurveyList$(props) {
   return (
     <section>
       <Nav$ />
-      <Body$ />
+      <Body$ {...props} />
     </section>
   )
 }
