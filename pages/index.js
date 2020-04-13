@@ -33,9 +33,7 @@ function Main$() {
   return (
     <section>
       {/*<ActivityIndicator toast text="正在加载" />*/}
-      <LazyLoad height={200}>
-        <Nav$ />
-      </LazyLoad>
+      <Nav$ />
       <div className="bg-white" >
         <p className="f1 tc w10" style={{ fontSize: "48px" }}>{null || <Skeleton />}</p>
         <p className="f4 w12">{null || <Skeleton count={3} />}</p>
@@ -83,7 +81,7 @@ function Body$() {
         <Button type="primary"> 问卷列表 </Button>
       </Link>
       <div className="my4" />
-      <Link href={{ pathname: 'survey-result', query: { id: 23 } }}>
+      <Link href={{ pathname: 'survey-result', query: { id: 150 } }}>
         <Button type="primary"> 问卷结果 </Button>
       </Link>
     </_list>

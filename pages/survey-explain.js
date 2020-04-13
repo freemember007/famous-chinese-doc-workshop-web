@@ -1,18 +1,22 @@
 // framework
 import React from 'react'
 import Router from 'next/router'
+
 // component
 import { NavBar, Icon } from 'antd-mobile'
 // import Flex from 'styled-flex-component'
+
 // fp
 import { find } from 'ramda'
 import { inRange } from 'lodash/fp'
 import { it/*, _*/ } from 'param.macro'
+
 // util
 import agent from '@/util/request'
 import ensure from '@/util/ensure'
 import { _title, _subTitle, _box, _text } from '@/util/semantic-tags'
 
+// props
 export async function getServerSideProps({ /*req, res, */query}) {
   ensure(query?.id, '请求参数(问卷结果id)不能为空')
   const survey_result = await agent
@@ -24,17 +28,6 @@ export async function getServerSideProps({ /*req, res, */query}) {
     })
     .then(it.body)
   return { props: { query, survey_result } }
-}
-
-// main
-function Main$(props) {
-  console.log({props})
-  return (
-    <section>
-      <Nav$ />
-      <Body$ {...props} />
-    </section>
-  )
 }
 
 //- 导航
@@ -51,6 +44,7 @@ function Nav$() {
   )
 }
 
+// body
 function Body$({ survey_result }) {
   const matchedExplain = survey_result.survey.explain
     |> find(i => inRange(i.score_gte, i.score_lte + 1, survey_result.score))
@@ -81,4 +75,15 @@ function Body$({ survey_result }) {
   )
 }
 
-export default Main$
+// main
+function SurveyExplain$(props) {
+  console.log({props})
+  return (
+    <section>
+      <Nav$ />
+      <Body$ {...props} />
+    </section>
+  )
+}
+
+export default SurveyExplain$

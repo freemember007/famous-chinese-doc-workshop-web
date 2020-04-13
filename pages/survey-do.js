@@ -3,14 +3,17 @@ import React, { useState } from 'react'
 import Router from 'next/router'
 import { useMutate } from "restful-react"
 // import produce from 'immer'
+
 // component
 import { NavBar, Button, Icon, List, Checkbox, Radio, TextareaItem } from 'antd-mobile'
 import Flex from 'styled-flex-component'
+
 // fp
 // import { without } from 'ramda'
 // import { match, matchPairs, ANY } from 'pampy'
 import { includes } from 'lodash/fp'
 import { it/*, _*/ } from 'param.macro'
+
 // util
 import agent from '@/util/request'
 import sleep from 'await-sleep'
@@ -18,6 +21,7 @@ import ensure from '@/util/ensure'
 import { percent, concatOrWithout/*, transJsonArrayValueToPgArrayStr*/ } from '@/util/filters'
 // import { _list, _item, _title, _step } from '@/util/semantic-tags'
 
+// props
 export async function getServerSideProps({ /*req, res, */query}) {
   ensure(query?.id, '请求参数(问卷id)不能为空')
   const survey = await agent
@@ -33,17 +37,7 @@ export async function getServerSideProps({ /*req, res, */query}) {
   return { props: { survey, query } }
 }
 
-// main
-function Main$(props) {
-  return (
-    <section>
-      <Nav$ />
-      <Body$ {...props} />
-    </section>
-  )
-}
-
-//- 导航
+// nav
 function Nav$() {
   return (
     <NavBar
@@ -57,6 +51,7 @@ function Nav$() {
   )
 }
 
+// body
 function Body$({ survey, query }) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [questionsResult, setQuestionsResult] = useState({})
@@ -185,4 +180,14 @@ function Body$({ survey, query }) {
   )
 }
 
-export default Main$
+// main
+function SurveyDo$(props) {
+  return (
+    <section>
+      <Nav$ />
+      <Body$ {...props} />
+    </section>
+  )
+}
+
+export default SurveyDo$

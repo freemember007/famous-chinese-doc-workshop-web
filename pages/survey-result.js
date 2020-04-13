@@ -21,13 +21,14 @@ import { includes, isEmpty, random } from 'lodash/fp'
 import ensure from '@/util/ensure'
 import { formatDateTimeM2 } from '@/util/date'
 
-//- 导航
+// nav
 function Nav$() {
   return <NavBar mode="light" leftContent="返回" icon={<Icon type="left" />} onClick={ Router.back }>
     问卷评测结果
   </NavBar>
 }
 
+// body
 function Body$() {
   // 该库导致需多次返回才可返回
   // const [ params/*, setParams*/ ] = useUrlSearchParams({ id: 1 /*defaultValue*/})
