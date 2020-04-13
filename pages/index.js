@@ -81,7 +81,7 @@ function Body$() {
         <Button type="primary"> 问卷列表 </Button>
       </Link>
       <div className="my4" />
-      <Link href={{ pathname: 'survey-result', query: { id: 150 } }}>
+      <Link href={{ pathname: 'survey-result', query: { id: 160 } }}>
         <Button type="primary"> 问卷结果 </Button>
       </Link>
     </_list>

@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import Router from 'next/router'
 import { useMutate } from "restful-react"
 // import produce from 'immer'
+import { useSessionStorage } from 'react-use'
 
 // component
 import { NavBar, Button, Icon, List, Checkbox, Radio, TextareaItem } from 'antd-mobile'
@@ -106,6 +107,8 @@ function Body$({ survey, query }) {
       verb : 'POST',
       path : 'common-biz/rest/rpc/graph_insert_survey_result',
     })
+    const [ userInfo ] = useSessionStorage('ddyy-survey-userInfo', {})
+    console.log({userInfo})
 
     return <Flex className="mt4">
       <Button
@@ -130,8 +133,10 @@ function Body$({ survey, query }) {
         loading={loading}
         onClick={function saveSurveyResult() {
           mutate({
-            survey_id: query.id,
-            questions_result_data: questionsResult,
+            survey_id             : query.id,
+            hos_id                : userInfo.hos_id,
+            pat_id                : userInfo.pat_id,
+            questions_result_data : questionsResult,
           }).then(res => Router.replace({ pathname: '/ddyy-common-business-react/survey-explain', query: { id: res?.[0]?.id } }))
         }}
       >提交</Button>

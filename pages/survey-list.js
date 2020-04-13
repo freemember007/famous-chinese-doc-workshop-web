@@ -34,7 +34,7 @@ function Nav$() {
       icon={<Icon type="left" />}
       onClick={ Router.back }
     >
-      问卷列表
+      量表评测
     </NavBar>
   )
 }
