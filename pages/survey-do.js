@@ -59,9 +59,9 @@ function Body$({ pageTitle, survey, query }) {
   const currentQuestion = survey.questions[currentQuestionIndex] || {}
 
   function Step$() {
-    return <Flex alignCenter className="my4" >
+    return <Flex alignCenter className="my4 py2" >
       {/* 进度数 */}
-      <div className="gray"> { [currentQuestionIndex + (currentQuestionFinished ? 1 : 0), survey.questions.length].join('/') } </div>
+      <div className="gray f2"> { [currentQuestionIndex + (currentQuestionFinished ? 1 : 0), survey.questions.length].join('/') } </div>
       {/* 进度条 */}
       <div className="flex1 relative ml4" style={{ height: '5px' }}>
         <div className="absolute h100 z2 round bg-primary" style={{
@@ -89,7 +89,7 @@ function Body$({ pageTitle, survey, query }) {
           setCurrentQuestionIndex(currentQuestionIndex + 1)
         }
       } }>
-      { option.text }
+      <div className="f1 dark">{ option.text }</div>
     </Radio.RadioItem>
   }
 
@@ -163,10 +163,10 @@ function Body$({ pageTitle, survey, query }) {
 
       {/* 问题区 */}
       {/* 问题标题 */}
-      <div className="py2 f2 bold"> {currentQuestion.title} </div>
+      <div className="py4 f1 bold"> {currentQuestion.title} </div>
 
       {/* 问题选项 */}
-      <List className="f3">
+      <List className="f3 py4">
 
         {/* 如果是单选 */}
         { currentQuestion.type === 'radio' &&
