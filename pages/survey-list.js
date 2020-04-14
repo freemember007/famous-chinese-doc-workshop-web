@@ -9,6 +9,9 @@ import Link from 'next/link'
 import { NavBar, Icon } from 'antd-mobile'
 import { ArrowIosForwardOutline as RightIcon } from '@styled-icons/evaicons-outline'
 import Skeleton from 'react-loading-skeleton'
+import Image from 'react-shimmer'
+
+import Img from 'react-image'
 
 // fp
 import { it/*, _*/ } from 'param.macro'
@@ -53,7 +56,7 @@ function Body$({ pageTitle, surveys }) {
             {/* 左侧内容 */}
             <_left className="flex1 __flex">
               { !survey.image ? <Skeleton width={80} height={80} /> :
-                <img src={survey.image |> imagePlaceholder} width={80} height={80} style={{ objectFit: 'cover' }} />
+                <Image src={survey.image  |> imagePlaceholder} width={80} height={80} style={{ objectFit: 'cover' }} />
               }
               {/*<_wrap style={{ width: '80px', height: '80px', background: "#eee" }}>
                 <Image src={survey.image |> imagePlaceholder} width={80} height={80} style={{ objectFit: 'cover' }} />

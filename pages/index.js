@@ -19,6 +19,12 @@ import { join } from 'ramda'
 import {_list, _item } from '@/util/semantic-tags'
 import sleep from 'await-sleep'
 
+// props
+export async function getServerSideProps({ query }) {
+  return { props: { query } }
+}
+
+// store
 const store = createStore({
   place: '定位中...',
 
