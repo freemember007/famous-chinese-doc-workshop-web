@@ -18,28 +18,32 @@ import { trace } from 'ramda-extension'
 
 // util
 import { DDYYAPI_BASE_URL } from '@/constant'
-// import ensure from '@/util/ensure'
+import ensure from '@/util/ensure'
 
 function MyApp( { Component, pageProps }) {
 
-  // localStorage
+  // 解析url参数userInfo
+  const userInfoQueryParam = pageProps?.query?.userInfo
+    // |> decodeURIComponent
+    |> tryCatch(JSON.parse, always({}))
+    |> trace('userInfoQueryParam')
+
+  // useLocalStorage
   const [userInfo, setUserInfo] = useSessionStorage('ddyy-survey-userInfo', {})
+  const maybeUserInfo = isEmpty(userInfoQueryParam) ? userInfo : userInfoQueryParam
+
   useEffect(() => {
-    // 解析url参数userInfo，如不为空，将其存入sessionStorage
-    const userInfoQueryParam = pageProps?.query?.userInfo
-      // |> decodeURIComponent
-      |> tryCatch(JSON.parse, always({}))
-      |> trace('userInfoQueryParam')
+    // 确保app传入所需参数（注：不能在setUserInfo后直接判断userInfo，因存入需要时间）
+    console.log({ maybeUserInfo })
+    ensure(maybeUserInfo.hos_id, 'app参数hos_id不能为空')
+    // 如不为空，将其存入sessionStorage
     if(!(isEmpty(userInfoQueryParam))) setUserInfo(userInfoQueryParam)
-    console.log(userInfo.app_id)
-    // @todo: 初次set之前会报错：
-    // ensure(userInfo.app_id, '未传入app_id')
-  }, [])
+  }, [pageProps?.query])
 
   return(
     <RestfulProvider base={DDYYAPI_BASE_URL}>
       <Head>
-        <title>点点医院量表问卷系统</title>
+        <title>{ maybeUserInfo.hos_name || '点点医院量表问卷系统' } </title>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0" />
       </Head>
@@ -49,27 +53,5 @@ function MyApp( { Component, pageProps }) {
     </RestfulProvider>
   )
 }
-// class MyApp extends App {
-//   componentDidMount() {
-//     console.log(this.props?.pageProps?.query?.userInfo )
-//   }
-//   render () {
-//     const { Component, pageProps } = this.props
-//     // console.log({ pageProps })
-
-//     return(
-//       <RestfulProvider base={DDYYAPI_BASE_URL}>
-//         <Head>
-//           <title>点点医院量表问卷系统</title>
-//           <meta charSet="utf-8" />
-//           <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0" />
-//         </Head>
-//         <SkeletonTheme color="#eee" highlightColor="#ddd" >
-//           <Component {...pageProps} />
-//         </SkeletonTheme>
-//       </RestfulProvider>
-//     )
-//   }
-// }
 
 export default MyApp
