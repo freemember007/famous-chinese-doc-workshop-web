@@ -53,7 +53,7 @@ function Nav$() {
 }
 
 // body
-function Body$({ survey, query }) {
+function Body$({ pageTitle, survey, query }) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [questionsResult, setQuestionsResult] = useState({})
   const currentQuestion = survey.questions[currentQuestionIndex] || {}
@@ -137,7 +137,7 @@ function Body$({ survey, query }) {
             hos_id                : userInfo.hos_id,
             pat_id                : userInfo.pat_id,
             questions_result_data : questionsResult,
-          }).then(res => Router.replace({ pathname: '/ddyy-common-business-react/survey-explain', query: { id: res?.[0]?.id } }))
+          }).then(res => Router.replace({ pathname: '/ddyy-common-business-react/survey-explain', query: { pageTitle, id: res?.[0]?.id } }))
         }}
       >提交</Button>
     </Flex>

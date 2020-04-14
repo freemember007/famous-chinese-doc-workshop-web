@@ -44,7 +44,7 @@ function Nav$() {
 }
 
 // body
-function Body$({ survey }) {
+function Body$({ pageTitle, survey }) {
   return (
     <div className="absolute t46 l0 r0 b0 w12 bg-white">
       { (!process.browser || !survey.image) ? <Skeleton width={'100%'} height={200}/> :
@@ -69,7 +69,7 @@ function Body$({ survey }) {
         <_text className="dark lh2">
           { survey.intro || <Skeleton count={5} />}
         </_text>
-        <Link href={{ pathname: 'survey-do', query: { id: survey.id }}}>
+        <Link href={{ pathname: 'survey-do', query: { id: survey.id, pageTitle }}}>
           <Button className="my4" type="primary" disabled={isEmpty(survey)}>开始测试</Button>
         </Link>
       </div>

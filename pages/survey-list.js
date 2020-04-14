@@ -2,6 +2,7 @@
 import React from 'react'
 import Router from 'next/router'
 import Link from 'next/link'
+// import { useSessionStorage } from 'react-use'
 // import { useGet } from "restful-react"
 
 // components
@@ -40,12 +41,14 @@ function Nav$() {
 }
 
 // body
-function Body$({ surveys }) {
+function Body$({ pageTitle, surveys }) {
+  // const [userInfo] = useSessionStorage('ddyy-survey-userInfo', {})
+
   return (
     <_list className="absolute t46 l0 r0 b0 px4 w100 bg-white">
 
       {(surveys || [{}, {}, {}, {}]).map((survey, index) =>
-        <Link href={{ pathname: 'survey-detail', query: { id: survey.id }}} key={index}>
+        <Link href={{ pathname: 'survey-detail', query: { id: survey.id, pageTitle }}} key={index}>
           <_item className=" py3 bg-white bb __flex j-between a-center">
 
             {/* 左侧内容 */}

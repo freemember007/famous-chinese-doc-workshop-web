@@ -29,7 +29,7 @@ function Nav$() {
 }
 
 // body
-function Body$() {
+function Body$(/*{ pageTitle }*/) {
   // 该库导致需多次返回才可返回
   // const [ params/*, setParams*/ ] = useUrlSearchParams({ id: 1 /*defaultValue*/})
   const id = useSearchParam('id')
@@ -124,11 +124,11 @@ function Body$() {
 }
 
 // main
-function SurveyResult$() {
+function SurveyResult$(props) {
   return (
     <section>
       <Nav$ />
-      <Body$ />
+      <Body$ {...props} />
     </section>
   )
 }

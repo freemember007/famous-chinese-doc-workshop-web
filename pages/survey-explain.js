@@ -45,7 +45,7 @@ function Nav$() {
 }
 
 // body
-function Body$({ survey_result }) {
+function Body$({ /*pageTitle,*/ survey_result }) {
   const matchedExplain = survey_result.survey.explain
     |> find(i => inRange(i.score_gte, i.score_lte + 1, survey_result.score))
   return (
