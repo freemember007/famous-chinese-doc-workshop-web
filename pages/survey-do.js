@@ -105,7 +105,7 @@ function Body$({ pageTitle, survey, query }) {
             |> concatOrWithout(option.id)
         })
       }}>
-      { option.text }
+      <div className="f1 dark">{ option.text }</div>
     </Checkbox.CheckboxItem>
   }
 
