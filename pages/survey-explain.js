@@ -3,7 +3,7 @@ import React from 'react'
 import Router from 'next/router'
 
 // component
-import { NavBar, Icon } from 'antd-mobile'
+import { NavBar/*, Icon*/ } from 'antd-mobile'
 // import Flex from 'styled-flex-component'
 
 // fp
@@ -35,7 +35,6 @@ function Nav$() {
   return (
     <NavBar
       mode="light"
-      icon={<Icon type="left" />}
       onClick={ () => Router.replace('/survey-list') }
     >
       测试结果
