@@ -11,8 +11,6 @@ import { ArrowIosForwardOutline as RightIcon } from '@styled-icons/evaicons-outl
 import Skeleton from 'react-loading-skeleton'
 import Image from 'react-shimmer'
 
-import Img from 'react-image'
-
 // fp
 import { it/*, _*/ } from 'param.macro'
 
