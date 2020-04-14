@@ -27,11 +27,12 @@ function MyApp( { Component, pageProps }) {
     // |> decodeURIComponent
     |> tryCatch(JSON.parse, always({}))
     |> trace('userInfoQueryParam')
+  const pageTitleQueryParam = pageProps?.query?.pageTitle
 
   // useLocalStorage
   const [userInfo, setUserInfo] = useSessionStorage('ddyy-survey-userInfo', {})
   const maybeUserInfo = isEmpty(userInfoQueryParam) ? userInfo : userInfoQueryParam
-  const pageTitle = maybeUserInfo.pageTitle || '点点医院量表问卷系统'
+  const pageTitle = pageTitleQueryParam || '点点医院量表问卷系统'
 
   useEffect(() => {
     // 确保app传入所需参数（注：不能在setUserInfo后直接判断userInfo，因存入需要时间）
