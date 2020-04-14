@@ -27,6 +27,7 @@ function MyApp( { Component, pageProps }) {
     // |> decodeURIComponent
     |> tryCatch(JSON.parse, always({}))
     |> trace('userInfoQueryParam')
+  const pageTitleQueryParam = pageProps?.query?.pageTitle
 
   // useLocalStorage
   const [userInfo, setUserInfo] = useSessionStorage('ddyy-survey-userInfo', {})
@@ -43,7 +44,7 @@ function MyApp( { Component, pageProps }) {
   return(
     <RestfulProvider base={DDYYAPI_BASE_URL}>
       <Head>
-        <title>{ maybeUserInfo.hos_name || '点点医院量表问卷系统' } </title>
+        <title>{ pageTitleQueryParam } </title>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0" />
       </Head>
