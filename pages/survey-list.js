@@ -31,7 +31,6 @@ function Nav$() {
   return (
     <NavBar
       mode="light"
-      leftContent="返回"
       icon={<Icon type="left" />}
       onClick={ Router.back }
     >

@@ -23,7 +23,7 @@ import { formatDateTimeM2 } from '@/util/date'
 
 // nav
 function Nav$() {
-  return <NavBar mode="light" leftContent="返回" icon={<Icon type="left" />} onClick={ Router.back }>
+  return <NavBar mode="light" icon={<Icon type="left" />} onClick={ Router.back }>
     问卷评测结果
   </NavBar>
 }

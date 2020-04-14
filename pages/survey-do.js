@@ -19,7 +19,7 @@ import { it/*, _*/ } from 'param.macro'
 import agent from '@/util/request'
 import sleep from 'await-sleep'
 import ensure from '@/util/ensure'
-import { percent, concatOrWithout/*, transJsonArrayValueToPgArrayStr*/ } from '@/util/filters'
+import { omit, percent, concatOrWithout/*, transJsonArrayValueToPgArrayStr*/ } from '@/util/filters'
 // import { _list, _item, _title, _step } from '@/util/semantic-tags'
 
 // props
@@ -39,15 +39,14 @@ export async function getServerSideProps({ /*req, res, */query}) {
 }
 
 // nav
-function Nav$() {
+function Nav$({ survey }) {
   return (
     <NavBar
       mode="light"
-      leftContent="返回"
       icon={<Icon type="left" />}
       onClick={ Router.back }
     >
-      问卷评测
+      {survey.title |> omit(16)}
     </NavBar>
   )
 }
@@ -55,16 +54,19 @@ function Nav$() {
 // body
 function Body$({ pageTitle, survey, query }) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
+  const [currentQuestionFinished, setCurrentQuestionFinished] = useState(false) // @todo: set使用时不严谨
   const [questionsResult, setQuestionsResult] = useState({})
   const currentQuestion = survey.questions[currentQuestionIndex] || {}
 
   function Step$() {
     return <Flex alignCenter className="my4" >
       {/* 进度数 */}
-      <div className="gray"> { [currentQuestionIndex + 1, survey.questions.length].join('/') } </div>
+      <div className="gray"> { [currentQuestionIndex + (currentQuestionFinished ? 1 : 0), survey.questions.length].join('/') } </div>
       {/* 进度条 */}
       <div className="flex1 relative ml4" style={{ height: '5px' }}>
-        <div className="absolute h100 z2 round bg-primary" style={{ width: (currentQuestionIndex + 1)/survey.questions.length |> percent }}></div>
+        <div className="absolute h100 z2 round bg-primary" style={{
+          width: (currentQuestionIndex + (currentQuestionFinished ? 1 : 0))/survey.questions.length |> percent
+        }}></div>
         <div className="absolute h100 z1 round w12 bg-gray"></div>
       </div>
     </Flex>
@@ -75,13 +77,17 @@ function Body$({ pageTitle, survey, query }) {
       key={ option.id }
       checked={ questionsResult[currentQuestion.id] === option.id }
       onChange={ async () => {
+        setCurrentQuestionFinished(true)
         setQuestionsResult({
           ...questionsResult,
           [currentQuestion.id]: option.id,
         })
         await sleep(200)
         // 单选选择后，自动跳到下一题
-        if(currentQuestionIndex < survey.questions.length - 1) setCurrentQuestionIndex(currentQuestionIndex + 1)
+        if(currentQuestionIndex < survey.questions.length - 1) {
+          setCurrentQuestionFinished(false)
+          setCurrentQuestionIndex(currentQuestionIndex + 1)
+        }
       } }>
       { option.text }
     </Radio.RadioItem>
@@ -90,14 +96,15 @@ function Body$({ pageTitle, survey, query }) {
   function CheckItem$(option) {
     return <Checkbox.CheckboxItem
       key={ option.id }
-      checked={ questionsResult[currentQuestion.id] |> includes(option.id) }
-      onChange={ (/*target*/) => setQuestionsResult(
-        {
+      checked={questionsResult[currentQuestion.id] |> includes(option.id)}
+      onChange={(/*target*/) => {
+        setCurrentQuestionFinished(true)
+        setQuestionsResult({
           ...questionsResult,
           [currentQuestion.id] : questionsResult[currentQuestion.id]
             |> concatOrWithout(option.id)
-        }
-      )}>
+        })
+      }}>
       { option.text }
     </Checkbox.CheckboxItem>
   }
@@ -113,17 +120,23 @@ function Body$({ pageTitle, survey, query }) {
     return <Flex className="mt4">
       <Button
         x-if={ currentQuestionIndex > 0 }
-        disabled={!questionsResult[currentQuestion.id] || loading}
+        disabled={loading}
         className="mx2 flex1"
         type="primary"
-        onClick={ () => setCurrentQuestionIndex(currentQuestionIndex - 1) }
+        onClick={() => {
+          // setCurrentQuestionFinished(false)
+          setCurrentQuestionIndex(currentQuestionIndex - 1)
+        }}
       >上一题</Button>
       <Button
         x-if={ currentQuestionIndex < survey.questions.length - 1 }
         disabled={ !questionsResult[currentQuestion.id] }
         className="mx2 flex1"
         type="primary"
-        onClick={ () => setCurrentQuestionIndex(currentQuestionIndex + 1) }
+        onClick={() => {
+          setCurrentQuestionFinished(false)
+          setCurrentQuestionIndex(currentQuestionIndex + 1)
+        }}
       >下一题</Button>
       <Button
         x-if={ currentQuestionIndex === survey.questions.length - 1 }
@@ -171,10 +184,13 @@ function Body$({ pageTitle, survey, query }) {
             labelNumber={ 5 }
             rows={ 3 }
             value={ questionsResult[currentQuestion.id] }
-            onChange={ value => setQuestionsResult({
-              ...questionsResult,
-              [currentQuestion.id]: value,
-            })}
+            onChange={ value => {
+              setCurrentQuestionFinished(true)
+              setQuestionsResult({
+                ...questionsResult,
+                [currentQuestion.id]: value,
+              })
+            }}
           />
         }
       </List>
@@ -189,7 +205,7 @@ function Body$({ pageTitle, survey, query }) {
 function SurveyDo$(props) {
   return (
     <section>
-      <Nav$ />
+      <Nav$ {...props} />
       <Body$ {...props} />
     </section>
   )
