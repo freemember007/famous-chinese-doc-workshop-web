@@ -9,7 +9,7 @@ import { useSessionStorage } from 'react-use'
 import { NavBar, Button, Icon, List, Checkbox, Radio, TextareaItem } from 'antd-mobile'
 import Flex from 'styled-flex-component'
 import { CSSTransition } from 'react-transition-group'
-import ReactCSSTransitionReplace from 'react-css-transition-replace'
+// import ReactCSSTransitionReplace from 'react-css-transition-replace'
 
 // fp
 // import { without } from 'ramda'

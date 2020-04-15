@@ -21,7 +21,12 @@ import sleep from 'await-sleep'
 
 // props
 export async function getServerSideProps({ query }) {
-  return { props: { query } }
+  const _query = { // for dev
+    userInfo  : '{ "hos_id": 1 }',
+    pageTitle : '点点医院量表问卷系统(dev)',
+    ...query
+  }
+  return { props: { query: _query } }
 }
 
 // store
