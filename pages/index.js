@@ -40,7 +40,7 @@ const store = createStore({
 })
 
 // main
-function Main$() {
+function Main$(props) {
   return (
     <section>
       {/*<ActivityIndicator toast text="正在加载" />*/}
@@ -53,7 +53,7 @@ function Main$() {
           <div className="flex1 mx2"> {null || <Skeleton count={2} />} </div>
         </Flex>
       </div>
-      <Body$ />
+      <Body$ {...props}/>
       <Image
         src="https://newevolutiondesigns.com/images/freebies/tropical-beach-background-8.jpg"
         width={320} height={240}
@@ -75,7 +75,7 @@ function Nav$() {
   )
 }
 
-function Body$() {
+function Body$({ pageTitle }) {
   const { data: surveys, loading, error } = useGet({
     path        : 'common-biz/rest/survey',
     queryParams : {id: 'in.(1, 2, 3, 4)', select: '*, a'},
@@ -88,11 +88,11 @@ function Body$() {
       { surveys && surveys.map((survey, index) =>
         <_item key={ index }>{ survey.title }</_item>
       )}
-      <Link href={{ pathname: 'survey-list' }}>
+      <Link href={{ pathname: 'survey-list', query: { pageTitle } }}>
         <Button type="primary"> 问卷列表 </Button>
       </Link>
       <div className="my4" />
-      <Link href={{ pathname: 'survey-result', query: { id: 160 } }}>
+      <Link href={{ pathname: 'survey-result', query: { id: 160, pageTitle } }}>
         <Button type="primary"> 问卷结果 </Button>
       </Link>
     </_list>
