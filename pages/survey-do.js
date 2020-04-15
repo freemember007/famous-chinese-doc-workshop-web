@@ -2,15 +2,13 @@
 import React from 'react'
 import Router from 'next/router'
 import { useMutate } from "restful-react"
-// import produce from 'immer'
 import { useSessionStorage } from 'react-use'
 import { createGlobalState } from 'react-hooks-global-state'
 
 // component
 import { NavBar, Button, Icon, List, Checkbox, Radio, TextareaItem } from 'antd-mobile'
 import Flex from 'styled-flex-component'
-import { CSSTransition } from 'react-transition-group'
-// import ReactCSSTransitionReplace from 'react-css-transition-replace'
+import { SwitchTransition, CSSTransition } from 'react-transition-group'
 
 // fp
 // import { without } from 'ramda'
@@ -38,91 +36,84 @@ export const getServerSideProps = async ({ /*req, res, */query }) => {
       'question.option.order' : 'order_num',
     })
     .then(it.body)
-  // console.log(survey)
-  return { props: { query, survey } }
+  return { props: { survey } }
 }
 
 // useGlobalState
 const { useGlobalState } = createGlobalState({
   currentQuestionIndex    : 0,        // 当前问题索引
-  currentQuestionFinished : false,    // 当前问题是否完成
-  questionsResult         : {},       // 问题结果
+  questionsResult         : {},       // 全部问题结果键值对
 })
 
 // nav
-const Nav$ = ({ survey }) => {
+const Nav$ = ({ surveyTitle }) => {
   return (
     <NavBar
       mode="light"
       icon={<Icon type="left" />}
       onClick={ Router.back }
     >
-      {survey.title |> omit(16)}
+      {surveyTitle |> omit(16)}
     </NavBar>
   )
 }
 
-const Step$ = ({ survey }) => {
-  const [currentQuestionIndex] = useGlobalState('currentQuestionIndex')
-  const [currentQuestionFinished] = useGlobalState('currentQuestionFinished')
+const Step$ = ({ currentQuestionIndex, surveyQuestionsLength, currentQuestionFinished }) => {
+  const surveyQuestionsFinishedCount = currentQuestionIndex + (currentQuestionFinished ? 1 : 0)
   return <Flex alignCenter className="my4 py2" >
     {/* 进度数 */}
-    <div className="gray f2"> { [currentQuestionIndex + (currentQuestionFinished ? 1 : 0), survey.questions.length].join('/') } </div>
+    <div className="gray f2"> { [surveyQuestionsFinishedCount, surveyQuestionsLength].join('/') } </div>
     {/* 进度条 */}
     <div className="flex1 relative ml4" style={{ height: '5px' }}>
       <div className="absolute h100 z2 round bg-primary" style={{
-        width: (currentQuestionIndex + (currentQuestionFinished ? 1 : 0))/survey.questions.length |> percent
+        width: surveyQuestionsFinishedCount/surveyQuestionsLength |> percent
       }}></div>
       <div className="absolute h100 z1 round w12 bg-gray"></div>
     </div>
   </Flex>
 }
 
-const RadioItem$ = ({ survey, currentQuestion, option }) => {
+const RadioGroup$ = ({ currentQuestion, surveyQuestionsLength }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useGlobalState('currentQuestionIndex')
   const [questionsResult, setQuestionsResult] = useGlobalState('questionsResult')
-  const [currentQuestionFinished, setCurrentQuestionFinished] = useGlobalState('currentQuestionFinished')
-
-  return <Radio.RadioItem
-    checked={ questionsResult[currentQuestion.id] === option.id }
-    onChange={ async () => {
-      if(!currentQuestionFinished) setCurrentQuestionFinished(true)
-      setQuestionsResult({
-        ...questionsResult,
-        [currentQuestion.id]: option.id,
-      })
-      await sleep(200)
-      // 单选选择后，自动跳到下一题
-      if(currentQuestionIndex < survey.questions.length - 1) {
-        setCurrentQuestionFinished(false)
-        setCurrentQuestionIndex(currentQuestionIndex + 1)
-      }
-    } }>
-    <div className="f1 dark">{ option.text }</div>
-  </Radio.RadioItem>
+  return currentQuestion.options.map(option =>
+    <Radio.RadioItem
+      key={option.id}
+      checked={questionsResult[currentQuestion.id] === option.id}
+      onChange={async () => {
+        setQuestionsResult({
+          ...questionsResult,
+          [currentQuestion.id]: option.id,
+        })
+        await sleep(200)
+        // 单选选择后，自动跳到下一题
+        if(currentQuestionIndex < surveyQuestionsLength - 1) {
+          setCurrentQuestionIndex(currentQuestionIndex + 1)
+        }
+      }}>
+      <div className="f1 dark">{ option.text }</div>
+    </Radio.RadioItem>)
 }
 
-const CheckItem$ = ({ currentQuestion, option }) => {
+const CheckGroup$ = ({ currentQuestion }) => {
   const [questionsResult, setQuestionsResult] = useGlobalState('questionsResult')
-  const [currentQuestionFinished, setCurrentQuestionFinished] = useGlobalState('currentQuestionFinished')
-  return <Checkbox.CheckboxItem
-    key={ option.id }
-    checked={questionsResult[currentQuestion.id] |> includes(option.id)}
-    onChange={(/*target*/) => {
-      if(!currentQuestionFinished) setCurrentQuestionFinished(true)
-      setQuestionsResult({
-        ...questionsResult,
-        [currentQuestion.id] : questionsResult[currentQuestion.id]
-          |> concatOrWithout(option.id)
-      })
-    }}>
-    <div className="f1 dark">{ option.text }</div>
-  </Checkbox.CheckboxItem>
+  return currentQuestion.options.map(option =>
+    <Checkbox.CheckboxItem
+      key={ option.id }
+      checked={questionsResult[currentQuestion.id] |> includes(option.id)}
+      onChange={(/*target*/) => {
+        setQuestionsResult({
+          ...questionsResult,
+          [currentQuestion.id] : questionsResult[currentQuestion.id]
+            |> concatOrWithout(option.id)
+        })
+      }}>
+      <div className="f1 dark">{ option.text }</div>
+    </Checkbox.CheckboxItem>)
 }
 
 const InputItem$ = ({ currentQuestion }) => {
   const [questionsResult, setQuestionsResult] = useGlobalState('questionsResult')
-  const [currentQuestionFinished, setCurrentQuestionFinished] = useGlobalState('currentQuestionFinished')
   return (
     <TextareaItem
       autoHeight
@@ -131,7 +122,6 @@ const InputItem$ = ({ currentQuestion }) => {
       rows={ 5 }
       value={ questionsResult[currentQuestion.id] }
       onChange={ value => {
-        if(!currentQuestionFinished) setTimeout(setCurrentQuestionFinished(true), 3000)
         setQuestionsResult({
           ...questionsResult,
           [currentQuestion.id]: value,
@@ -141,44 +131,39 @@ const InputItem$ = ({ currentQuestion }) => {
   )
 }
 
-const Question$ = ({ survey, currentQuestion }) => {
-  const [currentQuestionFinished ] = useGlobalState('currentQuestionFinished')
-  return (
-    <CSSTransition in={!currentQuestionFinished} timeout={200} classNames="fade-transiton">
-      <div>
-        {/* 问题标题 */}
-        <div className="py4 f1 bold"> {currentQuestion.title} </div>
+const Question$ = ({ currentQuestion, surveyQuestionsLength }) => {
 
-        {/* 问题内容 */}
-        <List className="f3 py4">
-          { currentQuestion.type === 'radio' && currentQuestion.options.map( option =>
-            <RadioItem$ key={option.id} {...{ survey, currentQuestion, option }} />
-          )}
-          { currentQuestion.type === 'check' && currentQuestion.options.map( option =>
-            <CheckItem$ key={option.id} {...{ currentQuestion, option }} />
-          )}
-          { currentQuestion.type === 'open' && <InputItem$  {...{ currentQuestion }} /> }
-        </List>
-      </div>
-    </CSSTransition>
+  return (
+    <SwitchTransition>
+      <CSSTransition key={currentQuestion.id} timeout={200} classNames="fade-transiton">
+        <div>
+          {/* 问题标题 */}
+          <div className="py4 f1 bold"> {currentQuestion.title} </div>
+
+          {/* 问题内容 */}
+          <List className="f3 py4">
+            { currentQuestion.type === 'radio' && <RadioGroup$  {...{ currentQuestion, surveyQuestionsLength }} /> }
+            { currentQuestion.type === 'check' && <CheckGroup$  {...{ currentQuestion }} /> }
+            { /input|open/.test(currentQuestion.type) && <InputItem$  {...{ currentQuestion }} /> }
+          </List>
+        </div>
+      </CSSTransition>
+    </SwitchTransition>
   )
 }
 
-const BtnGroup$ = ({ pageTitle, survey, currentQuestion }) => {
+const BtnGroup$ = ({ pageTitle, surveyQuestionsLength, currentQuestionFinished, surveyId, userInfo }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useGlobalState('currentQuestionIndex')
-  const [, setCurrentQuestionFinished] = useGlobalState('currentQuestionFinished')
-  const [questionsResult, ] = useGlobalState('questionsResult')
+  const [questionsResult ] = useGlobalState('questionsResult')
 
   const { mutate, loading, /*error*/ } = useMutate({
     verb : 'POST',
     path : 'common-biz/rest/rpc/graph_insert_survey_result',
   })
-  const [ userInfo ] = useSessionStorage('ddyy-survey-userInfo', {})
-  console.log({userInfo})
 
   const saveSurveyResult = () => {
     mutate({
-      survey_id             : survey.id,
+      survey_id             : surveyId,
       hos_id                : userInfo.hos_id,
       pat_id                : userInfo.pat_id,
       questions_result_data : questionsResult,
@@ -193,12 +178,11 @@ const BtnGroup$ = ({ pageTitle, survey, currentQuestion }) => {
       type="primary"
       onClick={() => {
         setCurrentQuestionIndex(currentQuestionIndex - 1)
-        setCurrentQuestionFinished(true) // 能往前翻一定是true，避免修改选项后状态被再次set
       }}
     >上一题</Button>
     <Button
-      x-if={ currentQuestionIndex < survey.questions.length - 1 }
-      disabled={ !questionsResult[currentQuestion.id] }
+      x-if={currentQuestionIndex < surveyQuestionsLength - 1}
+      disabled={!currentQuestionFinished}
       className="mx2 flex1"
       type="primary"
       onClick={() => {
@@ -206,36 +190,33 @@ const BtnGroup$ = ({ pageTitle, survey, currentQuestion }) => {
       }}
     >下一题</Button>
     <Button
-      x-if={ currentQuestionIndex === survey.questions.length - 1 }
-      disabled={!questionsResult[currentQuestion.id] || loading}
+      x-if={ currentQuestionIndex === surveyQuestionsLength - 1 }
+      disabled={!currentQuestionFinished || loading}
       className="mx2 flex1"
       type="primary"
       loading={loading}
-      onClick={ saveSurveyResult }
+      onClick={saveSurveyResult}
     >提交</Button>
   </Flex>
 }
 
-// Body
-const Body$ = ({ pageTitle, survey }) => {
-  const [currentQuestionIndex] = useGlobalState('currentQuestionIndex')
-  const currentQuestion = survey.questions[currentQuestionIndex] || {}
-
-  return (
-    <div className="absolute t46 l0 r0 b0 px4 w12 bg-white">
-      <Step$ {...{ survey }}/>
-      <Question$ {...{ survey, currentQuestion }}/>
-      <BtnGroup$ {...{ pageTitle, survey, currentQuestion }} />
-    </div>
-  )
-}
-
 // main
-const SurveyDo$ = ({ query, pageTitle, survey }) => {
+const SurveyDo$ = ({ pageTitle, survey }) => {
+  const [currentQuestionIndex] = useGlobalState('currentQuestionIndex')
+  const [questionsResult] = useGlobalState('questionsResult')
+  const currentQuestion = survey.questions[currentQuestionIndex] || {}
+  const currentQuestionFinished = !!questionsResult[currentQuestion.id]
+  const surveyQuestionsLength = survey.questions.length
+  const [ userInfo ] = useSessionStorage('ddyy-survey-userInfo', {})
+  console.log(userInfo) // 可用来观察根组件渲染次数
   return (
     <section>
-      <Nav$ {...{ survey }} />
-      <Body$ {...{ query, pageTitle, survey }} />
+      <Nav$ {...{ surveyTitle: survey.title }} />
+      <div className="absolute t46 l0 r0 b0 px4 w12 bg-white">
+        <Step$ {...{ currentQuestionIndex, surveyQuestionsLength, currentQuestionFinished }}/>
+        <Question$ {...{ survey, surveyQuestionsLength, currentQuestion }}/>
+        <BtnGroup$ {...{ pageTitle, surveyQuestionsLength, currentQuestionFinished, surveyId: survey.id, userInfo }} />
+      </div>
     </section>
   )
 }
