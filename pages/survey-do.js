@@ -33,6 +33,7 @@ export async function getServerSideProps({ /*req, res, */query}) {
     .query({
       id                      : 'eq.' + query.id,
       select                  : '*, questions:question(*, options:option(*))',
+      'question.order'        : 'order_num',
       'question.option.order' : 'order_num',
     })
     .then(it.body)
@@ -181,7 +182,7 @@ function Body$({ pageTitle, survey, query }) {
               currentQuestion.options.map(CheckItem$)
             }
             {/* 如果是开放问题 */}
-            { currentQuestion.type === 'input' &&
+            { /input|open/.test(currentQuestion.type) &&
               <TextareaItem
                 autoHeight
                 placeholder="请输入..."
