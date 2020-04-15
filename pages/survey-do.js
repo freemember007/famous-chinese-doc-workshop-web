@@ -8,6 +8,8 @@ import { useSessionStorage } from 'react-use'
 // component
 import { NavBar, Button, Icon, List, Checkbox, Radio, TextareaItem } from 'antd-mobile'
 import Flex from 'styled-flex-component'
+import { CSSTransition } from 'react-transition-group'
+import ReactCSSTransitionReplace from 'react-css-transition-replace'
 
 // fp
 // import { without } from 'ramda'
@@ -115,7 +117,7 @@ function Body$({ pageTitle, survey, query }) {
       path : 'common-biz/rest/rpc/graph_insert_survey_result',
     })
     const [ userInfo ] = useSessionStorage('ddyy-survey-userInfo', {})
-    console.log({userInfo})
+    // console.log({userInfo})
 
     return <Flex className="mt4">
       <Button
@@ -162,38 +164,42 @@ function Body$({ pageTitle, survey, query }) {
       <Step$ />
 
       {/* 问题区 */}
-      {/* 问题标题 */}
-      <div className="py4 f1 bold"> {currentQuestion.title} </div>
+      <CSSTransition in={!currentQuestionFinished} timeout={200} classNames="fade-transiton">
+        <div>
+          {/* 问题标题 */}
+          <div className="py4 f1 bold"> {currentQuestion.title} </div>
 
-      {/* 问题选项 */}
-      <List className="f3 py4">
+          {/* 问题选项 */}
+          <List className="f3 py4">
 
-        {/* 如果是单选 */}
-        { currentQuestion.type === 'radio' &&
-          currentQuestion.options.map(RadioItem$)
-        }
-        {/* 如果是多选 */}
-        {currentQuestion.type === 'check' &&
-          currentQuestion.options.map(CheckItem$)
-        }
-        {/* 如果是开放问题 */}
-        { currentQuestion.type === 'input' &&
-          <TextareaItem
-            autoHeight
-            placeholder="请输入..."
-            labelNumber={ 5 }
-            rows={ 3 }
-            value={ questionsResult[currentQuestion.id] }
-            onChange={ value => {
-              setCurrentQuestionFinished(true)
-              setQuestionsResult({
-                ...questionsResult,
-                [currentQuestion.id]: value,
-              })
-            }}
-          />
-        }
-      </List>
+            {/* 如果是单选 */}
+            { currentQuestion.type === 'radio' &&
+              currentQuestion.options.map(RadioItem$)
+            }
+            {/* 如果是多选 */}
+            {currentQuestion.type === 'check' &&
+              currentQuestion.options.map(CheckItem$)
+            }
+            {/* 如果是开放问题 */}
+            { currentQuestion.type === 'input' &&
+              <TextareaItem
+                autoHeight
+                placeholder="请输入..."
+                labelNumber={ 5 }
+                rows={ 3 }
+                value={ questionsResult[currentQuestion.id] }
+                onChange={ value => {
+                  setCurrentQuestionFinished(true)
+                  setQuestionsResult({
+                    ...questionsResult,
+                    [currentQuestion.id]: value,
+                  })
+                }}
+              />
+            }
+          </List>
+        </div>
+      </CSSTransition>
 
       <BtnGroup$ />
 
