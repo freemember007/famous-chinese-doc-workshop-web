@@ -36,7 +36,7 @@ export const getServerSideProps = async ({ /*req, res, */query }) => {
       'question.option.order' : 'order_num',
     })
     .then(it.body)
-  return { props: { survey } }
+  return { props: { query, survey } }
 }
 
 // useGlobalState
