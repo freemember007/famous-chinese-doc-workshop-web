@@ -21,7 +21,7 @@ import agent from '@/util/request'
 import sleep from 'await-sleep'
 import ensure from '@/util/ensure'
 import { omit, percent, concatOrWithout/*, transJsonArrayValueToPgArrayStr*/ } from '@/util/filters'
-// import { _list, _item, _title, _step } from '@/util/semantic-tags'
+import { _body } from '@/util/semantic-tags'
 
 // props
 export const getServerSideProps = async ({ /*req, res, */query }) => {
@@ -132,7 +132,6 @@ const InputItem$ = ({ currentQuestion }) => {
 }
 
 const Question$ = ({ currentQuestion, surveyQuestionsLength }) => {
-
   return (
     <SwitchTransition>
       <CSSTransition key={currentQuestion.id} timeout={200} classNames="fade-transiton">
@@ -152,9 +151,11 @@ const Question$ = ({ currentQuestion, surveyQuestionsLength }) => {
   )
 }
 
-const BtnGroup$ = ({ pageTitle, surveyQuestionsLength, currentQuestionFinished, surveyId, userInfo }) => {
+const BtnGroup$ = ({ pageTitle, surveyQuestionsLength, currentQuestionFinished, surveyId }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useGlobalState('currentQuestionIndex')
   const [questionsResult ] = useGlobalState('questionsResult')
+  const [ userInfo ] = useSessionStorage('ddyy-survey-userInfo', {})
+  console.log(userInfo) // 可用来观察根组件渲染次数
 
   const { mutate, loading, /*error*/ } = useMutate({
     verb : 'POST',
@@ -207,16 +208,14 @@ const SurveyDo$ = ({ pageTitle, survey }) => {
   const currentQuestion = survey.questions[currentQuestionIndex] || {}
   const currentQuestionFinished = !!questionsResult[currentQuestion.id]
   const surveyQuestionsLength = survey.questions.length
-  const [ userInfo ] = useSessionStorage('ddyy-survey-userInfo', {})
-  console.log(userInfo) // 可用来观察根组件渲染次数
   return (
     <section>
       <Nav$ {...{ surveyTitle: survey.title }} />
-      <div className="absolute t46 l0 r0 b0 px4 w12 bg-white">
+      <_body className="absolute t46 l0 r0 b0 px4 w12 bg-white">
         <Step$ {...{ currentQuestionIndex, surveyQuestionsLength, currentQuestionFinished }}/>
         <Question$ {...{ survey, surveyQuestionsLength, currentQuestion }}/>
-        <BtnGroup$ {...{ pageTitle, surveyQuestionsLength, currentQuestionFinished, surveyId: survey.id, userInfo }} />
-      </div>
+        <BtnGroup$ {...{ pageTitle, surveyQuestionsLength, currentQuestionFinished, surveyId: survey.id }} />
+      </_body>
     </section>
   )
 }
