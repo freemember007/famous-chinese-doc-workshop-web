@@ -31,6 +31,7 @@ function MyApp( { Component, pageProps }) {
 
   // useLocalStorage
   const [userInfo, setUserInfo] = useSessionStorage('ddyy-survey-userInfo', {})
+  const [, setPageTitle] = useSessionStorage('ddyy-survey-pageTitle', '')
   const maybeUserInfo = isEmpty(userInfoQueryParam) ? userInfo : userInfoQueryParam
   const pageTitle = pageTitleQueryParam || '点点医院量表问卷系统'
 
@@ -38,6 +39,7 @@ function MyApp( { Component, pageProps }) {
     // 确保app传入所需参数（注：不能在setUserInfo后直接判断userInfo，因存入需要时间）
     console.log({ maybeUserInfo })
     ensure(maybeUserInfo.hos_id, 'app参数hos_id不能为空')
+    setPageTitle(pageTitle)
     // 如不为空，将其存入sessionStorage
     if(!(isEmpty(userInfoQueryParam))) setUserInfo(userInfoQueryParam)
   }, [pageProps?.query])
