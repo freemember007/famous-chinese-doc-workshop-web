@@ -7,6 +7,7 @@ import { useSessionStorage } from 'react-use'
 // component
 import { NavBar, Button, Icon, List, Checkbox, Radio, TextareaItem } from 'antd-mobile'
 import { ArrowIosForwardOutline as RightIcon } from '@styled-icons/evaicons-outline'
+import Flex from 'styled-flex-component'
 
 // fp
 import { pick, map, compose } from 'ramda'
@@ -57,9 +58,14 @@ const Item$ = ({ surveyResult }) => {
     <Link className=" py3 bg-white bb __flex j-between a-center" href={{ pathname: 'survey-result', query: { pageTitle, id: surveyResult.id }}} key={surveyResult.id}>
       <_item className=" py3 bg-white bb __flex j-between a-center">
         {/* 左侧内容 */}
-        <_left className="flex1 ">
-          <div className="w12"> {surveyResult.survey.title |> omit(36)} </div>
-          <div className="w4 f4 gray"> { surveyResult.created_at |> formatDateTimeM2 }</div>
+        <_left className="lh2">
+          <div className=""> {surveyResult.survey.title |> omit(36)} </div>
+          <div className="f4 gray"> { surveyResult.created_at |> formatDateTimeM2 }</div>
+          <div className="pl1 f4 white round"
+            x-if={surveyResult.result}
+            x-class={surveyResult.is_ok ? 'bg-success' : 'bg-error'}>
+            { surveyResult.score + '分，' + surveyResult.result }
+          </div>
         </_left>
 
         <_right>
