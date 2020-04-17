@@ -18,7 +18,7 @@ import { it/*, _*/ } from 'param.macro'
 // util
 import agent from '@/util/request'
 import ensure from '@/util/ensure'
-import { omit } from '@/util/filters'
+import { omit, ifNotNilAppend } from '@/util/filters'
 import { formatDateTimeM2 } from '@/util/date'
 import { _body, _list, _item, _left, _right } from '@/util/semantic-tags'
 
@@ -40,14 +40,15 @@ export const getServerSideProps = async ({ /*req, res, */query }) => {
 }
 
 // nav
-const Nav$ = () => {
+const Nav$ = ({ query }) => {
+  const ownerName = query.ownerName |> ifNotNilAppend('的')
   return (
     <NavBar
       mode="light"
       icon={<Icon type="left" />}
       onClick={ Router.back }
     >
-      评测结果列表
+      { ownerName + '评测结果' }
     </NavBar>
   )
 }
@@ -66,10 +67,11 @@ const Item$ = ({ surveyResult }) => {
             x-class={surveyResult.is_ok ? 'bg-success' : 'bg-error'}>
             { surveyResult.score + '分，' + surveyResult.result }
           </div>
-*/}          <Badge
+*/}
+          <Badge
             x-if={surveyResult.result}
             text={ surveyResult.score + '分，' + surveyResult.result }
-            style={{ background: surveyResult.is_ok ? 'limegreen' : 'orangered', padding: '0 3px' }}
+            style={{ background: surveyResult.is_ok ? 'limegreen' : 'orangered' }}
           >
           </Badge>
         </_left>
@@ -90,9 +92,9 @@ const List$ = ({ surveyResults }) => {
 }
 
 // main
-const SurveyResultList$ = ({ surveyResults }) => {
+const SurveyResultList$ = ({ query, surveyResults }) => {
   return <>
-    <Nav$ />
+    <Nav$ {...{ query }}/>
     <_body className="absolute t46 l0 r0 b0 px4 w12 bg-white">
       {<List$ {...{ surveyResults }} />}
     </_body>

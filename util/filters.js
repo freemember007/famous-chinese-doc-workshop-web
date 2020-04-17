@@ -27,6 +27,11 @@ export const omitCount = (count = 0) => {
   return '(' + String(count) + ')'
 }
 
+// 如果不为空添加后缀，比如，[xxx的]xxx，中间加'的'的情况
+export const ifNotNilAppend = appendStr => (input = '') => {
+  return input ? input + appendStr : ''
+}
+
 // 分数格式化为百分比
 export const percent = (input = 0) => {
   return String(Number(input)*100) + '%'
