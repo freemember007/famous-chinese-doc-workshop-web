@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useSessionStorage } from 'react-use'
 
 // component
-import { NavBar, Button, Icon, List, Checkbox, Radio, TextareaItem } from 'antd-mobile'
+import { NavBar, Badge, Icon, List, Checkbox, Radio, TextareaItem } from 'antd-mobile'
 import { ArrowIosForwardOutline as RightIcon } from '@styled-icons/evaicons-outline'
 import Flex from 'styled-flex-component'
 
@@ -61,11 +61,17 @@ const Item$ = ({ surveyResult }) => {
         <_left className="lh2">
           <div className=""> {surveyResult.survey.title |> omit(36)} </div>
           <div className="f4 gray"> { surveyResult.created_at |> formatDateTimeM2 }</div>
-          <div className="pl1 f4 white round"
+{/*          <div className="pl1 f4 white round"
             x-if={surveyResult.result}
             x-class={surveyResult.is_ok ? 'bg-success' : 'bg-error'}>
             { surveyResult.score + '分，' + surveyResult.result }
           </div>
+*/}          <Badge
+            x-if={surveyResult.result}
+            text={ surveyResult.score + '分，' + surveyResult.result }
+            style={{ background: surveyResult.is_ok ? 'limegreen' : 'orangered', padding: '0 3px' }}
+          >
+          </Badge>
         </_left>
 
         <_right>
