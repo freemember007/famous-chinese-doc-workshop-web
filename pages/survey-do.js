@@ -167,6 +167,7 @@ const BtnGroup$ = ({ pageTitle, surveyQuestionsLength, currentQuestionFinished, 
       survey_id             : surveyId,
       hos_id                : userInfo.hos_id,
       pat_id                : userInfo.pat_id,
+      pat                   : userInfo.pat || {},
       questions_result_data : questionsResult,
     }).then(res => Router.replace({ pathname: '/ddyy-common-business-react/survey-explain', query: { pageTitle, id: res?.[0]?.id } }))
   }
