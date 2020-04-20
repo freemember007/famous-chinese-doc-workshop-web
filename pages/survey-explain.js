@@ -18,12 +18,17 @@ import { _title, _subTitle, _box, _text } from '@/util/semantic-tags'
 
 // props
 export async function getServerSideProps({ /*req, res, */query}) {
-  ensure(query?.id, '请求参数(问卷结果id)不能为空')
+  // all acceptable and not nullable query params
+  const {
+    id          // 问卷结果id
+  } = query
+  ensure(id, '请求参数(问卷结果id)不能为空')
+
   const survey_result = await agent
     .get('common-biz/rest/survey_result')
     .set({ Accept: 'application/vnd.pgrst.object+json' })
     .query({
-      id     : 'eq.' + query.id,
+      id     : 'eq.' + id,
       select : 'id, score, survey(id, title, explain)'
     })
     .then(it.body)
@@ -74,12 +79,11 @@ function Body$({ /*pageTitle,*/ survey_result }) {
 }
 
 // main
-function SurveyExplain$(props) {
-  console.log({props})
+function SurveyExplain$({ survey_result }) {
   return (
     <section>
       <Nav$ />
-      <Body$ {...props} />
+      <Body$ {...{ survey_result } } />
     </section>
   )
 }

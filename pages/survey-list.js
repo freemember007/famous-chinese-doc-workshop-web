@@ -3,6 +3,7 @@ import React from 'react'
 import Router from 'next/router'
 import Link from 'next/link'
 // import { useSessionStorage } from 'react-use'
+import useSessionstorage from "@rooks/use-sessionstorage"
 // import { useGet } from "restful-react"
 
 // components
@@ -20,10 +21,10 @@ import { _list, _item, _left, _right } from '@/util/semantic-tags'
 
 // props
 export async function getServerSideProps({ query }) {
-  return { props: {
-    surveys: await agent.get('common-biz/rest/survey').then(it.body),
-    query
-  } }
+  const surveys = await agent
+    .get('common-biz/rest/survey')
+    .then(it.body)
+  return { props: { query, surveys } }
 }
 
 // nav
@@ -40,14 +41,14 @@ function Nav$() {
 }
 
 // body
-function Body$({ pageTitle, surveys }) {
-  // const [userInfo] = useSessionStorage('ddyy-survey-userInfo', {})
+function Body$({ surveys }) {
+  const [pageTitle] = useSessionstorage('ddyy-survey-pageTitle')
 
   return (
     <_list className="absolute t46 l0 r0 b0 px4 w100 bg-white">
 
       {(surveys || [{}, {}, {}, {}]).map((survey, index) =>
-        <Link href={{ pathname: 'survey-detail', query: { id: survey.id, pageTitle }}} key={index}>
+        <Link href={{ pathname: 'survey-detail', query: { pageTitle, id: survey.id }}} key={index}>
           <_item className=" py3 bg-white bb __flex j-between a-center">
 
             {/* 左侧内容 */}
@@ -79,11 +80,11 @@ function Body$({ pageTitle, surveys }) {
 }
 
 // main
-function SurveyList$(props) {
+function SurveyList$({ surveys }) {
   return (
     <section>
       <Nav$ />
-      <Body$ {...props} />
+      <Body$ { ... { surveys } } />
     </section>
   )
 }

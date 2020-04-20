@@ -1,9 +1,8 @@
 // framework
-import React, { useEffect } from 'react'
+import React from 'react'
 import Router from 'next/router'
 import { useGet } from "restful-react"
 import { useSearchParam } from 'react-use'
-// import { useUrlSearchParams } from "use-url-search-params"
 
 // component
 import { NavBar, Icon, List, Checkbox, Radio, TextareaItem } from 'antd-mobile'
@@ -13,13 +12,24 @@ import { _title, _subTitle, _list } from '@/util/semantic-tags'
 
 // fp
 import { includes, isEmpty, random } from 'lodash/fp'
-// import { without } from 'ramda'
+// import { pick } from 'ramda'
 // import { match, matchPairs, ANY } from 'pampy'
 // import { it, _ } from 'param.macro'
 
 // util
 import ensure from '@/util/ensure'
 import { formatDateTimeM2 } from '@/util/date'
+
+// props
+export async function getServerSideProps({ query }) {
+  // all acceptable and not nullable query params
+  const {
+    id          // 问卷结果id
+  } = query
+  ensure(id, '请求参数(问卷结果id)不能为空')
+
+  return { props: { query } }
+}
 
 // nav
 function Nav$() {
@@ -29,14 +39,8 @@ function Nav$() {
 }
 
 // body
-function Body$(/*{ pageTitle }*/) {
-  // 该库导致需多次返回才可返回
-  // const [ params/*, setParams*/ ] = useUrlSearchParams({ id: 1 /*defaultValue*/})
+function Body$() {
   const id = useSearchParam('id')
-
-  useEffect(() => {
-    ensure(id, '请求参数(问卷结果id)不能为空')
-  }, [])
 
   // useGet
   const { data, /*error*/ } = useGet({
@@ -44,6 +48,8 @@ function Body$(/*{ pageTitle }*/) {
     queryParams : {
       id     : 'eq.' + id,
       select : '*, survey(*, questions:question(*, options:option(*))), questionResults:question_result(*, question(*, options:option(*)))',
+      'survey.question.order'        : 'order_num.desc',
+      'survey.question.option.order' : 'order_num',
     },
     resolve     : res => res[0],
   })
@@ -83,7 +89,8 @@ function Body$(/*{ pageTitle }*/) {
         value={ questionResult.input }
       />
 
-    return <div>
+    return <>
+      {/* @todo: 迭代questions */}
       {survey_result.questionResults.map((questionResult, index) => {
         const _question = questionResult.question
         return <_list key={index} className="my4">
@@ -103,7 +110,7 @@ function Body$(/*{ pageTitle }*/) {
 
         </_list>
       })}
-    </div>
+    </>
   }
 
   return (
@@ -124,11 +131,11 @@ function Body$(/*{ pageTitle }*/) {
 }
 
 // main
-function SurveyResult$(props) {
+function SurveyResult$({ query }) {
   return (
     <section>
       <Nav$ />
-      <Body$ {...props} />
+      <Body$ {...{ query }} />
     </section>
   )
 }

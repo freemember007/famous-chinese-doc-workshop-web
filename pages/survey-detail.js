@@ -2,6 +2,7 @@
 import React from 'react'
 import Router from 'next/router'
 import Link from 'next/link'
+import useSessionstorage from "@rooks/use-sessionstorage"
 
 // components
 import { NavBar, Icon, Button } from 'antd-mobile'
@@ -15,18 +16,25 @@ import { it/*, _*/ } from 'param.macro'
 
 // util
 import agent from '@/util/request'
+import ensure from '@/util/ensure'
 import { formatDateTimeM2 } from '@/util/date'
 import { imagePlaceholder } from '@/util/filters'
 import { _title, _subTitle, _text } from '@/util/semantic-tags'
 
 // props
 export async function getServerSideProps({ query }) {
+  // all acceptable and not nullable query params
+  const {
+    id          // 问卷id
+  } = query
+  ensure(id, '请求参数(问卷id)不能为空')
+
   const survey = await agent
     .get('common-biz/rest/survey')
     .set({ Accept: 'application/vnd.pgrst.object+json' })
-    .query({ id: 'eq.' + query.id })
+    .query({ id: 'eq.' + id })
     .then(it.body)
-  return { props: { survey, query } }
+  return { props: { query, survey } }
 }
 
 // nav
@@ -43,7 +51,8 @@ function Nav$() {
 }
 
 // body
-function Body$({ pageTitle, survey }) {
+function Body$({ survey }) {
+  const [pageTitle] = useSessionstorage('ddyy-survey-pageTitle')
   return (
     <div className="absolute t46 l0 r0 b0 w12 bg-white">
       { (!process.browser || !survey.image) ? <Skeleton width={'100%'} height={200}/> :
@@ -68,7 +77,7 @@ function Body$({ pageTitle, survey }) {
         <_text className="dark lh2">
           { survey.intro || <Skeleton count={5} />}
         </_text>
-        <Link href={{ pathname: 'survey-do', query: { id: survey.id, pageTitle }}}>
+        <Link href={{ pathname: 'survey-do', query: { pageTitle, id: survey.id }}}>
           <Button className="my4" type="primary" disabled={isEmpty(survey)}>开始测试</Button>
         </Link>
       </div>
@@ -77,11 +86,11 @@ function Body$({ pageTitle, survey }) {
 }
 
 // main
-function SurveyDetail$(props) {
+function SurveyDetail$({ survey }) {
   return (
     <section>
       <Nav$ />
-      <Body$ {...props}/>
+      <Body$ {...{ survey }}/>
     </section>
   )
 }

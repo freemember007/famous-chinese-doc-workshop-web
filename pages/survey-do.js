@@ -2,7 +2,8 @@
 import React from 'react'
 import Router from 'next/router'
 import { useMutate } from "restful-react"
-import { useSessionStorage } from 'react-use'
+// import { useSessionStorage } from 'react-use'
+import useSessionstorage from "@rooks/use-sessionstorage"
 import { createGlobalState } from 'react-hooks-global-state'
 
 // component
@@ -25,12 +26,17 @@ import { _body } from '@/util/semantic-tags'
 
 // props
 export const getServerSideProps = async ({ /*req, res, */query }) => {
-  ensure(query?.id, '请求参数(问卷id)不能为空')
+  // all acceptable and not nullable query params
+  const {
+    id          // 问卷id
+  } = query
+  ensure(id, '请求参数(问卷id)不能为空')
+
   const survey = await agent
     .get('common-biz/rest/survey')
     .set({ Accept: 'application/vnd.pgrst.object+json' })
     .query({
-      id                      : 'eq.' + query.id,
+      id                      : 'eq.' + id,
       select                  : '*, questions:question(*, options:option(*))',
       'question.order'        : 'order_num',
       'question.option.order' : 'order_num',
@@ -151,10 +157,11 @@ const Question$ = ({ currentQuestion, surveyQuestionsLength }) => {
   )
 }
 
-const BtnGroup$ = ({ pageTitle, surveyQuestionsLength, currentQuestionFinished, surveyId }) => {
+const BtnGroup$ = ({ surveyQuestionsLength, currentQuestionFinished, surveyId }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useGlobalState('currentQuestionIndex')
   const [questionsResult ] = useGlobalState('questionsResult')
-  const [ userInfo ] = useSessionStorage('ddyy-survey-userInfo', {})
+  const [pageTitle] = useSessionstorage('ddyy-survey-pageTitle')
+  const [userInfo] = useSessionstorage('ddyy-survey-userInfo', {})
   console.log(userInfo) // 可用来观察根组件渲染次数
 
   const { mutate, loading, /*error*/ } = useMutate({
@@ -202,7 +209,7 @@ const BtnGroup$ = ({ pageTitle, surveyQuestionsLength, currentQuestionFinished, 
 }
 
 // main
-const SurveyDo$ = ({ pageTitle, survey }) => {
+const SurveyDo$ = ({ survey }) => {
   const [currentQuestionIndex] = useGlobalState('currentQuestionIndex')
   const [questionsResult] = useGlobalState('questionsResult')
   const currentQuestion = survey.questions[currentQuestionIndex] || {}
@@ -214,7 +221,7 @@ const SurveyDo$ = ({ pageTitle, survey }) => {
       <_body className="absolute t46 l0 r0 b0 px4 w12 bg-white">
         <Step$ {...{ currentQuestionIndex, surveyQuestionsLength, currentQuestionFinished }}/>
         <Question$ {...{ survey, surveyQuestionsLength, currentQuestion }}/>
-        <BtnGroup$ {...{ pageTitle, surveyQuestionsLength, currentQuestionFinished, surveyId: survey.id }} />
+        <BtnGroup$ {...{ surveyQuestionsLength, currentQuestionFinished, surveyId: survey.id }} />
       </_body>
     </section>
   )
