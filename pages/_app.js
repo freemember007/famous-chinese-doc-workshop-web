@@ -49,7 +49,7 @@ function MyApp( { Component, pageProps }) {
     // setSessionStorage
     if(!(isEmpty(userInfo))) setSessionUserInfo(userInfo)
     setSessionPageTitle(pageTitle)
-  }, [pageProps.query])
+  }, [])
 
   return(
     <RestfulProvider base={DDYYAPI_BASE_URL}>
