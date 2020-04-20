@@ -41,7 +41,8 @@ function MyApp( { Component, pageProps }) {
   const [sessionUserInfo, setSessionUserInfo] = useSessionstorage('ddyy-survey-userInfo', {})
   const [sessionPageTitle, setSessionPageTitle] = useSessionstorage('ddyy-survey-pageTitle', '')
   const queryOrSessionUserInfo = isEmpty(userInfo) ? sessionUserInfo : userInfo
-  const queryOrSessionPageTitle =  sessionPageTitle || pageTitle
+  // 直接使用query参数比较平滑，如无则用sessionPageTitle，会闪一下。
+  const queryOrSessionPageTitle = pageTitle || sessionPageTitle
 
   useEffect(() => {
     // 不允许为null的应用级params(可能来自query，也可能来自sessionstorage)
