@@ -2,12 +2,13 @@
 import React from 'react'
 import Router from 'next/router'
 import Link from 'next/link'
-import { useSessionStorage } from 'react-use'
+// import { useSessionStorage } from 'react-use'
+import useSessionstorage from "@rooks/use-sessionstorage"
 
 // component
-import { NavBar, Badge, Icon, List, Checkbox, Radio, TextareaItem } from 'antd-mobile'
+import { NavBar, Badge, Icon } from 'antd-mobile'
 import { ArrowIosForwardOutline as RightIcon } from '@styled-icons/evaicons-outline'
-import Flex from 'styled-flex-component'
+// import Flex from 'styled-flex-component'
 
 // fp
 import { pick, map, compose } from 'ramda'
@@ -20,10 +21,17 @@ import agent from '@/util/request'
 import ensure from '@/util/ensure'
 import { omit, ifNotNilAppend } from '@/util/filters'
 import { formatDateTimeM2 } from '@/util/date'
-import { _body, _list, _item, _left, _right } from '@/util/semantic-tags'
+import { _body, _item, _left, _right } from '@/util/semantic-tags'
 
 // props
 export const getServerSideProps = async ({ /*req, res, */query }) => {
+  // @todo: claim api
+  // // all acceptable and not nullable query params
+  // const {
+  //   id          // 问卷id
+  // } = query
+  // ensure(id, '请求参数(问卷id)不能为空')
+
   const ownersQueryCondtion = query
     |> pick(['hos_id', 'dept_id', 'doc_id', 'pat_id'])
     |> map(compose(prepend('eq.'), String))
@@ -54,7 +62,8 @@ const Nav$ = ({ query }) => {
 }
 
 const Item$ = ({ surveyResult }) => {
-  const [pageTitle] = useSessionStorage('ddyy-survey-pageTitle')
+  const [pageTitle] = useSessionstorage('ddyy-survey-pageTitle')
+
   return (
     <Link className=" py3 bg-white bb __flex j-between a-center" href={{ pathname: 'survey-result', query: { pageTitle, id: surveyResult.id }}} key={surveyResult.id}>
       <_item className=" py3 bg-white bb __flex j-between a-center">
