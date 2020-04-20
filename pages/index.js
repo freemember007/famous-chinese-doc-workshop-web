@@ -24,9 +24,14 @@ import {_list, _item } from '@/util/semantic-tags'
 export async function getServerSideProps({ query }) {
   return { props: { query: {
     ...query,
-    // for dev
-    userInfo  : '{ "hos": { "id": 1 }, "app": { "id": 1 }, "pat": { "id" : 1 } }',
+    // only for dev
     pageTitle : '点点医院量表问卷系统(dev)',
+    userInfo  : {
+      app_id : 1,
+      hos_id : 1,
+      pat_id : 1,
+      pat    : { name: 'xjp', age: '20', gender: 'M' },
+    },
   } } }
 }
 
