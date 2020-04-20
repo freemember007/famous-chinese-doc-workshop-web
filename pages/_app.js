@@ -44,7 +44,7 @@ function MyApp( { Component, pageProps }) {
 
   useEffect(() => {
     // 不允许为null的应用级params(可能来自query，也可能来自sessionstorage)
-    ensure(queryOrSessionUserInfo.app?.id, 'queryOrSessionUserInfo.app.id不能为空')
+    ensure(queryOrSessionUserInfo.app_id, 'queryOrSessionUserInfo.app_id不能为空')
 
     // setSessionStorage
     if(!(isEmpty(userInfo))) setSessionUserInfo(userInfo)
