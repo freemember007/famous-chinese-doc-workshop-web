@@ -16,7 +16,8 @@ import "@/node_modules/placeholder-loading/dist/css/placeholder-loading.min.css"
 
 // fp
 import { isEmpty } from 'lodash/fp'
-import { map, identity, isNil } from 'ramda'
+import { alwaysEmptyObject } from 'ramda-extension'
+import { pick, evolve, map, identity, isNil } from 'ramda'
 import { tryCatch } from 'rambdax'
 import { trace } from 'ramda-extension'
 // import { _ } from 'param.macro'
@@ -30,6 +31,13 @@ function MyApp( { Component, pageProps }) {
   const query = (pageProps.query || {})
     |> map(tryCatch(JSON.parse, identity))
     |> trace('query')
+
+  const appLevelQueryParams = query
+    |> evolve({ userInfo: tryCatch(JSON.parse, alwaysEmptyObject) })
+    |> pick([
+      'pageTitle', //::String
+      'userInfo',  //::Object
+    ])
 
   // 所有可接收的应用级query params(首次传入后将存入sessionStorage):
   const {
