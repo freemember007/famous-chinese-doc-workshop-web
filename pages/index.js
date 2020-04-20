@@ -25,7 +25,7 @@ export async function getServerSideProps({ query }) {
   return { props: { query: {
     ...query,
     // for dev
-    userInfo  : '{ "hos_id": 1, "app": { "id": 1 } }',
+    userInfo  : '{ "hos": { "id": 1 }, "app": { "id": 1 }, "pat": { "id" : 1 } }',
     pageTitle : '点点医院量表问卷系统(dev)',
   } } }
 }
