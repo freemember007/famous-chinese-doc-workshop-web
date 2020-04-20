@@ -16,7 +16,7 @@ import "@/node_modules/placeholder-loading/dist/css/placeholder-loading.min.css"
 
 // fp
 import { isEmpty } from 'lodash/fp'
-import { map, identity } from 'ramda'
+import { map, identity, isNil } from 'ramda'
 import { tryCatch } from 'rambdax'
 import { trace } from 'ramda-extension'
 // import { _ } from 'param.macro'
@@ -39,8 +39,9 @@ function MyApp( { Component, pageProps }) {
 
   // useSessionstorage
   const [sessionUserInfo, setSessionUserInfo] = useSessionstorage('ddyy-survey-userInfo', {})
-  const queryOrSessionUserInfo = isEmpty(userInfo) ? sessionUserInfo : userInfo
   const [sessionPageTitle, setSessionPageTitle] = useSessionstorage('ddyy-survey-pageTitle', '')
+  const queryOrSessionUserInfo = isEmpty(userInfo) ? sessionUserInfo : userInfo
+  const queryOrSessionPageTitle = !isNil(pageTitle) ? sessionPageTitle : pageTitle
 
   useEffect(() => {
     // 不允许为null的应用级params(可能来自query，也可能来自sessionstorage)
@@ -54,7 +55,7 @@ function MyApp( { Component, pageProps }) {
   return(
     <RestfulProvider base={DDYYAPI_BASE_URL}>
       <Head>
-        <title>{ pageTitle } </title>
+        <title>{ sessionPageTitle } </title>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0" />
       </Head>
