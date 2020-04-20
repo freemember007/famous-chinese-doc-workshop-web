@@ -41,7 +41,7 @@ function MyApp( { Component, pageProps }) {
   const [sessionUserInfo, setSessionUserInfo] = useSessionstorage('ddyy-survey-userInfo', {})
   const [sessionPageTitle, setSessionPageTitle] = useSessionstorage('ddyy-survey-pageTitle', '')
   const queryOrSessionUserInfo = isEmpty(userInfo) ? sessionUserInfo : userInfo
-  const queryOrSessionPageTitle = !isNil(pageTitle) ? sessionPageTitle : pageTitle
+  const queryOrSessionPageTitle =  sessionPageTitle || pageTitle
 
   useEffect(() => {
     // 不允许为null的应用级params(可能来自query，也可能来自sessionstorage)
@@ -55,7 +55,7 @@ function MyApp( { Component, pageProps }) {
   return(
     <RestfulProvider base={DDYYAPI_BASE_URL}>
       <Head>
-        <title>{ sessionPageTitle } </title>
+        <title>{ queryOrSessionPageTitle } </title>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0" />
       </Head>

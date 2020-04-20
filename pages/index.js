@@ -45,7 +45,7 @@ function Nav$() {
 }
 
 function Body$() {
-  // const [pageTitle] = useSessionstorage('ddyy-survey-pageTitle')
+  const [pageTitle] = useSessionstorage('ddyy-survey-pageTitle')
   const { data: surveys, loading, error } = useGet({
     path        : 'common-biz/rest/survey',
     queryParams : {id: 'in.(1, 2, 3, 4)', select: '*, a'},
@@ -58,11 +58,11 @@ function Body$() {
       { surveys && surveys.map((survey, index) =>
         <_item key={ index }>{ survey.title }</_item>
       )}
-      <Link href={{ pathname: 'survey-list', query: {  } }}>
+      <Link href={{ pathname: 'survey-list', query: { pageTitle } }}>
         <Button type="primary"> 问卷列表 </Button>
       </Link>
       <div className="my4" />
-      <Link href={{ pathname: 'survey-result', query: { id: 242 } }}>
+      <Link href={{ pathname: 'survey-result', query: { pageTitle, id: 242 } }}>
         <Button type="primary"> 问卷结果 </Button>
       </Link>
     </_list>
