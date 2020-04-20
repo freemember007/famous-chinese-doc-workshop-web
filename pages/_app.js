@@ -40,7 +40,7 @@ function MyApp( { Component, pageProps }) {
   // useSessionstorage
   const [sessionUserInfo, setSessionUserInfo] = useSessionstorage('ddyy-survey-userInfo', {})
   const queryOrSessionUserInfo = isEmpty(userInfo) ? sessionUserInfo : userInfo
-  const [, setSessionPageTitle] = useSessionstorage('ddyy-survey-pageTitle', '')
+  const [sessionPageTitle, setSessionPageTitle] = useSessionstorage('ddyy-survey-pageTitle', '')
 
   useEffect(() => {
     // 不允许为null的应用级params(可能来自query，也可能来自sessionstorage)
@@ -48,7 +48,7 @@ function MyApp( { Component, pageProps }) {
 
     // setSessionStorage
     if(!(isEmpty(userInfo))) setSessionUserInfo(userInfo)
-    setSessionPageTitle(pageTitle)
+    if(!sessionPageTitle) setSessionPageTitle(pageTitle)
   }, [])
 
   return(
