@@ -22,7 +22,7 @@ import { tryCatch } from 'rambdax'
 import ensure from '@/util/ensure'
 // config
 import { DDYYAPI_BASE_URL } from '@/constant'
-import { userInfoSchema } from '@/config/schemas'
+import { userInfoSchema } from '@/config/object-schemas'
 
 function MyApp( { Component, pageProps }) {
   // @api: 全局基础query参数，用于初始化页面title，及缓存app/用户信息到session，
@@ -38,6 +38,7 @@ function MyApp( { Component, pageProps }) {
     |> evolve({ pageTitle: when(isNil, always('点点医院量表问卷系统')) })
     // |> trace('baseQueryParams')
   // 如果userInfo query参数不为空，校验其规格
+  isNotEmpty(baseQueryParams.userInfo) && userInfoSchema.validate(baseQueryParams.userInfo)
 
   // useSessionstorage
   const [sessionUserInfo, setSessionUserInfo] = useSessionstorage('ddyy-survey-userInfo', {})
@@ -49,7 +50,6 @@ function MyApp( { Component, pageProps }) {
   const queryOrSessionPageTitle = baseQueryParams.pageTitle || sessionPageTitle
 
   useEffect(() => {
-    isNotEmpty(baseQueryParams.userInfo) && userInfoSchema.validate(baseQueryParams.userInfo)
     // 不允许为null的基础参数
     ensure(queryOrSessionUserInfo.app_id, 'queryOrSessionUserInfo.app_id不能为空')
 
