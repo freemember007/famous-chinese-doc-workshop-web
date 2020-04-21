@@ -62,7 +62,7 @@ const Info$ = ({ surveyResult }) => {
     |> toPairs
     |> map(([key, value]) => ({key, value}))
   return (
-    <Flex justifyArround wrap className="px4 py2 b" style={{ background: 'lemonchiffon' }}>
+    <Flex justifyArround wrap={true} className="px4 py2 b" style={{ background: 'lemonchiffon' }}>
       {surveyResultAttrs.map(attr =>
         <div key={attr.key} className="lh2 w4 dark f3">
           <span className="">{attr.key |> append(': ')}</span>
