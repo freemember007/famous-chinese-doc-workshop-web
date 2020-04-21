@@ -8,10 +8,15 @@ import Router from 'next/router'
 import { NavBar, Icon, List, Checkbox, Radio, TextareaItem } from 'antd-mobile'
 import Skeleton from 'react-loading-skeleton'
 import { BulletList } from 'react-content-loader'
+import Flex from 'styled-flex-component'
 // fp
-import { pick, evolve } from 'ramda'
+import { pick, toPairs } from 'lodash/fp'
+import { map, evolve, merge } from 'ramda'
 import { includes, isEmpty, random, sortBy } from 'lodash/fp'
-import { it/*, _*/ } from 'param.macro'
+import { renameKeys } from 'ramda-adjunct'
+import { append } from 'rambdax'
+import { it, _ } from 'param.macro'
+import { match, ANY } from 'pampy'
 // util
 import agent from '@/util/request'
 import ensure from '@/util/ensure'
@@ -48,12 +53,32 @@ const Nav$ = () =>
     评测结果详情
   </NavBar>
 
-const Title$ = ({ survey, surveyResult }) =>
+const Info$ = ({ surveyResult }) => {
+  const surveyResultAttrs = surveyResult.pat
+    |> pick(['name', 'gender', 'age']) // 作改变顺序用。lodash的pick兼容null/undefined, 输出单位元为空对象
+    |> merge(_, surveyResult |> pick(['score', 'result'])) // ramda的merge函数同lodash
+    |> evolve({ gender: match(_, 'M', '男', 'F', '女', ANY, '未知') })
+    |> renameKeys({ name: '姓名', gender: '性别', age: '年龄', score: '分数', 'result': '结果' })
+    |> toPairs
+    |> map(([key, value]) => ({key, value}))
+  return (
+    <Flex justifyArround wrap className="px4 py2 b" style={{ background: 'lemonchiffon' }}>
+      {surveyResultAttrs.map(attr =>
+        <div key={attr.key} className="lh2 w4 dark f3">
+          <span className="">{attr.key |> append(': ')}</span>
+          <span className="">{attr.value}</span>
+        </div>
+      )}
+    </Flex>
+  )
+}
+
+const Title$ = ({ surveyResult }) =>
   <>
-    <_title className="py2 lh2 f1 tc"> {survey.title || <Skeleton/>} </_title>
+    <_title className="py2 lh2 f1 tc"> {surveyResult.survey.title || <Skeleton/>} </_title>
 
     <_subTitle className="py2 w12 f4 gray __flex j-center">
-      { isEmpty(survey) ? <div className="w6"><Skeleton/></div> :
+      { isEmpty(surveyResult) ? <div className="w6"><Skeleton/></div> :
         <div>
           <span>{'测试时间: ' + (surveyResult.created_at |> formatDateTimeM2)}</span>
         </div>
@@ -126,8 +151,9 @@ const QuestionResultList$ = ({ surveyResult }) =>
 const SurveyResult$ = ({ /*query, */surveyResult }) =>
   <>
     <Nav$ />
+    <Info$ {...{ surveyResult }} />
     <_body className="pt4 px4 w12">
-      <Title$ {...{ survey: surveyResult.survey, surveyResult }} />
+      <Title$ {...{ surveyResult }} />
       {isEmpty(surveyResult) ? <QuestionResultListSkeleton$ /> : <QuestionResultList$ {...{ surveyResult }} />}
     </_body>
   </>
