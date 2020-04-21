@@ -7,7 +7,7 @@ import SimpleSchema from 'simpl-schema'
 
 // 自定义错误
 SimpleSchema.defineValidationErrorTransform(error => {
-  console.log({ error })
+  // console.log({ error })
   const customError = new Error('对象验证错误：' + error.message)
   customError.errorList = error.details
   return customError
