@@ -20,6 +20,7 @@ export const userInfoSchema = new SimpleSchema({
     allowedValues : ['pat', 'doc', 'dept', 'hos'],
   },
   pat          : Object,
+  'pat.id'     : SimpleSchema.Integer,
   'pat.name'   : String,
   'pat.age'    : String,
   'pat.gender' : {
