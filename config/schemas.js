@@ -19,7 +19,7 @@ export const userInfoSchema = new SimpleSchema({
     type     : SimpleSchema.Integer,
     // min      : 100, // test
     required : true,
-    label    : '基础query参数userInfo.app_id',
+    // label    : '基础query参数userInfo.app_id',
   },
   hos_id       : SimpleSchema.Integer,
   pat_id       : SimpleSchema.Integer,
