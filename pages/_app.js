@@ -22,7 +22,7 @@ import { tryCatch } from 'rambdax'
 import ensure from '@/util/ensure'
 // config
 import { DDYYAPI_BASE_URL } from '@/constant'
-import { userInfoSchema } from '@/config/object-schemas'
+import { userInfoSchema } from '@/config/schemas'
 
 function MyApp( { Component, pageProps }) {
   // @api: 全局基础query参数，用于初始化页面title，及缓存app/用户信息到session，
@@ -56,7 +56,7 @@ function MyApp( { Component, pageProps }) {
     // setSessionStorage
     if(!(isEmpty(baseQueryParams.userInfo))) setSessionUserInfo(baseQueryParams.userInfo)
     if(!sessionPageTitle) setSessionPageTitle(baseQueryParams.pageTitle)
-  }, [])
+  }, [pageProps.query])
 
   return(
     <RestfulProvider base={DDYYAPI_BASE_URL}>
