@@ -38,10 +38,7 @@ function MyApp( { Component, pageProps }) {
     |> evolve({ pageTitle: when(isNil, always('点点医院量表问卷系统')) })
     |> trace('baseQueryParams')
   // 如果userInfo query参数不为空，校验其规格
-  try{
-
-    isNotEmpty(baseQueryParams.userInfo) && userInfoSchema.validate(baseQueryParams.userInfo)
-  }catch(e){ throw e}
+  isNotEmpty(baseQueryParams.userInfo) && userInfoSchema.validate(baseQueryParams.userInfo)
 
   // useSessionstorage
   const [sessionUserInfo, setSessionUserInfo] = useSessionstorage('ddyy-survey-userInfo', {})

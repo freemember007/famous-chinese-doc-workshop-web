@@ -9,7 +9,7 @@ import SimpleSchema from 'simpl-schema'
 export const userInfoSchema = new SimpleSchema({
   app_id       : {
     type     : SimpleSchema.Integer,
-    min      : 100, // test
+    // min      : 100, // test
     required : true,
     label    : '基础query参数userInfo.app_id',
   },
