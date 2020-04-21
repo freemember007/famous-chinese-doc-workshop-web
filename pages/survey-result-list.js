@@ -25,14 +25,18 @@ import { _body, _item, _left, _right } from '@/util/semantic-tags'
 
 // props
 export const getServerSideProps = async ({ /*req, res, */query }) => {
-  // @todo: claim api
-  // // all acceptable and not nullable query params
-  // const {
-  //   id          // 问卷id
-  // } = query
-  // ensure(id, '请求参数(问卷id)不能为空')
+  // @api
+  const queryParams = query
+    |> pick([
+      'hos_id',    // 医院id查询条件
+      'dept_id',   // 科室id查询条件
+      'doc_id',    // 医生id查询条件
+      'pat_id',    // 患者id查询条件
+      'ownerName', // 问卷所有者名称，可以是医院/科室/医生/患者以及任何自定义名称。
+    ])
 
-  const ownersQueryCondtion = query
+  // 组合查询条件
+  const ownersQueryCondtion = queryParams
     |> pick(['hos_id', 'dept_id', 'doc_id', 'pat_id'])
     |> map(compose(prepend('eq.'), String))
   ensure(isNotEmpty(ownersQueryCondtion), 'query参数hos_id/dept_id/doc_id/pat_id不可全为空')
@@ -42,6 +46,7 @@ export const getServerSideProps = async ({ /*req, res, */query }) => {
     .query({
       ...ownersQueryCondtion,
       select : '*, survey(*)',
+      order  : 'created_at.desc',
     })
     .then(it.body)
   return { props: { query, surveyResults } }
