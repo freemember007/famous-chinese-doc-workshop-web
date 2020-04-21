@@ -36,7 +36,7 @@ function MyApp( { Component, pageProps }) {
     |> evolve({ userInfo: tryCatch(JSON.parse, identity) })
     |> evolve({ userInfo: when(isNotPlainObj, alwaysEmptyObject) })
     |> evolve({ pageTitle: when(isNil, always('点点医院量表问卷系统')) })
-    |> trace('baseQueryParams')
+    // |> trace('baseQueryParams')
   // 如果userInfo query参数不为空，校验其规格
   isNotEmpty(baseQueryParams.userInfo) && userInfoSchema.validate(baseQueryParams.userInfo)
 

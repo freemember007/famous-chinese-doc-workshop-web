@@ -2,20 +2,15 @@
 import React from 'react'
 import Router from 'next/router'
 import Link from 'next/link'
-// import { useSessionStorage } from 'react-use'
 import useSessionstorage from "@rooks/use-sessionstorage"
-
 // component
 import { NavBar, Badge, Icon } from 'antd-mobile'
 import { ArrowIosForwardOutline as RightIcon } from '@styled-icons/evaicons-outline'
-// import Flex from 'styled-flex-component'
-
 // fp
 import { pick, map, compose } from 'ramda'
 import { prepend } from 'rambdax'
 import { isNotEmpty } from 'ramda-extension'
 import { it/*, _*/ } from 'param.macro'
-
 // util
 import agent from '@/util/request'
 import ensure from '@/util/ensure'
@@ -70,7 +65,7 @@ const Item$ = ({ surveyResult }) => {
   const [pageTitle] = useSessionstorage('ddyy-survey-pageTitle')
 
   return (
-    <Link className=" py3 bg-white bb __flex j-between a-center" href={{ pathname: 'survey-result', query: { pageTitle, id: surveyResult.id }}} key={surveyResult.id}>
+    <Link href={{ pathname: 'survey-result', query: { pageTitle, id: surveyResult.id }}} key={surveyResult.id}>
       <_item className=" py3 bg-white bb __flex j-between a-center">
         {/* 左侧内容 */}
         <_left className="lh2">

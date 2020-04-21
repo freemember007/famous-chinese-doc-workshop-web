@@ -29,7 +29,7 @@ export async function getServerSideProps({ query }) {
     userInfo  : {
       app_id : 1,
       hos_id : 1,
-      pat_id : 1,
+      pat_id : 2548629,
       pat    : { name: 'xjp', age: '80', gender: 'M' },
     },
   } } }
