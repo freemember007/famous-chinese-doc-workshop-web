@@ -5,60 +5,57 @@
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only'
 import React, { useEffect } from 'react'
 import { RestfulProvider } from "restful-react"
-// import { useSessionStorage } from 'react-use'
 import useSessionstorage from "@rooks/use-sessionstorage"
-
 // component
 import Head from 'next/head'
 import { SkeletonTheme } from "react-loading-skeleton"
 import '@/styles/spectre.styl'
 import "@/node_modules/placeholder-loading/dist/css/placeholder-loading.min.css"
-
 // fp
 import { isEmpty } from 'lodash/fp'
 import { alwaysEmptyObject } from 'ramda-extension'
-import { pick, evolve, map, identity, isNil } from 'ramda'
+import { pickAll, evolve, identity, isNil, always, when } from 'ramda'
+import { isNotPlainObj, isNotEmpty } from 'ramda-adjunct'
 import { tryCatch } from 'rambdax'
 import { trace } from 'ramda-extension'
-// import { _ } from 'param.macro'
-
 // util
-import { DDYYAPI_BASE_URL } from '@/constant'
 import ensure from '@/util/ensure'
+// config
+import { DDYYAPI_BASE_URL } from '@/constant'
+import { userInfoSchema } from '@/config/object-schemas'
 
 function MyApp( { Component, pageProps }) {
-  // 对象化query内嵌属性
-  const query = (pageProps.query || {})
-    |> map(tryCatch(JSON.parse, identity))
-    |> trace('query')
-
-  const appLevelQueryParams = query
-    |> evolve({ userInfo: tryCatch(JSON.parse, alwaysEmptyObject) })
-    |> pick([
+  // @api: 全局基础query参数，用于初始化页面title，及缓存app/用户信息到session，
+  // 外部系统首次到达本应用时必传(通过url传参)
+  const baseQueryParams = pageProps.query
+    |> when(isNil, alwaysEmptyObject)
+    |> pickAll([
       'pageTitle', //::String
       'userInfo',  //::Object
     ])
-
-  // 所有可接收的应用级query params(首次传入后将存入sessionStorage):
-  const {
-    userInfo = {},  // { app: { id, name, ... }, hos: { id, name, ... }, dept..., doc..., pat... }
-    pageTitle = '点点医院量表问卷系统' // ::String
-  } = query
+    |> evolve({ userInfo: tryCatch(JSON.parse, identity) })
+    |> evolve({ userInfo: when(isNotPlainObj, alwaysEmptyObject) })
+    |> evolve({ pageTitle: when(isNil, always('点点医院量表问卷系统')) })
+    |> trace('baseQueryParams')
+  // 如果userInfo query参数不为空，校验其规格
+  isNotEmpty(baseQueryParams.userInfo) && userInfoSchema.validate(baseQueryParams.userInfo)
 
   // useSessionstorage
   const [sessionUserInfo, setSessionUserInfo] = useSessionstorage('ddyy-survey-userInfo', {})
   const [sessionPageTitle, setSessionPageTitle] = useSessionstorage('ddyy-survey-pageTitle', '')
-  const queryOrSessionUserInfo = isEmpty(userInfo) ? sessionUserInfo : userInfo
+
+  // merge基础参数
+  const queryOrSessionUserInfo = baseQueryParams.userInfo |> when(isEmpty, always(sessionUserInfo))
   // 直接使用query参数比较平滑，如无则用sessionPageTitle，会闪一下。
-  const queryOrSessionPageTitle = pageTitle || sessionPageTitle
+  const queryOrSessionPageTitle = baseQueryParams.pageTitle || sessionPageTitle
 
   useEffect(() => {
-    // 不允许为null的应用级params(可能来自query，也可能来自sessionstorage)
+    // 不允许为null的基础参数
     ensure(queryOrSessionUserInfo.app_id, 'queryOrSessionUserInfo.app_id不能为空')
 
     // setSessionStorage
-    if(!(isEmpty(userInfo))) setSessionUserInfo(userInfo)
-    if(!sessionPageTitle) setSessionPageTitle(pageTitle)
+    if(!(isEmpty(baseQueryParams.userInfo))) setSessionUserInfo(baseQueryParams.userInfo)
+    if(!sessionPageTitle) setSessionPageTitle(baseQueryParams.pageTitle)
   }, [])
 
   return(
@@ -69,8 +66,7 @@ function MyApp( { Component, pageProps }) {
         <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0" />
       </Head>
       <SkeletonTheme color="#eee" highlightColor="#ddd" >
-        {/* 将对象化后的query传给下级组件, 注：query必须放后面 */}
-        <Component {  ...{ ...pageProps, query }  } />
+        <Component { ...pageProps } />
       </SkeletonTheme>
     </RestfulProvider>
   )
