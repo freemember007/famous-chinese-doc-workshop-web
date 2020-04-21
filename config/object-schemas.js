@@ -9,12 +9,16 @@ import SimpleSchema from 'simpl-schema'
 export const userInfoSchema = new SimpleSchema({
   app_id       : {
     type     : SimpleSchema.Integer,
-    // min      : 100, // test
+    min      : 100, // test
     required : true,
     label    : '基础query参数userInfo.app_id',
   },
   hos_id       : SimpleSchema.Integer,
   pat_id       : SimpleSchema.Integer,
+  user_role    : {
+    type          : String,
+    allowedValues : ['pat', 'doc', 'dept', 'hos'],
+  },
   pat          : Object,
   'pat.name'   : String,
   'pat.age'    : String,
