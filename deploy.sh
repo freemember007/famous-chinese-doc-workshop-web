@@ -12,13 +12,13 @@ echo '>>> 部署应用'
 # --------------------
 NODE_ENV=dev yarn
 
-pm2 ls | grep $APP_NAME
+yarn build
+[ $? -ne 0 ] && echo '编译失败，退出' && exit
 
+pm2 ls | grep $APP_NAME
 if [ $? -eq 0 ]; then
-    yarn build
     pm2 reload $APP_NAME
 else
-    yarn build
     NODE_ENV=production pm2 start --name $APP_NAME  --log-date-format 'YYYY-MM-DD HH:mm:ss' ./node_modules/.bin/next -- start -p $APP_PORT
 fi
 
