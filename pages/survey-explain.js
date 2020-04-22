@@ -1,8 +1,10 @@
 // framework
 import React from 'react'
 import Router from 'next/router'
+import Link from 'next/link'
+import useSessionstorage from "@rooks/use-sessionstorage"
 // component
-import { NavBar/*, Icon*/ } from 'antd-mobile'
+import { NavBar, Button } from 'antd-mobile'
 // fp
 import { find } from 'ramda'
 import { inRange } from 'lodash/fp'
@@ -47,6 +49,9 @@ function Nav$() {
 function Body$({ /*pageTitle,*/ survey_result }) {
   const matchedExplain = survey_result.survey.explain
     |> find(i => inRange(i.score_gte, i.score_lte + 1, survey_result.score))
+  const [pageTitle] = useSessionstorage('ddyy-survey-pageTitle', '')
+  const [userInfo] = useSessionstorage('ddyy-survey-userInfo', {})
+
   return (
     <article className="absolute t46 l0 r0 b0 p4 w100 bg-white">
 
@@ -69,6 +74,17 @@ function Body$({ /*pageTitle,*/ survey_result }) {
         <span>{matchedExplain.result}</span>
       </_title>
       <_text className="lh2">{matchedExplain.describe}</_text>
+
+      <Link href={{ pathname: 'survey-result-list', query:
+        {
+          pageTitle,
+          pat_id    : userInfo?.pat_id,
+          ownerName : userInfo?.pat?.name
+        }
+      }}>
+        <Button className="my4" type="default">我的全部评测</Button>
+      </Link>
+
 
     </article>
   )

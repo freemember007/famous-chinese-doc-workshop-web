@@ -3,17 +3,14 @@ import React from 'react'
 import Router from 'next/router'
 import Link from 'next/link'
 import useSessionstorage from "@rooks/use-sessionstorage"
-
 // components
 import { NavBar, Icon, Button } from 'antd-mobile'
 import ContainerDimensions from 'react-container-dimensions'
 import Image from 'react-shimmer'
 import Skeleton from 'react-loading-skeleton'
-
 // fp
 import { isEmpty } from 'lodash/fp'
 import { it/*, _*/ } from 'param.macro'
-
 // util
 import agent from '@/util/request'
 import ensure from '@/util/ensure'

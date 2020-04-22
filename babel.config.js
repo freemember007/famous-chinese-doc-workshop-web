@@ -116,6 +116,7 @@ const plugins = [
   /*
    * styled-components支持
    * @see: https://github.com/styled-components/styled-components
+   * @bug: 第三方库使用了styled-components时，ssr不成功，相关issure: https://github.com/styled-components/babel-plugin-styled-components/issues/149
    */
   ['styled-components', {
     ssr      : false, // 如不支持ssr，避免sum比对的警告（目前不知什么原因使用了该插件并不能实现ssr，故先关闭）
