@@ -1,5 +1,7 @@
 // 借助styled-components实现更语义化(semantic)的标签，无任何css
-import styled from 'styled-components'
+// import styled from 'styled-components'
+// 目前babel插件ssr不生效，原因未知，使用官方推荐的宏方式，未验证：
+import styled from 'styled-components/macro'
 
 export const _list        = styled.div``
 export const _item        = styled.div``

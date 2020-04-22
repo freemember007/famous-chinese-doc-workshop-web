@@ -32,6 +32,16 @@ vi node_modules\antd-mobile\lib\style\index.js
 // require('normalize.css/normalize.css');
 ```
 
+### styled-components
+
+使用了babel-plugin-styled-components，但实测并不支持ssr，故：
+
+1. 暂不使用基于styled-components的库，如styled-icons， animated-styled-components, styled-flex-component
+2. util/sementic-tags使用官方建议的styled-components/macro是否会更安全些
+```javascript
+import styled from 'styled-components/macro'
+```
+
 ### animate
 
 https://github.com/alexvcasillas/animated-styled-components

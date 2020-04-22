@@ -20,22 +20,23 @@ import { _body, _item, _left, _right } from '@/util/semantic-tags'
 
 // props
 export const getServerSideProps = async ({ /*req, res, */query }) => {
-  // @api
-  const queryParams = query
-    |> pick([
-      'hos_id',    // 医院id查询条件
-      'dept_id',   // 科室id查询条件
-      'doc_id',    // 医生id查询条件
-      'pat_id',    // 患者id查询条件
-      'ownerName', // 问卷所有者名称，可以是医院/科室/医生/患者以及任何自定义名称。
-    ])
+  // all acceptable page query params
+  const {
+    /* eslint-disable */
+    hos_id,    // 医院id查询条件
+    dept_id,   // 科室id查询条件
+    doc_id,    // 医生id查询条件
+    pat_id,    // 患者id查询条件
+    ownerName, // 问卷所有者名称，可以是医院/科室/医生/患者以及任何自定义名称。
+  } = query
 
-  // 组合查询条件
-  const ownersQueryCondtion = queryParams
+  // ensure
+  const ownersQueryCondtion = query
     |> pick(['hos_id', 'dept_id', 'doc_id', 'pat_id'])
     |> map(compose(prepend('eq.'), String))
   ensure(isNotEmpty(ownersQueryCondtion), 'query参数hos_id/dept_id/doc_id/pat_id不可全为空')
 
+  // fetch
   const surveyResults = await agent
     .get('common-biz/rest/survey_result')
     .query({

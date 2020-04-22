@@ -8,7 +8,6 @@ import { createGlobalState } from 'react-hooks-global-state'
 
 // component
 import { NavBar, Button, Icon, List, Checkbox, Radio, TextareaItem } from 'antd-mobile'
-import Flex from 'styled-flex-component'
 import { SwitchTransition, CSSTransition } from 'react-transition-group'
 
 // fp
@@ -66,7 +65,7 @@ const Nav$ = ({ surveyTitle }) => {
 
 const Step$ = ({ currentQuestionIndex, surveyQuestionsLength, currentQuestionFinished }) => {
   const surveyQuestionsFinishedCount = currentQuestionIndex + (currentQuestionFinished ? 1 : 0)
-  return <Flex alignCenter className="my4 py2" >
+  return <section className="my4 py2 __flex a-center" >
     {/* 进度数 */}
     <div className="gray f2"> { [surveyQuestionsFinishedCount, surveyQuestionsLength].join('/') } </div>
     {/* 进度条 */}
@@ -76,7 +75,7 @@ const Step$ = ({ currentQuestionIndex, surveyQuestionsLength, currentQuestionFin
       }}></div>
       <div className="absolute h100 z1 round w12 bg-gray"></div>
     </div>
-  </Flex>
+  </section>
 }
 
 const RadioGroup$ = ({ currentQuestion, surveyQuestionsLength }) => {
@@ -179,7 +178,7 @@ const BtnGroup$ = ({ surveyQuestionsLength, currentQuestionFinished, surveyId })
     }).then(res => Router.replace({ pathname: '/ddyy-common-business-react/survey-explain', query: { pageTitle, id: res?.[0]?.id } }))
   }
 
-  return <Flex className="mt4">
+  return <section className="mt4 __flex">
     <Button
       x-if={ currentQuestionIndex > 0 }
       disabled={loading}
@@ -206,7 +205,7 @@ const BtnGroup$ = ({ surveyQuestionsLength, currentQuestionFinished, surveyId })
       loading={loading}
       onClick={saveSurveyResult}
     >提交</Button>
-  </Flex>
+  </section>
 }
 
 // main

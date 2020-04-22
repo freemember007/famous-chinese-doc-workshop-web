@@ -11,7 +11,6 @@ import useSessionstorage from "@rooks/use-sessionstorage"
 import { Button, NavBar } from 'antd-mobile'
 import { FadeOut } from 'animate-css-styled-components'
 import Skeleton from "react-loading-skeleton"
-import Flex from 'styled-flex-component'
 import Linkify from 'linkifyjs/react'
 import LazyLoad from 'react-lazyload'
 import Image from 'react-shimmer'
@@ -101,11 +100,11 @@ function Questions$() {
                 >
                   { (mutate, { loading, error }) => {
                     return (
-                      <Flex column className="p3">
+                      <div className="p3 __flex column">
                         { loading && <p>loading...</p> }
                         { error   && <FadeOut duration="0.3s" delay="1s"><p>{ [error?.message, error?.data?.message] |> join(', ') }</p></FadeOut> }
                         <Button onClick={ () => mutate({ titlse: survey.title + '1' })}>修改标题</Button>
-                      </Flex>
+                      </div>
                     )
                   }}
                 </Mutate>
@@ -139,10 +138,10 @@ function Index$() {
       <div className="bg-white" >
         <p className="f1 tc w10" style={{ fontSize: "48px" }}>{null || <Skeleton />}</p>
         <p className="f4 w12">{null || <Skeleton count={3} />}</p>
-        <Flex>
+        <section className="__flex">
           <div className="flex1 mx2"> {null || <Skeleton count={2} />} </div>
           <div className="flex1 mx2"> {null || <Skeleton count={2} />} </div>
-        </Flex>
+        </section>
       </div>
       <Body$ />
       <Image

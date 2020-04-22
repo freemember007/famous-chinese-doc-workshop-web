@@ -117,7 +117,10 @@ const plugins = [
    * styled-components支持
    * @see: https://github.com/styled-components/styled-components
    */
-  ['styled-components', { ssr: true }],
+  ['styled-components', {
+    ssr      : false, // 如不支持ssr，避免sum比对的警告（目前不知什么原因使用了该插件并不能实现ssr，故先关闭）
+    fileName : false, // 不显示styledComponents所在的文件名(如sementic-tags___title => _title)
+  }],
 
   //  * styled-jsx支持，及styled-jsx-stylus
   //  * @see: https://github.com/zeit/styled-jsx

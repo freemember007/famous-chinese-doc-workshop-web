@@ -1,16 +1,12 @@
 // framework
 import React from 'react'
 import Router from 'next/router'
-
 // component
 import { NavBar/*, Icon*/ } from 'antd-mobile'
-// import Flex from 'styled-flex-component'
-
 // fp
 import { find } from 'ramda'
 import { inRange } from 'lodash/fp'
 import { it/*, _*/ } from 'param.macro'
-
 // util
 import agent from '@/util/request'
 import ensure from '@/util/ensure'

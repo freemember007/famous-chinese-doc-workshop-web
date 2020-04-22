@@ -8,7 +8,6 @@ import Router from 'next/router'
 import { NavBar, Icon, List, Checkbox, Radio, TextareaItem } from 'antd-mobile'
 import Skeleton from 'react-loading-skeleton'
 import { BulletList } from 'react-content-loader'
-import Flex from 'styled-flex-component'
 // fp
 import { pick, toPairs } from 'lodash/fp'
 import { map, evolve, merge } from 'ramda'
@@ -25,18 +24,21 @@ import { _body, _title, _subTitle, _item } from '@/util/semantic-tags'
 
 // props
 export const getServerSideProps = async ({ query }) => {
-  // @api
-  const queryParams = query
-    |> pick([
-      'id',        // 问卷结果id
-    ])
-  ensure(queryParams.id, '请求参数(问卷结果id)不能为空')
+  // all acceptable page query params
+  const {
+    /* eslint-disable */
+    id,        // 问卷结果id
+  } = query
 
+  // ensure
+  ensure(id, '请求参数(问卷结果id)不能为空')
+
+  // fetch
   const surveyResult = await agent
     .get('common-biz/rest/survey_result')
     .set({ Accept: 'application/vnd.pgrst.object+json' })
     .query({
-      id     : 'eq.' + queryParams.id,
+      id     : 'eq.' + id,
       select : '*, survey(*), questionResults:question_result(*, question(*, options:option(*)))',
       'question_result.question.option.order' : 'order_num',
     })
@@ -62,14 +64,14 @@ const Info$ = ({ surveyResult }) => {
     |> toPairs
     |> map(([key, value]) => ({key, value}))
   return (
-    <Flex justifyArround wrap={true} className="px4 py2 b" style={{ background: 'lemonchiffon' }}>
+    <section className="px4 py2 b __flex j-arround wrap" style={{ background: 'lemonchiffon' }}>
       {surveyResultAttrs.map(attr =>
         <div key={attr.key} className="lh2 w4 dark f3">
           <span className="">{attr.key |> append(': ')}</span>
           <span className="">{attr.value}</span>
         </div>
       )}
-    </Flex>
+    </section>
   )
 }
 
