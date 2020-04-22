@@ -20,6 +20,7 @@
     "axios": "^0.19.2",
     "date-fns": "^2.11.0",
     "date.js": "^0.3.3",
+    "fastest-validator": "^1.2.0",
     "immer": "^6.0.3",
     "linkifyjs": "^2.1.9",
     "lodash": "^4.17.15",

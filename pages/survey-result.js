@@ -107,6 +107,7 @@ const CheckItem$ = ({ questionResult, option }) =>
 const InputItem$ = ({ questionResult }) =>
   <TextareaItem
     autoHeight
+    disabled
     placeholder="请输入..."
     rows={ 5 }
     value={ questionResult.input }

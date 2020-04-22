@@ -18,8 +18,8 @@ export const userInfoSchema = new SimpleSchema({
   app_id       : {
     type     : SimpleSchema.Integer,
     // min      : 100, // test
+    label    : 'pageProps.query.userInfo.app_id',
     required : true,
-    // label    : '基础query参数userInfo.app_id',
   },
   hos_id       : SimpleSchema.Integer,
   pat_id       : SimpleSchema.Integer,

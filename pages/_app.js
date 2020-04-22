@@ -1,5 +1,5 @@
 /**
- * app.js 所有页面的根组件，处理应用级的query/sessionstorage
+ * app.js 所有页面的根组件，处理session级的query parmas
  */
 // framework
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only'
@@ -14,48 +14,77 @@ import "@/node_modules/placeholder-loading/dist/css/placeholder-loading.min.css"
 // fp
 import { isEmpty } from 'lodash/fp'
 import { alwaysEmptyObject } from 'ramda-extension'
-import { pickAll, evolve, identity, isNil, always, when } from 'ramda'
-import { isNotPlainObj, isNotEmpty } from 'ramda-adjunct'
+import { evolve, identity, isNil, always, when, pluck, unless} from 'ramda'
+import { isNotPlainObj, isNotEmpty, isTrue } from 'ramda-adjunct'
 import { tryCatch } from 'rambdax'
-// import { trace } from 'ramda-extension'
-// util
-import ensure from '@/util/ensure'
+import { trace } from 'ramda-extension'
 // config
 import { DDYYAPI_BASE_URL } from '@/constant'
-import { userInfoSchema } from '@/config/schemas'
+// import { userInfoSchema } from '@/config/schemas'
+import SimpleSchema from 'simpl-schema'
 
 function MyApp( { Component, pageProps }) {
-  // @api: 全局基础query参数，用于初始化页面title，及缓存app/用户信息到session，
-  // 外部系统首次到达本应用时必传(通过url传参)
-  const baseQueryParams = pageProps.query
+  // all acceptable base query params
+  // 外部系统首次到达本应用时必传(通过url传参)，收到后缓存到sessionstorage，供整个应用session生命周期使用
+  const {
+    /* eslint-disable */
+    pageTitle = '点点医院量表问卷系统',  // 页面title
+    userInfo = {},                    // 用户信息
+  } = pageProps.query
+    // 确保其至少为空对象，避免解构出错
     |> when(isNil, alwaysEmptyObject)
-    |> pickAll([
-      'pageTitle', //::String
-      'userInfo',  //::Object
-    ])
+    // 将可能存在的内嵌userInfo属性由json string转为对象，并确保其至少为空对象
     |> evolve({ userInfo: tryCatch(JSON.parse, identity) })
     |> evolve({ userInfo: when(isNotPlainObj, alwaysEmptyObject) })
-    |> evolve({ pageTitle: when(isNil, always('点点医院量表问卷系统')) })
-    // |> trace('baseQueryParams')
-  // 如果userInfo query参数不为空，校验其规格
-  isNotEmpty(baseQueryParams.userInfo) && userInfoSchema.validate(baseQueryParams.userInfo)
+    |> trace('pageProps.query')
+
+  // 如果userInfo不为空(一般为从外部首次进入本应用时)，校验其对象规格
+  const userInfoSchema = new SimpleSchema({
+    app_id       : { type: Number, required: true },
+    hos_id       : { type: Number },
+    pat_id       : { type: Number, required: true },
+    user_role    : { type: String },
+    pat          : { type: Object },                 // 用于展示
+    'pat.id'     : { type: Number },
+    'pat.name'   : { type: String },
+    'pat.age'    : { type: String },
+    'pat.gender' : { type: String },
+  }, { requiredByDefault: false })
+  isNotEmpty(userInfo) && userInfoSchema.validate(userInfo)
+
+  // just test
+  const validator = new (require("fastest-validator"))()
+  const schema = {
+      app_id    : 'number',
+      hos_id    : 'number|optional',
+      pat_id    : 'number|optional',
+      user_role : 'string|optional',
+      pat       : {
+        type     : 'object',
+        optional : true,
+        props    : {
+          id     : 'number|optional',
+          name   : 'string|optional',
+          gender : 'string|optional',
+          age    : 'string|optional',
+        }
+    }
+  }
+  if(isNotEmpty(userInfo)) validator.validate(userInfo, schema) |> unless(isTrue, i => throw new Error(pluck('message', i)))
 
   // useSessionstorage
   const [sessionUserInfo, setSessionUserInfo] = useSessionstorage('ddyy-survey-userInfo', {})
   const [sessionPageTitle, setSessionPageTitle] = useSessionstorage('ddyy-survey-pageTitle', '')
 
   // merge基础参数
-  const queryOrSessionUserInfo = baseQueryParams.userInfo |> when(isEmpty, always(sessionUserInfo))
+  const queryOrSessionUserInfo = userInfo |> when(isEmpty, always(sessionUserInfo))
   // 直接使用query参数比较平滑，如无则用sessionPageTitle，会闪一下。
-  const queryOrSessionPageTitle = baseQueryParams.pageTitle || sessionPageTitle
+  const queryOrSessionPageTitle = pageTitle || sessionPageTitle
 
   useEffect(() => {
-    // 不允许为null的基础参数
-    ensure(queryOrSessionUserInfo.app_id, 'queryOrSessionUserInfo.app_id不能为空')
-
     // setSessionStorage
-    if(!(isEmpty(baseQueryParams.userInfo))) setSessionUserInfo(baseQueryParams.userInfo)
-    if(!sessionPageTitle) setSessionPageTitle(baseQueryParams.pageTitle)
+    if(!(isEmpty(userInfo))) setSessionUserInfo(userInfo)
+    if(!sessionPageTitle) setSessionPageTitle(pageTitle)
   }, [])
 
   return(
