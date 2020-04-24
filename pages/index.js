@@ -26,9 +26,9 @@ export async function getServerSideProps({ query }) {
     // only for dev
     pageTitle : '点点医院量表问卷系统(dev)',
     userInfo  : {
-      app_id : 1,
-      hos_id : 1,
-      pat_id : 2548629,
+      app_id : 1,                        // 云科室
+      hos_id : 3, pat_id : 106276,       // 点点云科室萧江平
+      // hos_id : 10275, pat_id : 2548629,  // 鞍山精卫萧江平
       pat    : { name: 'xjp', age: '80', gender: 'M' },
     },
   } } }
@@ -46,6 +46,7 @@ function Nav$() {
 function Body$() {
   // @todo: 首次从sessionstorage取会存在取不到的情况...
   const [pageTitle] = useSessionstorage('ddyy-survey-pageTitle')
+  const [userInfo] = useSessionstorage('ddyy-survey-userInfo', {})
 
   const { data: surveys, loading, error } = useGet({
     path        : 'common-biz/rest/survey',
@@ -59,7 +60,7 @@ function Body$() {
       { surveys && surveys.map((survey, index) =>
         <_item key={ index }>{ survey.title }</_item>
       )}
-      <Link href={{ pathname: 'survey-list', query: { pageTitle } }}>
+      <Link href={{ pathname: 'survey-list', query: { pageTitle:, app_id: userInfo?.app_id, hos_id: userInfo?.hos_id } }}>
         <Button type="primary"> 问卷列表 </Button>
       </Link>
       <div className="my4" />

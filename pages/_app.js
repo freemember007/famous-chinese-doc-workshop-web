@@ -14,8 +14,8 @@ import "@/node_modules/placeholder-loading/dist/css/placeholder-loading.min.css"
 // fp
 import { isEmpty } from 'lodash/fp'
 import { alwaysEmptyObject } from 'ramda-extension'
-import { evolve, identity, isNil, always, when, pluck, unless} from 'ramda'
-import { isNotPlainObj, isNotEmpty, isTrue } from 'ramda-adjunct'
+import { evolve, identity, isNil, always, when } from 'ramda'
+import { isNotPlainObj, isNotEmpty } from 'ramda-adjunct'
 import { tryCatch } from 'rambdax'
 import { trace } from 'ramda-extension'
 // config
@@ -23,7 +23,7 @@ import { DDYYAPI_BASE_URL } from '@/constant'
 // import { userInfoSchema } from '@/config/schemas'
 import SimpleSchema from 'simpl-schema'
 
-function MyApp( { Component, pageProps }) {
+const App = ( { Component, pageProps }) => {
   // all acceptable base query params
   // 外部系统首次到达本应用时必传(通过url传参)，收到后缓存到sessionstorage，供整个应用session生命周期使用
   const {
@@ -43,34 +43,14 @@ function MyApp( { Component, pageProps }) {
     app_id       : { type: Number, required: true },
     hos_id       : { type: Number },
     pat_id       : { type: Number, required: true },
-    user_role    : { type: String },
-    pat          : { type: Object },                 // 用于展示
+    user_role    : { type: String, allowedValues : ['pat', 'doc', 'dept', 'hos', 'admin', 'hos_admin'] },
+    pat          : { type: Object }, // 用于在某些情况下展示患者信息
     'pat.id'     : { type: Number },
     'pat.name'   : { type: String },
     'pat.age'    : { type: String },
-    'pat.gender' : { type: String },
+    'pat.gender' : { type: String, allowedValues : ['M', 'F', 'N'] },
   }, { requiredByDefault: false })
   isNotEmpty(userInfo) && userInfoSchema.validate(userInfo)
-
-  // just test
-  const validator = new (require("fastest-validator"))()
-  const schema = {
-      app_id    : 'number',
-      hos_id    : 'number|optional',
-      pat_id    : 'number|optional',
-      user_role : 'string|optional',
-      pat       : {
-        type     : 'object',
-        optional : true,
-        props    : {
-          id     : 'number|optional',
-          name   : 'string|optional',
-          gender : 'string|optional',
-          age    : 'string|optional',
-        }
-    }
-  }
-  if(isNotEmpty(userInfo)) validator.validate(userInfo, schema) |> unless(isTrue, i => throw new Error(pluck('message', i)))
 
   // useSessionstorage
   const [sessionUserInfo, setSessionUserInfo] = useSessionstorage('ddyy-survey-userInfo', {})
@@ -101,4 +81,4 @@ function MyApp( { Component, pageProps }) {
   )
 }
 
-export default MyApp
+export default App

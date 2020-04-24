@@ -2,33 +2,43 @@
 import React from 'react'
 import Router from 'next/router'
 import Link from 'next/link'
-// import { useSessionStorage } from 'react-use'
 import useSessionstorage from "@rooks/use-sessionstorage"
-// import { useGet } from "restful-react"
-
 // components
 import { NavBar, Icon } from 'antd-mobile'
 import { ArrowIosForwardOutline as RightIcon } from '@styled-icons/evaicons-outline'
 import Skeleton from 'react-loading-skeleton'
-
 // fp
 import { it/*, _*/ } from 'param.macro'
-
 // util
 import agent from '@/util/request'
+import ensure from '@/util/ensure'
 import { imagePlaceholder, omit } from '@/util/filters'
 import { _list, _item, _left, _right } from '@/util/semantic-tags'
 
 // props
-export async function getServerSideProps({ query }) {
+export const getServerSideProps = async ({ query }) => {
+  // all acceptable page query params
+  const {
+    /* eslint-disable */
+    app_id,    // 应用id查询条件 @todo: 使用本地session?
+    hos_id,    // 医院id查询条件
+  } = query
+
+  // ensure
+  ensure(app_id && hos_id, 'query参数app_id/hos_id不可为空')
+
+  // fetch
   const surveys = await agent
     .get('common-biz/rest/survey')
+    .query({
+      hos_id : 'eq.' + hos_id
+    })
     .then(it.body)
   return { props: { query, surveys } }
 }
 
 // nav
-function Nav$() {
+const Nav$ = () => {
   return (
     <NavBar
       mode="light"
@@ -41,7 +51,7 @@ function Nav$() {
 }
 
 // body
-function Body$({ surveys }) {
+const Body$ = ({ surveys }) => {
   const [pageTitle] = useSessionstorage('ddyy-survey-pageTitle')
 
   return (

@@ -1,5 +1,6 @@
 /**
- * object schemas
+ * schemas
+ * @outdated
  * 应用中需要特别指明的对象规格，主要是部分无法在其他地方定义规格的内嵌query对象，超到文档和验证的作用
  * 注：勿过度使用schema，如，rest请求的输入/输出body切勿声明，由数据库控制即可。
  */
