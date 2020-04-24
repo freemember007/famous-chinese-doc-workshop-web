@@ -1,19 +1,15 @@
 // framework
 // 不自定义babel时，不需要显示引入react，@todo: 可用alias解决
 import React from 'react'
-import { view } from 'react-easy-state'
-import globalStore from '@/globalStore'
 import Link from 'next/link'
 import { useGet, Get, Mutate } from "restful-react"
-// import { useSessionStorage } from 'react-use'
 import useSessionstorage from "@rooks/use-sessionstorage"
 // components
 import { Button, NavBar } from 'antd-mobile'
 import { FadeOut } from 'animate-css-styled-components'
-import Skeleton from "react-loading-skeleton"
 import Linkify from 'linkifyjs/react'
 import LazyLoad from 'react-lazyload'
-import Image from 'react-shimmer'
+import { useGlobalStore } from '@/globalStore'
 // fp
 import { join } from 'ramda'
 // util
@@ -45,6 +41,7 @@ function Nav$() {
 
 function Body$() {
   // @todo: 首次从sessionstorage取会存在取不到的情况...
+  const [isSessionSaved] = useGlobalStore('isSessionSaved')
   const [pageTitle] = useSessionstorage('ddyy-survey-pageTitle')
   const [userInfo] = useSessionstorage('ddyy-survey-userInfo', {})
 
@@ -60,25 +57,18 @@ function Body$() {
       { surveys && surveys.map((survey, index) =>
         <_item key={ index }>{ survey.title }</_item>
       )}
-      <Link href={{ pathname: 'survey-list', query: { pageTitle, app_id: userInfo?.app_id, hos_id: userInfo?.hos_id } }}>
+      <p> {isSessionSaved ? 'true' : 'false'} </p>
+      <Link href={{ pathname: 'survey-list', query: isSessionSaved && { pageTitle, app_id: userInfo?.app_id, hos_id: userInfo?.hos_id } || {} }}>
         <Button type="primary"> 问卷列表 </Button>
       </Link>
       <div className="my4" />
       <Link href={{ pathname: 'survey-result-list', query: { pageTitle, pat_id: 2548629, ownerName: '萧江平' } }}>
         <Button type="primary"> 问卷结果 </Button>
+
       </Link>
     </_list>
   )
 }
-
-function StoreTest$() {
-  return (
-    <section className="p2">
-      <p onClick={ globalStore.getPlace }>{ globalStore.place }</p>
-    </section>
-  )
-}
-StoreTest$ = view(StoreTest$)
 
 function Questions$() {
   return (
@@ -136,21 +126,7 @@ function Index$() {
     <section>
       {/*<ActivityIndicator toast text="正在加载" />*/}
       <Nav$ />
-      <div className="bg-white" >
-        <p className="f1 tc w10" style={{ fontSize: "48px" }}>{null || <Skeleton />}</p>
-        <p className="f4 w12">{null || <Skeleton count={3} />}</p>
-        <section className="__flex">
-          <div className="flex1 mx2"> {null || <Skeleton count={2} />} </div>
-          <div className="flex1 mx2"> {null || <Skeleton count={2} />} </div>
-        </section>
-      </div>
       <Body$ />
-      <Image
-        src="https://newevolutiondesigns.com/images/freebies/tropical-beach-background-8.jpg"
-        width={320} height={240}
-        style={{ objectFit: 'cover' }}
-      />
-      <StoreTest$ />
       <Questions$ />
       <LinkifyTest$ />
     </section>

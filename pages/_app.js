@@ -11,6 +11,7 @@ import Head from 'next/head'
 import { SkeletonTheme } from "react-loading-skeleton"
 import '@/styles/spectre.styl'
 import "@/node_modules/placeholder-loading/dist/css/placeholder-loading.min.css"
+import { useGlobalStore } from '@/globalStore'
 // fp
 import { isEmpty } from 'lodash/fp'
 import { alwaysEmptyObject } from 'ramda-extension'
@@ -18,6 +19,8 @@ import { evolve, identity, isNil, always, when } from 'ramda'
 import { isNotPlainObj, isNotEmpty } from 'ramda-adjunct'
 import { tryCatch } from 'rambdax'
 import { trace } from 'ramda-extension'
+// util
+import sleep from 'await-sleep'
 // config
 import { DDYYAPI_BASE_URL } from '@/constant'
 // import { userInfoSchema } from '@/config/schemas'
@@ -52,19 +55,22 @@ const App = ( { Component, pageProps }) => {
   }, { requiredByDefault: false })
   isNotEmpty(userInfo) && userInfoSchema.validate(userInfo)
 
-  // useSessionstorage
+  // use
   const [sessionUserInfo, setSessionUserInfo] = useSessionstorage('ddyy-survey-userInfo', {})
   const [sessionPageTitle, setSessionPageTitle] = useSessionstorage('ddyy-survey-pageTitle', '')
+  const [isSessionSaved, setIsSessionSaved] = useGlobalStore('isSessionSaved')
 
   // merge基础参数
   const queryOrSessionUserInfo = userInfo |> when(isEmpty, always(sessionUserInfo))
   // 直接使用query参数比较平滑，如无则用sessionPageTitle，会闪一下。
   const queryOrSessionPageTitle = pageTitle || sessionPageTitle
 
-  useEffect(() => {
+  useEffect(async () => {
     // setSessionStorage
     if(!(isEmpty(userInfo))) setSessionUserInfo(userInfo)
     if(!sessionPageTitle) setSessionPageTitle(pageTitle)
+    await sleep(1000)
+    setIsSessionSaved(true)
   }, [])
 
   return(

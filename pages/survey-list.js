@@ -11,7 +11,7 @@ import Skeleton from 'react-loading-skeleton'
 import { it/*, _*/ } from 'param.macro'
 // util
 import agent from '@/util/request'
-import ensure from '@/util/ensure'
+// import ensure from '@/util/ensure'
 import { imagePlaceholder, omit } from '@/util/filters'
 import { _list, _item, _left, _right } from '@/util/semantic-tags'
 
@@ -25,13 +25,13 @@ export const getServerSideProps = async ({ query }) => {
   } = query
 
   // ensure
-  ensure(app_id && hos_id, 'query参数app_id/hos_id不可为空')
+  // ensure(app_id && hos_id, 'query参数app_id/hos_id不可为空')
 
   // fetch
   const surveys = await agent
     .get('common-biz/rest/survey')
     .query({
-      hos_id : 'eq.' + hos_id
+      // hos_id : 'eq.' + hos_id
     })
     .then(it.body)
   return { props: { query, surveys } }

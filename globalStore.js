@@ -1,13 +1,6 @@
-import { store as createStore } from 'react-easy-state'
-import sleep from 'await-sleep'
+import { createGlobalState } from 'react-hooks-global-state'
 
-const globalStore = createStore({
-  place: '定位中...',
-
-  async getPlace() {
-    await sleep(100)
-    globalStore.place = 'hangzhou'
-  },
+// useGlobal`Store`
+export const { useGlobalState: useGlobalStore } = createGlobalState({
+  isSessionSaved    : false,        // _app.js session是否已经保存
 })
-
-export default globalStore
