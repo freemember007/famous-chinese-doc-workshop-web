@@ -60,7 +60,7 @@ function Body$() {
       { surveys && surveys.map((survey, index) =>
         <_item key={ index }>{ survey.title }</_item>
       )}
-      <Link href={{ pathname: 'survey-list', query: { pageTitle:, app_id: userInfo?.app_id, hos_id: userInfo?.hos_id } }}>
+      <Link href={{ pathname: 'survey-list', query: { pageTitle, app_id: userInfo?.app_id, hos_id: userInfo?.hos_id } }}>
         <Button type="primary"> 问卷列表 </Button>
       </Link>
       <div className="my4" />
