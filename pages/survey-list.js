@@ -17,7 +17,7 @@ import { imagePlaceholder, omit } from '@/util/filters'
 import { _list, _item, _left, _right } from '@/util/semantic-tags'
 
 // props
-export const getServerSideProps = async ({ query }) => {
+export const getServerSideProps = async ({ req : { headers }, query }) => {
   // all acceptable page query params
   const {
     /* eslint-disable */
@@ -35,7 +35,7 @@ export const getServerSideProps = async ({ query }) => {
       hos_id : 'eq.' + hos_id
     })
     .then(it.body)
-  return { props: { query, surveys } }
+  return { props: { headers, query, surveys } }
 }
 
 // nav

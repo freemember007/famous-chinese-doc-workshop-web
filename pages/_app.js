@@ -7,6 +7,7 @@ import React/*, { useEffect }*/ from 'react'
 import { RestfulProvider } from "restful-react"
 // import useSessionstorage from "@rooks/use-sessionstorage"
 import Cookies from 'js-cookie'
+import cookie from 'cookie'
 import SimpleSchema from 'simpl-schema'
 // component
 import Head from 'next/head'
@@ -27,7 +28,9 @@ import { mayBeParseJSONObjectOrEmptyObject } from '@/util/filters'
 // config
 import { DDYYAPI_BASE_URL } from '@/constant'
 
-const App = ( { Component, pageProps }) => {
+const App = ({ Component, pageProps }) => {
+  console.log(pageProps.headers)
+  const severSidecookie = cookie.parse(pageProps.headers.cookie || '')
   // all acceptable base query params
   // 外部系统首次到达本应用时必传(通过url传参)，收到后缓存到sessionstorage，供整个应用session生命周期使用
   const {
@@ -60,7 +63,7 @@ const App = ( { Component, pageProps }) => {
   if(!(isEmpty(userInfo))) Cookies.set('ddyy-survey-userInfo', userInfo)
   if(!(isEmptyString(pageTitle))) Cookies.set('ddyy-survey-pageTitle', pageTitle)
   // use
-  const queryOrSessionPageTitle = pageTitle || Cookies.get('ddyy-survey-pageTitle')  || '点点医院量表问卷系统'
+  const queryOrSessionPageTitle = pageTitle || severSidecookie.pageTitle || Cookies.get('ddyy-survey-pageTitle')  || '点点医院量表问卷系统'
   // const sessionUserInfo = Cookies.get('ddyy-survey-userInfo') |> mayBeParseJSONObjectOrEmptyObject
 
   // const [sessionUserInfo, setSessionUserInfo] = useSessionstorage('ddyy-survey-userInfo', {})

@@ -18,8 +18,9 @@ import {_list, _item } from '@/util/semantic-tags'
 import { mayBeParseJSONObjectOrEmptyObject } from '@/util/filters'
 
 // props
-export async function getServerSideProps({ query }) {
-  return { props: { query: {
+export async function getServerSideProps({ req : { headers }, query }) {
+  // console.log({req})
+  return { props: { headers, query: {
     ...query,
     // only for dev
     pageTitle : '点点医院量表问卷系统(dev)',
