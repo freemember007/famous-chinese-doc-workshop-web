@@ -64,7 +64,7 @@ const App = ({ Component, pageProps }) => {
   if(!(isEmpty(userInfo))) Cookies.set('ddyy-survey-userInfo', userInfo)
   if(!(isEmptyString(pageTitle))) Cookies.set('ddyy-survey-pageTitle', pageTitle)
   // use
-  const queryOrSessionPageTitle = pageTitle || severSidecookie.pageTitle || Cookies.get('ddyy-survey-pageTitle')  || '点点医院量表问卷系统'
+  const queryOrSessionPageTitle = pageTitle || severSidecookie.pageTitle || Cookies.get('ddyy-survey-pageTitle')  || ''
   // const sessionUserInfo = Cookies.get('ddyy-survey-userInfo') |> mayBeParseJSONObjectOrEmptyObject
 
   // const [sessionUserInfo, setSessionUserInfo] = useSessionstorage('ddyy-survey-userInfo', {})
