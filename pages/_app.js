@@ -36,8 +36,8 @@ const App = ({ Component, pageProps }) => {
   // 外部系统首次到达本应用时必传(通过url传参)，收到后缓存到sessionstorage，供整个应用session生命周期使用
   const {
     /* eslint-disable */
-    pageTitle = '',  // 页面title
-    userInfo = {},                    // 用户信息
+    pageTitle,  // 页面title
+    userInfo,   // 用户信息
   } = pageProps.query
     // 确保其至少为空对象，避免解构出错
     |> when(isNil, alwaysEmptyObject)
@@ -64,7 +64,7 @@ const App = ({ Component, pageProps }) => {
   if(!(isEmpty(userInfo))) Cookies.set('ddyy-survey-userInfo', userInfo)
   if(!(isEmptyString(pageTitle))) Cookies.set('ddyy-survey-pageTitle', pageTitle)
   // use
-  const queryOrSessionPageTitle = pageTitle || severSidecookie.pageTitle || Cookies.get('ddyy-survey-pageTitle')  || ''
+  const queryOrSessionPageTitle = pageTitle || severSidecookie.pageTitle || Cookies.get('ddyy-survey-pageTitle') /* || '点点医院量表问卷系统'*/
   // const sessionUserInfo = Cookies.get('ddyy-survey-userInfo') |> mayBeParseJSONObjectOrEmptyObject
 
   // const [sessionUserInfo, setSessionUserInfo] = useSessionstorage('ddyy-survey-userInfo', {})
