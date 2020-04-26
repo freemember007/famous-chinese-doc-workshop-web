@@ -26,13 +26,13 @@ export const getServerSideProps = async ({ req : { headers }, query }) => {
   } = query
 
   // ensure
-  // ensure(app_id && hos_id, 'query参数app_id/hos_id不可为空')
+  ensure(app_id && hos_id, 'query参数app_id/hos_id不可为空')
 
   // fetch
   const surveys = await agent
     .get('common-biz/rest/survey')
     .query({
-      // hos_id : 'eq.' + hos_id
+      hos_id : 'eq.' + hos_id
     })
     .then(it.body)
   return { props: { headers, query, surveys } }

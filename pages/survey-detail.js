@@ -19,7 +19,7 @@ import { imagePlaceholder } from '@/util/filters'
 import { _title, _subTitle, _text } from '@/util/semantic-tags'
 
 // props
-export async function getServerSideProps({ query }) {
+export async function getServerSideProps({ req: { headers }, query }) {
   // all acceptable and not nullable query params
   const {
     id          // 问卷id
@@ -31,7 +31,7 @@ export async function getServerSideProps({ query }) {
     .set({ Accept: 'application/vnd.pgrst.object+json' })
     .query({ id: 'eq.' + id })
     .then(it.body)
-  return { props: { query, survey } }
+  return { props: { headers, query, survey } }
 }
 
 // nav
