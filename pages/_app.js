@@ -29,8 +29,9 @@ import { mayBeParseJSONObjectOrEmptyObject } from '@/util/filters'
 import { DDYYAPI_BASE_URL } from '@/constant'
 
 const App = ({ Component, pageProps }) => {
+
   console.log(pageProps.headers)
-  const severSidecookie = cookie.parse(pageProps.headers.cookie || '')
+  const severSidecookie = cookie.parse(pageProps.headers?.cookie || '')
   // all acceptable base query params
   // 外部系统首次到达本应用时必传(通过url传参)，收到后缓存到sessionstorage，供整个应用session生命周期使用
   const {
