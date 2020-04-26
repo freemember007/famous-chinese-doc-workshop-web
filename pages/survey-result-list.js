@@ -2,7 +2,7 @@
 import React from 'react'
 import Router from 'next/router'
 import Link from 'next/link'
-import useSessionstorage from "@rooks/use-sessionstorage"
+// import useSessionstorage from "@rooks/use-sessionstorage"
 // component
 import { NavBar, Badge, Icon } from 'antd-mobile'
 import { ArrowIosForwardOutline as RightIcon } from '@styled-icons/evaicons-outline'
@@ -63,10 +63,10 @@ const Nav$ = ({ query }) => {
 }
 
 const Item$ = ({ surveyResult }) => {
-  const [pageTitle] = useSessionstorage('ddyy-survey-pageTitle')
+  // const [pageTitle] = useSessionstorage('ddyy-survey-pageTitle')
 
   return (
-    <Link href={{ pathname: 'survey-result', query: { pageTitle, id: surveyResult.id }}} key={surveyResult.id}>
+    <Link href={{ pathname: 'survey-result', query: { id: surveyResult.id }}} key={surveyResult.id}>
       <_item className=" py3 bg-white bb __flex j-between a-center">
         {/* 左侧内容 */}
         <_left className="lh2">

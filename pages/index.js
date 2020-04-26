@@ -3,17 +3,19 @@
 import React from 'react'
 import Link from 'next/link'
 import { useGet, Get, Mutate } from "restful-react"
-import useSessionstorage from "@rooks/use-sessionstorage"
+// import useSessionstorage from "@rooks/use-sessionstorage"
+import Cookies from 'js-cookie'
 // components
 import { Button, NavBar } from 'antd-mobile'
 import { FadeOut } from 'animate-css-styled-components'
 import Linkify from 'linkifyjs/react'
 import LazyLoad from 'react-lazyload'
-import { useGlobalStore } from '@/globalStore'
+// import { useGlobalStore } from '@/globalStore'
 // fp
 import { join } from 'ramda'
 // util
 import {_list, _item } from '@/util/semantic-tags'
+import { mayBeParseJSONObjectOrEmptyObject } from '@/util/filters'
 
 // props
 export async function getServerSideProps({ query }) {
@@ -41,9 +43,12 @@ function Nav$() {
 
 function Body$() {
   // @todo: 首次从sessionstorage取会存在取不到的情况...
-  const [isSessionSaved] = useGlobalStore('isSessionSaved')
-  const [pageTitle] = useSessionstorage('ddyy-survey-pageTitle')
-  const [userInfo] = useSessionstorage('ddyy-survey-userInfo', {})
+  // const [isSessionSaved] = useGlobalStore('isSessionSaved')
+  // const [pageTitle] = useSessionstorage('ddyy-survey-pageTitle')
+  // const [userInfo] = useSessionstorage('ddyy-survey-userInfo', {})
+  // const pageTitle = Cookies.get('ddyy-survey-pageTitle')
+  const userInfo = Cookies.get('ddyy-survey-userInfo') |> mayBeParseJSONObjectOrEmptyObject
+  console.log({userInfo})
 
   const { data: surveys, loading, error } = useGet({
     path        : 'common-biz/rest/survey',
@@ -57,12 +62,12 @@ function Body$() {
       { surveys && surveys.map((survey, index) =>
         <_item key={ index }>{ survey.title }</_item>
       )}
-      <p> {isSessionSaved ? 'true' : 'false'} </p>
-      <Link href={{ pathname: 'survey-list', query: isSessionSaved && { pageTitle, app_id: userInfo?.app_id, hos_id: userInfo?.hos_id } || {} }}>
+      {/*<p> {isSessionSaved ? 'true' : 'false'} </p>*/}
+      <Link href={{ pathname: 'survey-list', query: { app_id: userInfo.app_id, hos_id: userInfo.hos_id } }}>
         <Button type="primary"> 问卷列表 </Button>
       </Link>
       <div className="my4" />
-      <Link href={{ pathname: 'survey-result-list', query: { pageTitle, pat_id: 2548629, ownerName: '萧江平' } }}>
+      <Link href={{ pathname: 'survey-result-list', query: { pat_id: 2548629, ownerName: '萧江平' } }}>
         <Button type="primary"> 问卷结果 </Button>
 
       </Link>

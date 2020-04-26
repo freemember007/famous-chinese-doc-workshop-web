@@ -3,7 +3,8 @@ import React from 'react'
 import Router from 'next/router'
 import { useMutate } from "restful-react"
 // import { useSessionStorage } from 'react-use'
-import useSessionstorage from "@rooks/use-sessionstorage"
+// import useSessionstorage from "@rooks/use-sessionstorage"
+import Cookies from 'js-cookie'
 import { createGlobalState } from 'react-hooks-global-state'
 
 // component
@@ -20,7 +21,7 @@ import { it/*, _*/ } from 'param.macro'
 import agent from '@/util/request'
 import sleep from 'await-sleep'
 import ensure from '@/util/ensure'
-import { omit, percent, concatOrWithout/*, transJsonArrayValueToPgArrayStr*/ } from '@/util/filters'
+import { omit, percent, concatOrWithout, mayBeParseJSONObjectOrEmptyObject } from '@/util/filters'
 import { _body } from '@/util/semantic-tags'
 
 // props
@@ -159,9 +160,8 @@ const Question$ = ({ currentQuestion, surveyQuestionsLength }) => {
 const BtnGroup$ = ({ surveyQuestionsLength, currentQuestionFinished, surveyId }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useGlobalState('currentQuestionIndex')
   const [questionsResult ] = useGlobalState('questionsResult')
-  const [pageTitle] = useSessionstorage('ddyy-survey-pageTitle')
-  const [userInfo] = useSessionstorage('ddyy-survey-userInfo', {})
-  console.log(userInfo) // 可用来观察根组件渲染次数
+  const userInfo = Cookies.get('ddyy-survey-userInfo') |> mayBeParseJSONObjectOrEmptyObject
+  console.log({ userInfo }) // 可用来观察根组件渲染次数
 
   const { mutate, loading, /*error*/ } = useMutate({
     verb : 'POST',
@@ -175,7 +175,7 @@ const BtnGroup$ = ({ surveyQuestionsLength, currentQuestionFinished, surveyId })
       pat_id                : userInfo.pat_id,
       pat                   : userInfo.pat || {},
       questions_result_data : questionsResult,
-    }).then(res => Router.replace({ pathname: '/ddyy-common-business-react/survey-explain', query: { pageTitle, id: res?.[0]?.id } }))
+    }).then(res => Router.replace({ pathname: '/ddyy-common-business-react/survey-explain', query: { id: res?.[0]?.id } }))
   }
 
   return <section className="mt4 __flex">

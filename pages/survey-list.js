@@ -2,7 +2,8 @@
 import React from 'react'
 import Router from 'next/router'
 import Link from 'next/link'
-import useSessionstorage from "@rooks/use-sessionstorage"
+// import useSessionstorage from "@rooks/use-sessionstorage"
+// import Cookies from 'js-cookie'
 // components
 import { NavBar, Icon } from 'antd-mobile'
 import { ArrowIosForwardOutline as RightIcon } from '@styled-icons/evaicons-outline'
@@ -11,7 +12,7 @@ import Skeleton from 'react-loading-skeleton'
 import { it/*, _*/ } from 'param.macro'
 // util
 import agent from '@/util/request'
-// import ensure from '@/util/ensure'
+import ensure from '@/util/ensure'
 import { imagePlaceholder, omit } from '@/util/filters'
 import { _list, _item, _left, _right } from '@/util/semantic-tags'
 
@@ -25,13 +26,13 @@ export const getServerSideProps = async ({ query }) => {
   } = query
 
   // ensure
-  // ensure(app_id && hos_id, 'query参数app_id/hos_id不可为空')
+  ensure(app_id && hos_id, 'query参数app_id/hos_id不可为空')
 
   // fetch
   const surveys = await agent
     .get('common-biz/rest/survey')
     .query({
-      // hos_id : 'eq.' + hos_id
+      hos_id : 'eq.' + hos_id
     })
     .then(it.body)
   return { props: { query, surveys } }
@@ -52,13 +53,14 @@ const Nav$ = () => {
 
 // body
 const Body$ = ({ surveys }) => {
-  const [pageTitle] = useSessionstorage('ddyy-survey-pageTitle')
+  // const [pageTitle] = useSessionstorage('ddyy-survey-pageTitle')
+  // const pageTitle = Cookies.get('ddyy-survey-pageTitle')
 
   return (
     <_list className="absolute t46 l0 r0 b0 px4 w100 bg-white">
 
       {(surveys || [{}, {}, {}, {}]).map((survey, index) =>
-        <Link href={{ pathname: 'survey-detail', query: { pageTitle, id: survey.id }}} key={index}>
+        <Link href={{ pathname: 'survey-detail', query: { id: survey.id }}} key={index}>
           <_item className=" py3 bg-white bb __flex j-between a-center">
 
             {/* 左侧内容 */}

@@ -2,7 +2,8 @@
 import React from 'react'
 import Router from 'next/router'
 import Link from 'next/link'
-import useSessionstorage from "@rooks/use-sessionstorage"
+// import useSessionstorage from "@rooks/use-sessionstorage"
+import Cookies from 'js-cookie'
 // component
 import { NavBar, Button } from 'antd-mobile'
 // fp
@@ -13,6 +14,8 @@ import { it/*, _*/ } from 'param.macro'
 import agent from '@/util/request'
 import ensure from '@/util/ensure'
 import { _title, _subTitle, _box, _text } from '@/util/semantic-tags'
+import { mayBeParseJSONObjectOrEmptyObject } from '@/util/filters'
+
 
 // props
 export async function getServerSideProps({ /*req, res, */query}) {
@@ -49,8 +52,9 @@ function Nav$() {
 function Body$({ /*pageTitle,*/ survey_result }) {
   const matchedExplain = survey_result.survey.explain
     |> find(i => inRange(i.score_gte, i.score_lte + 1, survey_result.score))
-  const [pageTitle] = useSessionstorage('ddyy-survey-pageTitle', '')
-  const [userInfo] = useSessionstorage('ddyy-survey-userInfo', {})
+  // const [pageTitle] = useSessionstorage('ddyy-survey-pageTitle', '')
+  // const [userInfo] = useSessionstorage('ddyy-survey-userInfo', {})
+  const userInfo = Cookies.get('ddyy-survey-userInfo') |> mayBeParseJSONObjectOrEmptyObject
 
   return (
     <article className="absolute t46 l0 r0 b0 p4 w100 bg-white">
@@ -77,9 +81,8 @@ function Body$({ /*pageTitle,*/ survey_result }) {
 
       <Link href={{ pathname: 'survey-result-list', query:
         {
-          pageTitle,
-          pat_id    : userInfo?.pat_id,
-          ownerName : userInfo?.pat?.name
+          pat_id    : userInfo.pat_id,
+          ownerName : userInfo.pat?.name
         }
       }}>
         <Button className="my4" type="default">我的全部评测</Button>

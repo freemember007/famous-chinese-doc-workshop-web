@@ -2,7 +2,7 @@
 import React from 'react'
 import Router from 'next/router'
 import Link from 'next/link'
-import useSessionstorage from "@rooks/use-sessionstorage"
+// import useSessionstorage from "@rooks/use-sessionstorage"
 // components
 import { NavBar, Icon, Button } from 'antd-mobile'
 import ContainerDimensions from 'react-container-dimensions'
@@ -49,7 +49,7 @@ function Nav$() {
 
 // body
 function Body$({ survey }) {
-  const [pageTitle] = useSessionstorage('ddyy-survey-pageTitle')
+  // const [pageTitle] = useSessionstorage('ddyy-survey-pageTitle')
   return (
     <div className="absolute t46 l0 r0 b0 w12 bg-white">
       { (!process.browser || !survey.image) ? <Skeleton width={'100%'} height={200}/> :
@@ -74,7 +74,7 @@ function Body$({ survey }) {
         <_text className="dark lh2">
           { survey.intro || <Skeleton count={5} />}
         </_text>
-        <Link href={{ pathname: 'survey-do', query: { pageTitle, id: survey.id }}}>
+        <Link href={{ pathname: 'survey-do', query: { id: survey.id }}}>
           <Button className="my4" type="primary" disabled={isEmpty(survey)}>开始测试</Button>
         </Link>
       </div>

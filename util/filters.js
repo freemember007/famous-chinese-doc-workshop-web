@@ -2,8 +2,10 @@
 import { PLACEHOLDER_IMAGE } from '@/constant'
 import { truncate } from 'lodash'
 import { isArray } from 'lodash/fp'
-import { prepend, append } from 'rambdax'
-import { ifElse, includes, without, concat, isEmpty, map, when, join, compose } from 'ramda'
+import { tryCatch, prepend, append } from 'rambdax'
+import { isNotPlainObj } from 'ramda-adjunct'
+import { alwaysEmptyObject } from 'ramda-extension'
+import { ifElse, identity, includes, without, concat, isEmpty, map, when, join, compose } from 'ramda'
 
 // 默认图像占位
 export const imagePlaceholder = imageUrl => {
@@ -42,6 +44,13 @@ export const concatOrWithout = item => list => {
   const _list = list || []
   const _list2 = ifElse(includes(item), without([item]), concat([item]))(_list)
   return isEmpty(_list2) ? undefined : _list2
+}
+
+// ParseJSONObject，如非对象或出错，返回空对象
+export const mayBeParseJSONObjectOrEmptyObject = any => {
+  return any
+    |> tryCatch(JSON.parse, identity)
+    |> when(isNotPlainObj, alwaysEmptyObject)
 }
 
 // 将对象中json数组值转为pg array string
