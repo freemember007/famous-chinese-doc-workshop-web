@@ -155,12 +155,15 @@ const plugins = [
   // 'ramda',
   // 'date-fns',
 
-  // // log插件, 用法: log: 'foo', 'bar', 1, (与下面的有冲突)
-  // // @see: https://github.com/codemix/babel-plugin-trace
-  // // 'trace',
-  // // log文件名与行号(放置位置不要太下，否则有些地方不生效)
-  // // @see: https://github.com/peteringram0/babel-plugin-console-source
-  // ['console-source', { 'segments': 2 }],
+  // log插件1: log文件名，变量名，文件名长度可自定义，async下存在多次log的情况
+  // @see: https://github.com/peteringram0/babel-plugin-console-source
+  // ['babel-plugin-console-source', { 'segments': 1 }],
+  // log插件2: log函数名
+  // 'annotate-console-log',
+  // log插件3: log文件名，函数名，变量名，缺点：文件名长度不可自定义
+  // @see: https://github.com/kwelch/babel-plugin-captains-log
+  ["babel-plugin-captains-log", { "injectFileName": true, "injectVariableName": true, "injectScope": true }],
+
 
   // // ---- tc39提案
   // // @see: https://github.com/babel/proposals

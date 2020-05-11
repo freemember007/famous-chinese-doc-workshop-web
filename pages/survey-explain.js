@@ -13,7 +13,7 @@ import { it/*, _*/ } from 'param.macro'
 // util
 import agent from '@/util/request'
 import ensure from '@/util/ensure'
-import { _title, _subTitle, _box, _text } from '@/util/semantic-tags'
+import { _title, _subTitle, _box, _text } from '@/util/_tags'
 import { mayBeParseJSONObjectOrEmptyObject } from '@/util/filters'
 
 

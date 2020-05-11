@@ -16,7 +16,7 @@ import agent from '@/util/request'
 import ensure from '@/util/ensure'
 import { formatDateTimeM2 } from '@/util/date'
 import { imagePlaceholder } from '@/util/filters'
-import { _title, _subTitle, _text } from '@/util/semantic-tags'
+import { _title, _subTitle, _text } from '@/util/_tags'
 
 // props
 export async function getServerSideProps({ req: { headers }, query }) {

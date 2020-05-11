@@ -14,7 +14,7 @@ import { it/*, _*/ } from 'param.macro'
 import agent from '@/util/request'
 import ensure from '@/util/ensure'
 import { imagePlaceholder, omit } from '@/util/filters'
-import { _list, _item, _left, _right } from '@/util/semantic-tags'
+import { _list, _item, _left, _right } from '@/util/_tags'
 
 // props
 export const getServerSideProps = async ({ req : { headers }, query }) => {

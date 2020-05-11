@@ -15,7 +15,7 @@ import { it, /*_*/ } from 'param.macro'
 import { padEnd, /*replace*/ /* 忽略null/undefined, 比ramda更安全 */ } from 'lodash/fp'
 import { compose, isNil, /*tap*/ } from 'ramda'
 import { ifElse /* ramda的ifElse有bug，需两次调用，不知何故 */ } from 'rambdax'
-// import { isBrowser } from '@/constant'
+// import { isBrowser } from '@/config/constant'
 
 // shorthand... => null -> String
 export const now       = () => format('y-MM-dd HH:mm:ss', date())

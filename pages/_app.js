@@ -14,7 +14,7 @@ import Head from 'next/head'
 import { SkeletonTheme } from "react-loading-skeleton"
 import '@/styles/spectre.styl'
 import "@/node_modules/placeholder-loading/dist/css/placeholder-loading.min.css"
-// import { useGlobalStore } from '@/globalStore'
+// import { useGlobalStore } from '@/config/globalStore'
 // fp
 import { isEmpty } from 'lodash/fp'
 import { alwaysEmptyObject } from 'ramda-extension'
@@ -26,11 +26,10 @@ import { trace } from 'ramda-extension'
 // import sleep from 'await-sleep'
 import { mayBeParseJSONObjectOrEmptyObject } from '@/util/filters'
 // config
-import { DDYYAPI_BASE_URL } from '@/constant'
+import { DDYYAPI_BASE_URL } from '@/config/constant'
 
 const App = ({ Component, pageProps }) => {
-
-  console.log(pageProps.headers)
+  console.log(pageProps.headers?.cookie)
   const severSidecookie = cookie.parse(pageProps.headers?.cookie || '')
   // all acceptable base query params
   // 外部系统首次到达本应用时必传(通过url传参)，收到后缓存到sessionstorage，供整个应用session生命周期使用

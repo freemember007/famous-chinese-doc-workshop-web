@@ -1,7 +1,7 @@
 /**
  * superagent封装
  */
-import { DDYYAPI_BASE_URL } from '@/constant'
+import { DDYYAPI_BASE_URL } from '@/config/constant'
 import { matchPairs, ANY } from 'pampy'
 import { startsWith } from 'ramda'
 

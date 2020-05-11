@@ -20,7 +20,7 @@ import { match, ANY } from 'pampy'
 import agent from '@/util/request'
 import ensure from '@/util/ensure'
 import { formatDateTimeM2 } from '@/util/date'
-import { _body, _title, _subTitle, _item } from '@/util/semantic-tags'
+import { _body, _title, _subTitle, _item } from '@/util/_tags'
 
 // props
 export const getServerSideProps = async ({ query }) => {

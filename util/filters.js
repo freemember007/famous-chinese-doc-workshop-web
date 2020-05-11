@@ -1,5 +1,5 @@
 // 柯里化函数结合管道符使用充当过滤器
-import { PLACEHOLDER_IMAGE } from '@/constant'
+import { PLACEHOLDER_IMAGE } from '@/config/constant'
 import { truncate } from 'lodash'
 import { isArray } from 'lodash/fp'
 import { tryCatch, prepend, append } from 'rambdax'

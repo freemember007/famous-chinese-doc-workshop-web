@@ -10,16 +10,16 @@ import { Button, NavBar } from 'antd-mobile'
 import { FadeOut } from 'animate-css-styled-components'
 import Linkify from 'linkifyjs/react'
 import LazyLoad from 'react-lazyload'
-// import { useGlobalStore } from '@/globalStore'
+// import { useGlobalStore } from '@/config/globalStore'
 // fp
 import { join } from 'ramda'
 // util
-import {_list, _item } from '@/util/semantic-tags'
+import {_list, _item } from '@/util/_tags'
 import { mayBeParseJSONObjectOrEmptyObject } from '@/util/filters'
 
 // props
 export async function getServerSideProps({ req : { headers }, query }) {
-  // console.log({req})
+  console.log(headers.cookie)
   return { props: { headers, query: {
     ...query,
     // only for dev
@@ -49,7 +49,7 @@ function Body$() {
   // const [userInfo] = useSessionstorage('ddyy-survey-userInfo', {})
   // const pageTitle = Cookies.get('ddyy-survey-pageTitle')
   const userInfo = Cookies.get('ddyy-survey-userInfo') |> mayBeParseJSONObjectOrEmptyObject
-  console.log({userInfo})
+  console.log('userInfo', userInfo)
 
   const { data: surveys, loading, error } = useGet({
     path        : 'common-biz/rest/survey',
@@ -96,6 +96,7 @@ function Questions$() {
                   requestOptions={{ headers: { Prefer: 'return=representation'} }}
                 >
                   { (mutate, { loading, error }) => {
+                    console.log(loading)
                     return (
                       <div className="p3 __flex column">
                         { loading && <p>loading...</p> }

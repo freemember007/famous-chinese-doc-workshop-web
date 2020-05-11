@@ -22,7 +22,7 @@ import agent from '@/util/request'
 import sleep from 'await-sleep'
 import ensure from '@/util/ensure'
 import { omit, percent, concatOrWithout, mayBeParseJSONObjectOrEmptyObject } from '@/util/filters'
-import { _body } from '@/util/semantic-tags'
+import { _body } from '@/util/_tags'
 
 // props
 export const getServerSideProps = async ({ /*req, res, */query }) => {
@@ -92,6 +92,7 @@ const RadioGroup$ = ({ currentQuestion, surveyQuestionsLength }) => {
           [currentQuestion.id]: option.id,
         })
         await sleep(200)
+        console.log(currentQuestion)
         // 单选选择后，自动跳到下一题
         if(currentQuestionIndex < surveyQuestionsLength - 1) {
           setCurrentQuestionIndex(currentQuestionIndex + 1)

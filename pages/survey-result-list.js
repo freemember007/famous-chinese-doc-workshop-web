@@ -16,7 +16,7 @@ import agent from '@/util/request'
 import ensure from '@/util/ensure'
 import { omit, ifNotNilAppend } from '@/util/filters'
 import { formatDateTimeM2 } from '@/util/date'
-import { _body, _item, _left, _right } from '@/util/semantic-tags'
+import { _body, _item, _left, _right } from '@/util/_tags'
 
 // props
 export const getServerSideProps = async ({ /*req, res, */query }) => {

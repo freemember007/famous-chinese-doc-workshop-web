@@ -8,7 +8,7 @@ let FORCE_PROD
 FORCE_PROD = true // 注释或反注释此行(供本地直连正式服测试)
 export const IS_PROD = FORCE_PROD || !test(/(0|localhost|\d+\.*)/, location.host)
 
-export const isBrowser = typeof window !== 'undefined'
+export const IS_BROWSER = typeof window !== 'undefined'
 
 //--------------------------------------------------
 // base url常量定义
