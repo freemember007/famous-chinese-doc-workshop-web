@@ -102,8 +102,19 @@ swr: 需要设定cache key
 
 ### log库
 
-无法使用tracer库, 因不支持服务端渲染
+使用babel插件 [babel-plugin-captains-log](https://github.com/kwelch/babel-plugin-captains-log) 打印有意义的log
 
+核心原理：
+
+```js
+// simple.js
+function x(){
+  console.log(a);
+}
+// 编译为
+console.log("simple.js(2:2)", "x",  "a", a);
+```
+故非常安全(比较tracer等仅能用于服务端的logger库)。
 
 ## 常见问题
 
