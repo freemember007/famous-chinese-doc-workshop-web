@@ -2,9 +2,23 @@
 
 点点医院通用业务模块微信前端react，如量表问卷，健康订制等
 
-## 环境
+## 如何开始
 
-使用create-next-app构建，版本为next9，babel7，webpack相关包已集成，无需重新安装。
+```bash
+# vistit: http://localhost:4005
+yarn
+yarn dev
+yarn build
+yarn start
+```
+
+## 开发环境
+
+使用create-next-app构建，版本为next9，babel7.
+
+### 系统要求
+
+nodejs > 11.10.1
 
 ### babel
 
@@ -19,25 +33,19 @@ plugin-transform-runtime
 styled-jsx
 ```
 
-### ui
+### IDE
 
-### css
+如果使用pug模板，为在模板中正确显示pug, 尤其是if, each等，应安装pug-tmbundle，并选择pypug语法, 不要pug和sublime-pug-extened
 
-antd-mobile require normalize.css导致编译报错bug,
 
-vi node_modules\antd-mobile\lib\style\index.js
-
-```javascript
-// 去除此项，如需要在_app.js import 'normalize.css/normalize.css'
-// require('normalize.css/normalize.css');
-```
+## UI and Components
 
 ### styled-components
 
 使用了babel-plugin-styled-components，但实测并不支持ssr，故：
 
 1. 暂不使用基于styled-components的库，如styled-icons， animated-styled-components, styled-flex-component
-2. util/sementic-tags使用官方建议的styled-components/macro是否会更安全些
+2. util/sementic-tags使用官方建议的styled-components/macro是否会更安全？
 ```javascript
 import styled from 'styled-components/macro'
 ```
@@ -64,17 +72,9 @@ yarn add @styled-icons/feather
 yarn add @styled-icons/foundation
 ```
 
-### 其他
+### Framework and Lib
 
-https://github.com/rebassjs/rebass
-
-https://github.com/Fausto95/styled-grid-component
-
-https://github.com/SaraVieira/styled-flex-component
-
-https://www.smooth-code.com/open-source/smooth-ui/docs/theming/
-
-### query库比较
+### use http
 
 很多库用到fetch库，需要abortcontroller-polyfill
 
@@ -100,22 +100,30 @@ swa/react-query: 需要设定cache key
 
 swr: 需要设定cache key
 
-## 日志
-tracer不支持服务端渲染
+### log库
 
+无法使用tracer库, 因不支持服务端渲染
+
+
+## 常见问题
+
+### antd-mobile require normalize.css导致编译报错bug
+
+vi node_modules\antd-mobile\lib\style\index.js
+
+```javascript
+// 去除此项，如需要在_app.js import 'normalize.css/normalize.css'
+// require('normalize.css/normalize.css');
+```
+
+或
 
 ```bash
 yarn fixant
 ```
 
-### react-dom-server
+### React Suspense api
 
-在现在next9框架下，ReactDOMServer does not yet support Suspense，故某些使用suspense的库如，use-http, rest-hook均不可用。
+因ReactDOMServer(SSR) does not yet support Suspense，故某些使用suspense的库如，use-http, rest-hook均需要手动管理Suspense。
 
 https://spectrum.chat/next-js/general/suspense-support~f83c5c32-cb4d-419e-ba3d-f08948e63584
-
-## IDE
-
-为在模板中正确显示pug, 尤其是if, each等，应安装pug-tmbundle，并选择pypug语法, 不要pug和sublime-pug-extened
-
-

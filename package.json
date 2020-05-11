@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --port 4005",
     "build": "next build",
-    "start": "next start",
+    "start": "next start --port 4005",
     "fix": "perl -pi -e 's/require.*css.*$//' node_modules/antd-mobile/lib/style/index.js"
   },
   "dependencies": {
@@ -26,6 +26,7 @@
     "js-cookie": "^2.2.1",
     "linkifyjs": "^2.1.9",
     "lodash": "^4.17.15",
+    "mch": "^0.3.0",
     "next": "9.3.1",
     "pampy": "^0.0.6",
     "param.macro": "^3.2.1",
