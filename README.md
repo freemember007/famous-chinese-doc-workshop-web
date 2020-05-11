@@ -7,7 +7,9 @@
 ```bash
 # vistit: http://localhost:4005
 yarn
+# dev
 yarn dev
+# prod
 yarn build
 yarn start
 ```
