@@ -56,6 +56,8 @@ https://github.com/alexvcasillas/animated-styled-components
 
 ### icon
 
+要求设计人员出svg图标。
+
 https://github.com/jacobwgillespie/styled-icons
 
 ```bash
