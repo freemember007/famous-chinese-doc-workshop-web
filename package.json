@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --port 4005",
+    "dev": "next dev --port 4006",
     "build": "next build",
-    "start": "next start --port 4005",
+    "start": "next start --port 4006",
     "fix": "perl -pi -e 's/require.*css.*$//' node_modules/antd-mobile/lib/style/index.js"
   },
   "dependencies": {
@@ -54,6 +54,7 @@
     "styled-flex-component": "^3.0.0",
     "superagent": "^5.2.2",
     "superagent-use": "^0.1.0",
+    "svg-react-loader": "^0.4.6",
     "use-axios-client": "^2.0.0",
     "use-persisted-state": "^0.3.0",
     "use-url-search-params": "^2.3.9"

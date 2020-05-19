@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="322px" height="69px" viewBox="0 0 322 69" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 63.1 (92452) - https://sketch.com -->
+    <title>Group 23</title>
+    <desc>Created with Sketch.</desc>
+    <g id="预约挂号" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g transform="translate(-360.000000, -60.000000)" id="Group-23">
+            <g transform="translate(360.000000, 58.000000)">
+                <text id="名老中医传承工作室" font-family="JXK" font-size="40" font-weight="normal" line-spacing="44" letter-spacing="-4" fill="#6C3E08">
+                    <tspan x="0" y="34">名老中医传承工作</tspan>
+                    <tspan x="288" y="34">室</tspan>
+                </text>
+                <text id="杭州市中医院" font-family="PingFangSC-Light, PingFang SC" font-size="18" font-weight="300" line-spacing="18" letter-spacing="11.25" fill="#000000">
+                    <tspan x="0" y="73">杭州市中医</tspan>
+                    <tspan x="146.25" y="73" letter-spacing="12.500001">院</tspan>
+                </text>
+            </g>
+        </g>
+    </g>
+</svg>

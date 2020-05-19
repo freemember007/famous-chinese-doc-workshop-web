@@ -2,12 +2,12 @@
 // 略缩说明：f: font ; p: padding; m: margin; b: border; br: border-radius; t: text; tblr: top/bottom/left/right
 
 //-------- Position 位置 -------- //
-.container
-  margin-left: auto
-  margin-right: auto
-  padding-left: $layout-spacing*1.5
-  padding-right: $layout-spacing*1.5
-  width: 100%
+// .container
+//   margin-left: auto
+//   margin-right: auto
+//   padding-left: $layout-spacing*1.5
+//   padding-right: $layout-spacing*1.5
+//   width: 100%
 .relative
   position: relative
 .absolute
@@ -74,6 +74,8 @@
 .row-reverse
   flex-direction row-reverse
 .col /*排成一列*/
+  flex-direction column
+.column /*排成一列*/
   flex-direction column
 .j-start
   justify-content flex-start
@@ -198,6 +200,8 @@ padding-variant(8, $unit-8)
   width 100%
 .wa
   width auto
+.w1-8
+  width 12.5%
 // left offset
 .l1
   margin-left 8.33333%
@@ -601,3 +605,13 @@ bg-color-variant(".bg-white", #ffffff)
 // // .has-nav
 //   top 45px
 //   bottom 0px
+
+.t-justify
+  // 文字两端对齐
+  text-align justify
+  text-justify inter-ideograph
+
+.indent2
+  // 前端空两格
+  text-indent 2em
+

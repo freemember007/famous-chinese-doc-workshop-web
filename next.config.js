@@ -161,7 +161,7 @@ module.exports = withPlugins([ withCss, withStylus, withLess, withTM],{
   },
 
   // 定义生产环境下页面路由的根路径，重要，否则nginx location反向代理会不成功
-  assetPrefix: './',
+  assetPrefix: IS_DEV ? '/' : './',
 
   // // bundleAnalyzer 打包尺寸可视化分析，仅yarn build时
   // // @see: https://cnpmjs.org/package/webpack-bundle-analyzer

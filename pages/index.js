@@ -1,143 +1,107 @@
 // framework
-// 不自定义babel时，不需要显示引入react，@todo: 可用alias解决
 import React from 'react'
-import Link from 'next/link'
-import { useGet, Get, Mutate } from "restful-react"
-// import useSessionstorage from "@rooks/use-sessionstorage"
-import Cookies from 'js-cookie'
+import { FullWidthContainer, MainContainer, Right, List, Item, _title, _text, _date, Article, Row } from '@/components/_tags'
+import ColumnHead from '@/components/ColumnHead'
+import TwoColArticle from '@/components/TwoColArticle'
+import OneColArticle from '@/components/OneColArticle'
 // components
-import { Button, NavBar } from 'antd-mobile'
-import { FadeOut } from 'animate-css-styled-components'
-import Linkify from 'linkifyjs/react'
-import LazyLoad from 'react-lazyload'
-// import { useGlobalStore } from '@/config/globalStore'
+import Header from '@/components/Header'
+import Nav from '@/components/Nav'
 // fp
-import { join } from 'ramda'
+// import { join } from 'ramda'
 // util
-import {_list, _item } from '@/util/_tags'
-import { mayBeParseJSONObjectOrEmptyObject } from '@/util/filters'
+import { PLACEHOLDER_IMAGE } from '@/config/constant'
 
 // props
 export async function getServerSideProps({ req : { headers }, query }) {
-  console.log(headers.cookie)
-  return { props: { headers, query: {
-    ...query,
-    // only for dev
-    pageTitle : '点点医院量表问卷系统(dev)',
-    userInfo  : {
-      app_id : 1,                        // 云科室
-      hos_id : 3, pat_id : 106276,       // 点点云科室萧江平
-      // hos_id : 10275, pat_id : 2548629,  // 鞍山精卫萧江平
-      pat    : { name: 'xjp', age: '80', gender: 'M' },
-    },
-  } } }
+  return { props: {} }
 }
 
-//- 导航
-function Nav$() {
-  return (
-    <NavBar mode="light">
-      问卷首页
-    </NavBar>
-  )
+const HotNews = () => pug`
+  section.mt2.p3.b.__flex.a-center
+    div.mr4 最新动态
+    List.flex1.f4.gray
+      Item.__flex.j-between
+        _title 关于举办2019年“中医护理技术在痛症中的应用学习班”的通知
+        _date 2019/05/01
+      Item.__flex.j-between
+        _title 关于举办2019年“中医护理技术在痛症中的应用学习班”的通知
+        _date 2019/05/01
+`
+
+const NavBtns = () => {
+  return pug`
+    List.mt2.__flex.wrap
+      Item.w1-8.p2.__flex.column.a-center
+        img.circle(with="60", height="60", src="" || PLACEHOLDER_IMAGE)
+        div.mt2.f4 论文论著
+      Item.w1-8.p2.__flex.column.a-center
+        img.circle(with="60", height="60", src="" || PLACEHOLDER_IMAGE)
+        div.mt2.f4 论文论著
+      Item.w1-8.p2.__flex.column.a-center
+        img.circle(with="60", height="60", src="" || PLACEHOLDER_IMAGE)
+        div.mt2.f4 论文论著
+      Item.w1-8.p2.__flex.column.a-center
+        img.circle(with="60", height="60", src="" || PLACEHOLDER_IMAGE)
+        div.mt2.f4 论文论著
+      Item.w1-8.p2.__flex.column.a-center
+        img.circle(with="60", height="60", src="" || PLACEHOLDER_IMAGE)
+        div.mt2.f4 论文论著
+      Item.w1-8.p2.__flex.column.a-center
+        img.circle(with="60", height="60", src="" || PLACEHOLDER_IMAGE)
+        div.mt2.f4 论文论著
+      Item.w1-8.p2.__flex.column.a-center
+        img.circle(with="60", height="60", src="" || PLACEHOLDER_IMAGE)
+        div.mt2.f4 论文论著
+      Item.w1-8.p2.__flex.column.a-center
+        img.circle(with="60", height="60", src="" || PLACEHOLDER_IMAGE)
+        div.mt2.f4 论文论著
+  `
 }
 
-function Body$() {
-  // @todo: 首次从sessionstorage取会存在取不到的情况...
-  // const [isSessionSaved] = useGlobalStore('isSessionSaved')
-  // const [pageTitle] = useSessionstorage('ddyy-survey-pageTitle')
-  // const [userInfo] = useSessionstorage('ddyy-survey-userInfo', {})
-  // const pageTitle = Cookies.get('ddyy-survey-pageTitle')
-  const userInfo = Cookies.get('ddyy-survey-userInfo') |> mayBeParseJSONObjectOrEmptyObject
-  console.log('userInfo', userInfo)
-
-  const { data: surveys, loading, error } = useGet({
-    path        : 'common-biz/rest/survey',
-    queryParams : {id: 'in.(1, 2, 3, 4)', select: '*, a'},
-    // resolve     : res => res,
-  })
-  return (
-    <_list className="m3 p3">
-      { loading && <p>loading</p> }
-      { error   && <p>{ error.message }</p> }
-      { surveys && surveys.map((survey, index) =>
-        <_item key={ index }>{ survey.title }</_item>
-      )}
-      {/*<p> {isSessionSaved ? 'true' : 'false'} </p>*/}
-      <Link href={{ pathname: 'survey-list', query: { app_id: userInfo.app_id, hos_id: userInfo.hos_id } }}>
-        <Button type="primary"> 问卷列表 </Button>
-      </Link>
-      <div className="my4" />
-      <Link href={{ pathname: 'survey-result-list', query: { pat_id: 2548629, ownerName: '萧江平' } }}>
-        <Button type="primary"> 问卷结果 </Button>
-
-      </Link>
-    </_list>
-  )
+const RowWrapper = ({ children }) => {
+  return pug`
+    Row.my8.__flex #{children}
+  `
 }
 
-function Questions$() {
-  return (
-    <Get path="common-biz/rest/question" queryParams={{
-      id     : 'in.1,2,3,4',
-      select : '*,survey(*),options:option(*)',
-    }}>
-      { (questions, { loading, error }) => {
-        return (
-          <_list className="p3">
-            { loading   && <p>loading...</p> }
-            { error     && <p>{ [error?.message, error?.data?.message] |> join(', ') }</p> }
-            { questions && questions.map((survey, index) =>
-              <_item className="p2" key={ index }>
-                <p>{ survey.title }</p>
-                <Mutate
-                  verb="PATCH"
-                  queryParams={{ id: 'eq.1' }}
-                  requestOptions={{ headers: { Prefer: 'return=representation'} }}
-                >
-                  { (mutate, { loading, error }) => {
-                    console.log(loading)
-                    return (
-                      <div className="p3 __flex column">
-                        { loading && <p>loading...</p> }
-                        { error   && <FadeOut duration="0.3s" delay="1s"><p>{ [error?.message, error?.data?.message] |> join(', ') }</p></FadeOut> }
-                        <Button onClick={ () => mutate({ titlse: survey.title + '1' })}>修改标题</Button>
-                      </div>
-                    )
-                  }}
-                </Mutate>
-              </_item>
-            )}
-          </_list>
-        )
-      }}
-
-    </Get>
-  )
+const RowFirst = () => {
+  return pug`
+    RowWrapper
+      TwoColArticle(
+        colName="名医风采/DOCTOR",
+        imageUrl="",
+        title="脂肪肝治疗讨论",
+        summary="脂肪填充真的是一个神奇的手术，这才半个月，就已经恢复这么好了~其实填充有很多方式，我觉得脂肪是最靠谱的，并不是人人都打得起玻尿酸，并不是人人都有钱！身为学生党的我们既要考虑效果，又要考虑性价比。再熬几年我也就毕业了，好想快点参加工作，那样我就可以肆无忌惮去整容，虽然现在也没人管着我...",
+      )
+      OneColArticle(
+        colName="工作室简介/WORKSHOP",
+        imageUrl="",
+        title="脂肪填充真的是一个神奇的手术，这才半个月，就已经恢复这么好了~",
+      )
+  `
 }
 
-function LinkifyTest$() {
-  return (
-    <LazyLoad height={200}>
-      <Linkify>
-        See source code at github.com/tasti/react-linkify/.
-      </Linkify>
-    </LazyLoad>
+const DocList = () => {
 
-  )
 }
+
 
 // main
-function Index$() {
-  return (
-    <section>
-      {/*<ActivityIndicator toast text="正在加载" />*/}
-      <Nav$ />
-      <Body$ />
-      <Questions$ />
-      <LinkifyTest$ />
-    </section>
-  )
+const Index = () => {
+  return pug`
+    Header
+    Nav
+    FullWidthContainer.py3.vw12.px2.__flex.j-center
+      MainContainer.w8
+        HotNews
+        NavBtns
+        RowFirst
+        //- RowWrapper
+        //-   RowFirst
+        //-   OneColArticle
+
+  `
 }
 
-export default Index$
+export default Index

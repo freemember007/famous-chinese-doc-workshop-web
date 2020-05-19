@@ -52,6 +52,8 @@ styled-jsx
 import styled from 'styled-components/macro'
 ```
 
+nextjs官方文档讲styled-jsx, styled-components不支持ssr：https://nextjs.org/docs/basic-features/built-in-css-support#css-in-js
+
 ### animate
 
 https://github.com/alexvcasillas/animated-styled-components
