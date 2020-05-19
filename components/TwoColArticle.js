@@ -8,10 +8,11 @@ import ColumnHead from '@/components/ColumnHead'
 // config
 import { PLACEHOLDER_IMAGE } from '@/config/constant'
 
-const TwoColArticle = ({ colName, imageUrl, title, summary }) => {
+const TwoColArticle = ({ colNameCn, colNameEn, imageUrl, title, summary }) => {
+  const colName = { colNameCn, colNameEn }
   return pug`
     div.w8.mr2
-      ColumnHead(text=colName)
+      ColumnHead(...colName)
       Article.__flex
         img(width=320, height=200, src=imageUrl || PLACEHOLDER_IMAGE)
         Right.ml2.flex1.__flex.column

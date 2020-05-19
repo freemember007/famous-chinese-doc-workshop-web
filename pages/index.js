@@ -17,6 +17,7 @@ export async function getServerSideProps({ req : { headers }, query }) {
   return { props: {} }
 }
 
+
 const HotNews = () => pug`
   section.mt2.p3.b.__flex.a-center
     div.mr4 最新动态
@@ -33,28 +34,28 @@ const NavBtns = () => {
   return pug`
     List.mt2.__flex.wrap
       Item.w1-8.p2.__flex.column.a-center
-        img.circle(with="60", height="60", src="" || PLACEHOLDER_IMAGE)
+        img.circle(width=60, height=60, src="" || PLACEHOLDER_IMAGE)
         div.mt2.f4 论文论著
       Item.w1-8.p2.__flex.column.a-center
-        img.circle(with="60", height="60", src="" || PLACEHOLDER_IMAGE)
+        img.circle(width=60, height=60, src="" || PLACEHOLDER_IMAGE)
         div.mt2.f4 论文论著
       Item.w1-8.p2.__flex.column.a-center
-        img.circle(with="60", height="60", src="" || PLACEHOLDER_IMAGE)
+        img.circle(width=60, height=60, src="" || PLACEHOLDER_IMAGE)
         div.mt2.f4 论文论著
       Item.w1-8.p2.__flex.column.a-center
-        img.circle(with="60", height="60", src="" || PLACEHOLDER_IMAGE)
+        img.circle(width=60, height=60, src="" || PLACEHOLDER_IMAGE)
         div.mt2.f4 论文论著
       Item.w1-8.p2.__flex.column.a-center
-        img.circle(with="60", height="60", src="" || PLACEHOLDER_IMAGE)
+        img.circle(width=60, height=60, src="" || PLACEHOLDER_IMAGE)
         div.mt2.f4 论文论著
       Item.w1-8.p2.__flex.column.a-center
-        img.circle(with="60", height="60", src="" || PLACEHOLDER_IMAGE)
+        img.circle(width=60, height=60, src="" || PLACEHOLDER_IMAGE)
         div.mt2.f4 论文论著
       Item.w1-8.p2.__flex.column.a-center
-        img.circle(with="60", height="60", src="" || PLACEHOLDER_IMAGE)
+        img.circle(width=60, height=60, src="" || PLACEHOLDER_IMAGE)
         div.mt2.f4 论文论著
       Item.w1-8.p2.__flex.column.a-center
-        img.circle(with="60", height="60", src="" || PLACEHOLDER_IMAGE)
+        img.circle(width=60, height=60, src="" || PLACEHOLDER_IMAGE)
         div.mt2.f4 论文论著
   `
 }
@@ -69,13 +70,15 @@ const RowFirst = () => {
   return pug`
     RowWrapper
       TwoColArticle(
-        colName="名医风采/DOCTOR",
+        colNameCn="名医风采",
+        colNameEn="DOCTOR",
         imageUrl="",
         title="脂肪肝治疗讨论",
         summary="脂肪填充真的是一个神奇的手术，这才半个月，就已经恢复这么好了~其实填充有很多方式，我觉得脂肪是最靠谱的，并不是人人都打得起玻尿酸，并不是人人都有钱！身为学生党的我们既要考虑效果，又要考虑性价比。再熬几年我也就毕业了，好想快点参加工作，那样我就可以肆无忌惮去整容，虽然现在也没人管着我...",
       )
       OneColArticle(
-        colName="工作室简介/WORKSHOP",
+        colNameCn="工作室简介",
+        colNameEn="WORKSHOP",
         imageUrl="",
         title="脂肪填充真的是一个神奇的手术，这才半个月，就已经恢复这么好了~",
       )
@@ -97,10 +100,6 @@ const Index = () => {
         HotNews
         NavBtns
         RowFirst
-        //- RowWrapper
-        //-   RowFirst
-        //-   OneColArticle
-
   `
 }
 

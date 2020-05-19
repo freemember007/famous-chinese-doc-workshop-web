@@ -25,7 +25,7 @@ const Search = () => pug`
 const LogoAndSearch = () => {
   return pug`
     FullWidthContainer.py2.vw12.__flex.j-center
-      MainContainer.py6.w8.__flex.j-between
+      MainContainer.py4.w8.__flex.j-between
         Logo
         Search
   `
