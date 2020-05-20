@@ -1,16 +1,10 @@
 // 柯里化函数结合管道符使用充当过滤器
-import { PLACEHOLDER_IMAGE } from '@/config/constant'
 import { truncate } from 'lodash'
 import { isArray } from 'lodash/fp'
 import { tryCatch, prepend, append } from 'rambdax'
 import { isNotPlainObj } from 'ramda-adjunct'
 import { alwaysEmptyObject } from 'ramda-extension'
 import { ifElse, identity, includes, without, concat, isEmpty, map, when, join, compose } from 'ramda'
-
-// 默认图像占位
-export const imagePlaceholder = imageUrl => {
-  return imageUrl || PLACEHOLDER_IMAGE
-}
 
 // 自定义过滤器
 // 文字缩略

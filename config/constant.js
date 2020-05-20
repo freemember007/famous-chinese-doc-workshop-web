@@ -28,7 +28,6 @@ export const WX_URL = DDYYAPI_BASE_URL + 'util/weixin/app/'
 // 其他
 //--------------------------------------------------
 // 默认占位图 1*1px
-// export const PLACEHOLDER_IMAGE = 'http://img.diandianys.com/Fh-6zclmUBp1TDOWTMXskCEeVJ4x'
-// export const PLACEHOLDER_IMAGE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUCB1jePbizX8ACSwDupmKZNwAAAAASUVORK5CYII='
-// export const PLACEHOLDER_IMAGE = require('@/svgs/one-pixel-gray-bg.svg')
-export const PLACEHOLDER_IMAGE = './one-pixel-gray-bg.svg'
+// export const IMAGE_PLACEHOLDER = 'http://img.diandianys.com/Fh-6zclmUBp1TDOWTMXskCEeVJ4x'
+// export const IMAGE_PLACEHOLDER = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUCB1jePbizX8ACSwDupmKZNwAAAAASUVORK5CYII='
+export const IMAGE_PLACEHOLDER = './image-placeholder.svg'

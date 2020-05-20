@@ -10,7 +10,7 @@ import Nav from '@/components/Nav'
 // fp
 // import { join } from 'ramda'
 // util
-import { PLACEHOLDER_IMAGE } from '@/config/constant'
+import { IMAGE_PLACEHOLDER } from '@/config/constant'
 
 // props
 export async function getServerSideProps({ req : { headers }, query }) {
@@ -34,28 +34,28 @@ const NavBtns = () => {
   return pug`
     List.mt2.__flex.wrap
       Item.w1-8.p2.__flex.column.a-center
-        img.circle(width=60, height=60, src="" || PLACEHOLDER_IMAGE)
+        img.circle(width=60, height=60, src="" || IMAGE_PLACEHOLDER)
         div.mt2.f4 论文论著
       Item.w1-8.p2.__flex.column.a-center
-        img.circle(width=60, height=60, src="" || PLACEHOLDER_IMAGE)
+        img.circle(width=60, height=60, src="" || IMAGE_PLACEHOLDER)
         div.mt2.f4 论文论著
       Item.w1-8.p2.__flex.column.a-center
-        img.circle(width=60, height=60, src="" || PLACEHOLDER_IMAGE)
+        img.circle(width=60, height=60, src="" || IMAGE_PLACEHOLDER)
         div.mt2.f4 论文论著
       Item.w1-8.p2.__flex.column.a-center
-        img.circle(width=60, height=60, src="" || PLACEHOLDER_IMAGE)
+        img.circle(width=60, height=60, src="" || IMAGE_PLACEHOLDER)
         div.mt2.f4 论文论著
       Item.w1-8.p2.__flex.column.a-center
-        img.circle(width=60, height=60, src="" || PLACEHOLDER_IMAGE)
+        img.circle(width=60, height=60, src="" || IMAGE_PLACEHOLDER)
         div.mt2.f4 论文论著
       Item.w1-8.p2.__flex.column.a-center
-        img.circle(width=60, height=60, src="" || PLACEHOLDER_IMAGE)
+        img.circle(width=60, height=60, src="" || IMAGE_PLACEHOLDER)
         div.mt2.f4 论文论著
       Item.w1-8.p2.__flex.column.a-center
-        img.circle(width=60, height=60, src="" || PLACEHOLDER_IMAGE)
+        img.circle(width=60, height=60, src="" || IMAGE_PLACEHOLDER)
         div.mt2.f4 论文论著
       Item.w1-8.p2.__flex.column.a-center
-        img.circle(width=60, height=60, src="" || PLACEHOLDER_IMAGE)
+        img.circle(width=60, height=60, src="" || IMAGE_PLACEHOLDER)
         div.mt2.f4 论文论著
   `
 }
