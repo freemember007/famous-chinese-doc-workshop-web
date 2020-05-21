@@ -27,3 +27,4 @@ export const _wrapper           = styled.div``
 export const FullWidthContainer = styled.div``
 export const MainContainer      = styled.div``
 export const _body              = styled.div``
+export const Block              = styled.div``

@@ -1,12 +1,13 @@
 // framework
 import React from 'react'
-import { FullWidthContainer, MainContainer, Right, List, Item, _title, _text, _date, Article, Row } from '@/components/_tags'
+// components
+import { FullWidthContainer, MainContainer, Block, List, Item, _title, _text, _date, Article, Row } from '@/components/_tags'
 import ColumnHead from '@/components/ColumnHead'
 import TwoColArticle from '@/components/TwoColArticle'
 import OneColArticle from '@/components/OneColArticle'
-// components
 import Header from '@/components/Header'
 import Nav from '@/components/Nav'
+import DivideVertical from '@/components/DivideVertical'
 // fp
 // import { join } from 'ramda'
 // util
@@ -85,8 +86,28 @@ const RowFirst = () => {
   `
 }
 
-const DocList = () => {
 
+const DocShow = ({ colNameCn = '传承之路', colNameEn = 'TEAM', docs = [
+  { name: '朱彩凤', title: '主任医师' },
+  { name: '王永均', title: '主任医师' },
+  { name: '张敏鸥 ', title: '主任医师' },
+  { name: '朱彩凤', title: '主任医师' },
+  { name: '王永均', title: '主任医师' },
+  { name: '张敏鸥 ', title: '主任医师' },
+] }) => {
+  const colName = { colNameCn, colNameEn }
+  return pug`
+    section.w12.mr2
+      ColumnHead(...colName)
+      List.__flex.j-between
+        each doc, index in docs
+          Item.w2.tc.lh2(key=index)
+            img(width="100%", height=160, src=doc.imageUrl || IMAGE_PLACEHOLDER)
+            div.gray    #{doc.name}
+            div.gray.f4 #{doc.title}
+          if index !== docs.length -1
+            DivideVertical(width=50)
+  `
 }
 
 
@@ -100,6 +121,7 @@ const Index = () => {
         HotNews
         NavBtns
         RowFirst
+        DocShow
   `
 }
 
