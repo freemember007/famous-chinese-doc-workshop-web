@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --port 4006",
+    "dev": "(sleep 5; open http://localhost:4006) & next dev --port 4006",
     "build": "next build",
-    "start": "next start --port 4006",
+    "start": "(sleep 1; open http://localhost:4006) & next start --port 4006",
     "fix": "perl -pi -e 's/require.*css.*$//' node_modules/antd-mobile/lib/style/index.js"
   },
   "dependencies": {
