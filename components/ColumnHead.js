@@ -2,12 +2,11 @@
  * Header
  */
 import React from 'react'
-// import { FullWidthContainer, MainContainer, List, Item } from '@/components/_tags'
 // import Logo from 'svg-react-loader!../svgs/logo.svg'
 
-const ColumnContainer = ({ colNameCn, colNameEn, colWidth, children }) => {
+const ColumnContainer = ({ colNameCn, colNameEn, width, children }) => {
   return pug`
-    section(className="w" + String(colWidth) )
+    section(className="w" + String(width) )
       section.mb4.pl4.bl.bw4.b-primary
         span #{colNameCn}
         span.mx1.gray /

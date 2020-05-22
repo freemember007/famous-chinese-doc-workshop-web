@@ -3,7 +3,7 @@
  */
 import React from 'react'
 // components
-import { Article, Right, Title } from '@/components/_tags'
+import { Article, Right, Title } from '@/components/tagName'
 import ColumnHead from '@/components/ColumnHead'
 // config
 import { IMAGE_PLACEHOLDER } from '@/config/constant'

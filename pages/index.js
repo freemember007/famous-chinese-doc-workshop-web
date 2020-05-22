@@ -1,10 +1,12 @@
 // framework
 import React from 'react'
 // components
-import { FullWidthContainer, MainContainer, List, Item, Title, Date, Table, Row } from '@/components/_tags'
+import { FullWidthContainer, MainContainer, List, Item, Title, DateTime } from '@/components/tagName'
 import ColumnHead from '@/components/ColumnHead'
 import TwoColArticle from '@/components/TwoColArticle'
 import OneColArticle from '@/components/OneColArticle'
+import ThreeColList from '@/components/ThreeColList'
+import ThreeColAlbum from '@/components/ThreeColAlbum'
 import Header from '@/components/Header'
 import Nav from '@/components/Nav'
 import DivideVertical from '@/components/DivideVertical'
@@ -20,20 +22,20 @@ export async function getServerSideProps() {
 }
 
 const HotNews = () => pug`
-  section.p3.b.__flex.a-center
+  section.w12.p3.b.__flex.a-center
     div.mr4 最新动态
     List.flex1.f4.gray
-      Item.__flex.j-between
-        Title 关于举办2019年“中医护理技术在痛症中的应用学习班”的通知
-        Date 2019/05/01
-      Item.__flex.j-between
-        Title 关于举办2019年“中医护理技术在痛症中的应用学习班”的通知
-        Date 2019/05/01
+      each num in [1,2]
+        Item.w12.__flex.j-between(key=num)
+          div.primary.mr2 new!
+          div.w12.__flex.j-between
+            Title.gray.f4 关于举办2019年“中医护理技术在痛症中的应用学习班”的通知
+            DateTime.gray.f4 2020/05/03
 `
 
 const NavBtns = () => {
   return pug`
-    List.__flex.wrap
+    List.w12.__flex.wrap
       Item.w1-8.p2.__flex.column.a-center
         img.circle(width=60, height=60, src="" || IMAGE_PLACEHOLDER)
         div.mt2.f4 论文论著
@@ -69,21 +71,20 @@ const RowWrapper = ({ children }) => {
 
 const RowFirst = () => {
   return pug`
-    RowWrapper
-      TwoColArticle(
-        colNameCn="名医风采",
-        colNameEn="DOCTOR",
-        imageUrl="",
-        title="脂肪肝治疗讨论",
-        summary="脂肪填充真的是一个神奇的手术，这才半个月，就已经恢复这么好了~其实填充有很多方式，我觉得脂肪是最靠谱的，并不是人人都打得起玻尿酸，并不是人人都有钱！身为学生党的我们既要考虑效果，又要考虑性价比。再熬几年我也就毕业了，好想快点参加工作，那样我就可以肆无忌惮去整容，虽然现在也没人管着我...",
-      )
-      DivideVertical(width=30)
-      OneColArticle(
-        colNameCn="工作室简介",
-        colNameEn="WORKSHOP",
-        imageUrl="",
-        title="脂肪填充真的是一个神奇的手术，这才半个月，就已经恢复这么好了~",
-      )
+    TwoColArticle(
+      colNameCn="名医风采",
+      colNameEn="DOCTOR",
+      imageUrl="",
+      title="脂肪肝治疗讨论",
+      summary="脂肪填充真的是一个神奇的手术，这才半个月，就已经恢复这么好了~其实填充有很多方式，我觉得脂肪是最靠谱的，并不是人人都打得起玻尿酸，并不是人人都有钱！身为学生党的我们既要考虑效果，又要考虑性价比。再熬几年我也就毕业了，好想快点参加工作，那样我就可以肆无忌惮去整容，虽然现在也没人管着我...",
+    )
+    DivideVertical(width=30)
+    OneColArticle(
+      colNameCn="工作室简介",
+      colNameEn="WORKSHOP",
+      imageUrl="",
+      title="脂肪填充真的是一个神奇的手术，这才半个月，就已经恢复这么好了~",
+    )
   `
 }
 
@@ -118,7 +119,6 @@ const DocSche = () => {
     { docName: '杨少山', docTitle: '副主任医师', time: '周一上午，周二下午' },
     { docName: '杨少山', docTitle: '副主任医师', time: '周一上午，周二下午' },
     { docName: '杨少山', docTitle: '副主任医师', time: '周一上午，周二下午' },
-    { docName: '杨少山', docTitle: '副主任医师', time: '周一上午，周二下午' },
   ]
   return pug`
     section.w8
@@ -141,13 +141,13 @@ const DocSche = () => {
 const Video = () => {
   const colName = { colNameCn: '视频资料', colNameEn: 'VIDEO' }
   return pug`
-    ColumnHead(...colName, colWidth="4")
+    ColumnHead(...colName, width="4")
       video.video(
         preload="auto"
         controls="controls"
         poster=IMAGE_PLACEHOLDER
         src="http://img.diandianys.com/lid8uKK2NKOy45WvuGoScUKlsajQ")
-
+      div.f4 脂肪填充真的是一个神奇的手术，这才半个月，就已经恢复这么好了
   `
 }
 
@@ -158,11 +158,14 @@ const Index = () => {
     Nav
     FullWidthContainer.py3.vw12.px2.__flex.j-center
       MainContainer.w8
-        HotNews
+        RowWrapper
+          HotNews
+        DivideHorizen(height=10)
+        RowWrapper
+          NavBtns
         DivideHorizen
-        NavBtns
-        DivideHorizen
-        RowFirst
+        RowWrapper
+          RowFirst
         DivideHorizen
         RowWrapper
           DocTeam
@@ -171,6 +174,13 @@ const Index = () => {
           DocSche
           DivideVertical
           Video
+        DivideHorizen
+        RowWrapper
+          ThreeColList(colNameCn="医案医话", colNameEn="CASE")
+        DivideHorizen
+        RowWrapper
+          ThreeColAlbum(colNameCn="工作室环境", colNameEn="ENVIORMENT")
+
   `
 }
 
