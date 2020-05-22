@@ -8,6 +8,7 @@ import OneColArticle from '@/components/OneColArticle'
 import ThreeColList from '@/components/ThreeColList'
 import ThreeColAlbum from '@/components/ThreeColAlbum'
 import Header from '@/components/Header'
+import Footer from '@/components/footer'
 import Nav from '@/components/Nav'
 import DivideVertical from '@/components/DivideVertical'
 import DivideHorizen from '@/components/DivideHorizen'
@@ -180,7 +181,8 @@ const Index = () => {
         DivideHorizen
         RowWrapper
           ThreeColAlbum(colNameCn="工作室环境", colNameEn="ENVIORMENT")
-
+    DivideHorizen
+    Footer
   `
 }
 

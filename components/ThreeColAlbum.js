@@ -20,7 +20,6 @@ const ThreeColList = ({ colNameCn, colNameEn, imageUrl, title }) => {
             img.w12(height=300, src=imageUrl || IMAGE_PLACEHOLDER)
           if index < 4
             DivideVertical
-
   `
 }
 
