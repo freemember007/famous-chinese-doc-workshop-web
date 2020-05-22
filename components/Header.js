@@ -2,14 +2,14 @@
  * Header
  */
 import React from 'react'
-import { FullWidthContainer, MainContainer, Left, Right } from '@/components/tagName'
+import MainContainer from '@/components/MainContainer'
+
 // import Logo from 'svg-react-loader!../svgs/logo.svg'
 
 const TopHint = () => {
   return pug`
-    FullWidthContainer.py2.vw12.bg-dark.__flex.j-center
-      MainContainer.w8.__flex.j-left
-        div.f4 您好，欢迎来到杭州市名中医工作室！
+    MainContainer(background="dark")
+      div.f4 您好，欢迎来到杭州市名中医工作室！
   `
 }
 
@@ -24,8 +24,8 @@ const Search = () => pug`
 
 const LogoAndSearch = () => {
   return pug`
-    FullWidthContainer.py2.vw12.__flex.j-center
-      MainContainer.py4.w8.__flex.j-between
+    MainContainer
+      div.__flex.j-between
         Logo
         Search
   `

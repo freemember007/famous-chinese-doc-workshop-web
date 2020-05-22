@@ -1,7 +1,8 @@
 // framework
 import React from 'react'
 // components
-import { FullWidthContainer, MainContainer, List, Item, Title, DateTime } from '@/components/tagName'
+import { List, Item, Title, DateTime } from '@/components/tagName'
+import MainContainer from '@/components/MainContainer'
 import ColumnHead from '@/components/ColumnHead'
 import TwoColArticle from '@/components/TwoColArticle'
 import OneColArticle from '@/components/OneColArticle'
@@ -22,6 +23,12 @@ export async function getServerSideProps() {
   return { props: {} }
 }
 
+const ScrollSlide = () => {
+  return pug`
+    img(width="100%", height=300, src=IMAGE_PLACEHOLDER)
+  `
+}
+
 const HotNews = () => pug`
   section.w12.p3.b.__flex.a-center
     div.mr4 最新动态
@@ -37,30 +44,10 @@ const HotNews = () => pug`
 const NavBtns = () => {
   return pug`
     List.w12.__flex.wrap
-      Item.w1-8.p2.__flex.column.a-center
-        img.circle(width=60, height=60, src="" || IMAGE_PLACEHOLDER)
-        div.mt2.f4 论文论著
-      Item.w1-8.p2.__flex.column.a-center
-        img.circle(width=60, height=60, src="" || IMAGE_PLACEHOLDER)
-        div.mt2.f4 论文论著
-      Item.w1-8.p2.__flex.column.a-center
-        img.circle(width=60, height=60, src="" || IMAGE_PLACEHOLDER)
-        div.mt2.f4 论文论著
-      Item.w1-8.p2.__flex.column.a-center
-        img.circle(width=60, height=60, src="" || IMAGE_PLACEHOLDER)
-        div.mt2.f4 论文论著
-      Item.w1-8.p2.__flex.column.a-center
-        img.circle(width=60, height=60, src="" || IMAGE_PLACEHOLDER)
-        div.mt2.f4 论文论著
-      Item.w1-8.p2.__flex.column.a-center
-        img.circle(width=60, height=60, src="" || IMAGE_PLACEHOLDER)
-        div.mt2.f4 论文论著
-      Item.w1-8.p2.__flex.column.a-center
-        img.circle(width=60, height=60, src="" || IMAGE_PLACEHOLDER)
-        div.mt2.f4 论文论著
-      Item.w1-8.p2.__flex.column.a-center
-        img.circle(width=60, height=60, src="" || IMAGE_PLACEHOLDER)
-        div.mt2.f4 论文论著
+      each num in [1,2,3,4,5,6,7,8]
+        Item.w1-8.p2.__flex.column.a-center
+          img.circle(width=60, height=60, src="" || IMAGE_PLACEHOLDER)
+          div.mt2.f4 论文论著
   `
 }
 
@@ -157,30 +144,30 @@ const Index = () => {
   return pug`
     Header
     Nav
-    FullWidthContainer.py3.vw12.px2.__flex.j-center
-      MainContainer.w8
-        RowWrapper
-          HotNews
-        DivideHorizen(height=10)
-        RowWrapper
-          NavBtns
-        DivideHorizen
-        RowWrapper
-          RowFirst
-        DivideHorizen
-        RowWrapper
-          DocTeam
-        DivideHorizen
-        RowWrapper
-          DocSche
-          DivideVertical
-          Video
-        DivideHorizen
-        RowWrapper
-          ThreeColList(colNameCn="医案医话", colNameEn="CASE")
-        DivideHorizen
-        RowWrapper
-          ThreeColAlbum(colNameCn="工作室环境", colNameEn="ENVIORMENT")
+    ScrollSlide
+    MainContainer
+      RowWrapper
+        HotNews
+      DivideHorizen(height=10)
+      RowWrapper
+        NavBtns
+      DivideHorizen
+      RowWrapper
+        RowFirst
+      DivideHorizen
+      RowWrapper
+        DocTeam
+      DivideHorizen
+      RowWrapper
+        DocSche
+        DivideVertical
+        Video
+      DivideHorizen
+      RowWrapper
+        ThreeColList(colNameCn="医案医话", colNameEn="CASE")
+      DivideHorizen
+      RowWrapper
+        ThreeColAlbum(colNameCn="工作室环境", colNameEn="ENVIORMENT")
     DivideHorizen
     Footer
   `
