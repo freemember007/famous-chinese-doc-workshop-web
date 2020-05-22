@@ -11,7 +11,7 @@ import Nav from '@/components/Nav'
 const TopHint = () => {
   return pug`
     MainContainer(background="dark")
-      div.f4 您好，欢迎来到杭州市名中医工作室！
+      div.py2.f4 您好，欢迎来到杭州市名中医工作室！
   `
 }
 
@@ -26,8 +26,9 @@ const Search = () => pug`
 
 const LogoAndSearch = () => {
   return pug`
+    //- MainContainer(background="primary")
     MainContainer
-      div.__flex.j-between
+      div.py6.__flex.j-between
         Logo
         Search
   `

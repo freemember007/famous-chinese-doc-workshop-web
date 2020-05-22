@@ -5,7 +5,7 @@ import React from 'react'
 
 const MainContainer = ({ background = 'white', children }) => {
   return pug`
-    div.py3.w12.__flex.j-center(className="bg-" + background)
+    div.w12.__flex.j-center(className="bg-" + background)
       main.w10.w11-xl #{children}
   `
 }

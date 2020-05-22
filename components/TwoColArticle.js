@@ -17,7 +17,7 @@ const TwoColArticle = ({ colNameCn, colNameEn, imageUrl, title, summary }) => {
         img(width=320, height=200, src=imageUrl || IMAGE_PLACEHOLDER)
         Right.ml2.flex1.__flex.column
           Title.tc #{title}
-          p.gray.f4.t-justify.indent2
+          div.mt2.gray.f4.t-justify.indent2
             | #{summary}
   `
 }

@@ -24,7 +24,8 @@ export async function getServerSideProps() {
 
 const ScrollSlide = () => {
   return pug`
-    img(width="100%", height=300, src=IMAGE_PLACEHOLDER)
+    img(width="100%", height=300, src="http://www.doctorwyj.com/img/banner.png")
+    //- img(width="100%", height=300, src=IMAGE_PLACEHOLDER)
   `
 }
 
@@ -116,10 +117,10 @@ const DocSche = () => {
             th 姓名
             th 职称
             th 出诊时间
-        tbody.dark
+        tbody.gray
           each sche, index in sches
             tr(key=index)
-              td #{sche.docName}
+              td.dark #{sche.docName}
               td #{sche.docTitle}
               td #{sche.time}
   `

@@ -15,7 +15,7 @@ const OneColArticle = ({ colNameCn, colNameEn, imageUrl, title }) => {
       ColumnHead(...colName)
       Article
         img(width="100%", height=160, src=imageUrl || IMAGE_PLACEHOLDER)
-        p.gray.f4.t-justify.indent
+        div.mt2.gray.f4.t-justify.indent
           | #{title}
   `
 }
