@@ -52,6 +52,7 @@ const plugins = [
 
   // // optimize your React application transforming your imports to local variables
   // 'react-local',
+  'react-directives',
 
   // 对pug模板的支持
   // @see: https://github.com/pugjs/babel-plugin-transform-react-pug
@@ -59,7 +60,6 @@ const plugins = [
 
   // // 允许使用x-if x-show x-for x-model-hook x-class等类vue指令
   // // @see: https://github.com/peakchen90/babel-plugin-react-directives
-  'react-directives',
 
   // 对浏览器低版本的支持
   // @see: https://babeljs.io/docs/en/babel-plugin-transform-runtime#docsNav

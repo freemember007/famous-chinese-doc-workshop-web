@@ -13,7 +13,7 @@ import SimpleSchema from 'simpl-schema'
 import Head from 'next/head'
 import { SkeletonTheme } from "react-loading-skeleton"
 import '@/styles/spectre.styl'
-import "@/node_modules/placeholder-loading/dist/css/placeholder-loading.min.css"
+// import "@/node_modules/placeholder-loading/dist/css/placeholder-loading.min.css"
 // import { useGlobalStore } from '@/config/globalStore'
 // fp
 import { isEmpty } from 'lodash/fp'
