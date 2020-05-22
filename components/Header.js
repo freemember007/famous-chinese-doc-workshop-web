@@ -17,6 +17,9 @@ const TopHint = () => {
 
 const Logo = () => pug`
   img(src="logo.png")
+  //- section
+    div.primary(style={ fontSize: '36px' }) 王永均名老中医工作室
+    div.gray.f2 杭州市中医院
 `
 
 const Search = () => pug`

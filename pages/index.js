@@ -24,7 +24,7 @@ export async function getServerSideProps() {
 
 const ScrollSlide = () => {
   return pug`
-    img(width="100%", height=300, src="http://www.doctorwyj.com/img/banner.png")
+    img.fit(width="100%", height=300, src="http://www.doctorwyj.com/img/banner.png")
     //- img(width="100%", height=300, src=IMAGE_PLACEHOLDER)
   `
 }
