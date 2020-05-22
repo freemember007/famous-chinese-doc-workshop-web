@@ -10,7 +10,6 @@ import ThreeColList from '@/components/ThreeColList'
 import ThreeColAlbum from '@/components/ThreeColAlbum'
 import Header from '@/components/Header'
 import Footer from '@/components/footer'
-import Nav from '@/components/Nav'
 import DivideVertical from '@/components/DivideVertical'
 import DivideHorizen from '@/components/DivideHorizen'
 // fp
@@ -35,7 +34,7 @@ const HotNews = () => pug`
     List.flex1.f4.gray
       each num in [1,2]
         Item.w12.__flex.j-between(key=num)
-          div.primary.mr2 new!
+          div.red.mr2 new!
           div.w12.__flex.j-between
             Title.gray.f4 关于举办2019年“中医护理技术在痛症中的应用学习班”的通知
             DateTime.gray.f4 2020/05/03
@@ -143,7 +142,6 @@ const Video = () => {
 const Index = () => {
   return pug`
     Header
-    Nav
     ScrollSlide
     MainContainer
       RowWrapper

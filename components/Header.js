@@ -3,6 +3,8 @@
  */
 import React from 'react'
 import MainContainer from '@/components/MainContainer'
+import Nav from '@/components/Nav'
+
 
 // import Logo from 'svg-react-loader!../svgs/logo.svg'
 
@@ -35,6 +37,7 @@ const Header = () => {
   return pug`
     TopHint
     LogoAndSearch
+    Nav
   `
 }
 
