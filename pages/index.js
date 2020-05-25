@@ -45,7 +45,7 @@ const NavBtns = () => {
   return pug`
     List.w12.__flex.wrap
       each num in [1,2,3,4,5,6,7,8]
-        Item.w1-8.p2.__flex.column.a-center
+        Item.w1-8.p2.__flex.column.a-center(key=num)
           img.circle(width=60, height=60, src="" || IMAGE_PLACEHOLDER)
           div.mt2.f4 论文论著
   `
@@ -148,9 +148,9 @@ const Index = () => {
       RowWrapper
         HotNews
       DivideHorizen(height=10)
-      RowWrapper
-        NavBtns
-      DivideHorizen
+      //- RowWrapper
+        //- NavBtns
+      //- DivideHorizen
       RowWrapper
         RowFirst
       DivideHorizen

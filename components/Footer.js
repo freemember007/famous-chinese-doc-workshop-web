@@ -12,7 +12,7 @@ const Footer = () => {
           div
             span 网站链接：
             each num in [1,2,3,4,5,6]
-              span.mr2 杭州市中医院科教科
+              span.mr2(key=num) 杭州市中医院科教科
           div.mt4.tc.__flex.j-center.a-center
             img(height=75, width=75, src=IMAGE_PLACEHOLDER)
             div.ml8.f4.gray.lh3
