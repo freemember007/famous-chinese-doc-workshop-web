@@ -22,7 +22,7 @@ const ThreeColList = ({ colNameCn, colNameEn, imageUrl, title }) => {
           Describe.my2.gray.f4.lh15.indent.t-justify 关于举办2019年“中医护理技术在痛症中的应用学习班”的通知关于举办2019年“中医护理技术在痛症中的应用学习班”的通知关于举办2019年“中医护理技术在痛症中的应用学习班”的通知关于举办2019年“中医护理技术在痛症中的应用学习班”的通知关于举办2019年“中医护理技术在痛症中的应用学习班”的通知关于举办2019年“中医护理技术在痛症中的应用学习班”的通知关于举办2019年“中医护理技术在痛症中的应用学习班”的通知
           List
             each post, index in [{}, {}, {}, {}]
-              Item.w12.__flex.j-between
+              Item.w12.__flex.j-between(key=index)
                 div.red.mr2 new!
                 div.w12.__flex.j-between
                   Title.gray.f4 关于举办2019年“中医护理技术在痛症中的应用学习班”的通知

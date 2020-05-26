@@ -1,9 +1,10 @@
 /**
  * superagent封装
  */
-import { DDYYAPI_BASE_URL } from '@/config/constant'
+import { CMS_REST_URL } from '@/config/constant'
 import { matchPairs, ANY } from 'pampy'
 import { startsWith } from 'ramda'
+import { IS_BROWSER } from '@/config/constant'
 
 const agent = require('superagent-use')(require('superagent'))
 
@@ -15,7 +16,7 @@ agent.use(request => {
   // url处理
   request.url = matchPairs(request.url,
     [startsWith('http') , request.url],
-    [ANY                , DDYYAPI_BASE_URL + request.url],
+    [ANY                , CMS_REST_URL + request.url],
   )
 
   // 超时及重试(注:重试仅处理连接问题，典型的有网络错误，超时错误等，其他错误无法在此捕捉)
@@ -36,33 +37,38 @@ agent.use(request => {
       deadline: 60 * 1000 * 5, // Wait file to finish loading
     })
 
-
   //--------------------------------------------------
   // onRequest
   //--------------------------------------------------
-  request.on('request', request => {
-    // console.log('request', request)
+  request.on('request', (/*request*/) => {
+    // console.log(request)
   })
-
 
   //--------------------------------------------------
   // onResponse
   //--------------------------------------------------
-  request.on('response', response => {
+  request.on('response', (response) => {
     if (response.ok) {
-      // console.log('status', response.status) // 打印请求日志
+      // console.log({ response })
     } else {
-      // http错误
-      console.log('status', response.status) // 打印请求日志
-      console.log('error', response.text) // 打印错误消息
+      // 统一放在下面的on('error')处理
     }
   })
-  // error事件, 统一放在response事件处理
-  request.on('error', error => {
-    console.log('error', error) // error没有statusCode属性，response有，故统一用status比较安全
-    // console.log('status', error.status) // error没有statusCode属性，response有，故统一用status比较安全
-    // console.log('error', error.response.status) // 值同上
-    // console.log('error', error.response.text)
+
+  //--------------------------------------------------
+  // onError，包括连接错误和HTTP错误(!response.ok)
+  //--------------------------------------------------
+  request.on('error', (error) => {
+    // console.log(keys(error), error)
+    const response = error.response || {}
+    const request = error.response?.request || {}
+    const agentReqError = `
+      ${error.status} ${error.toString()}
+      【MSG】${response?.text}
+      【REQ】${request.method?.toUpperCase()} ${decodeURIComponent(request.url)} ${request._formData}
+    `
+    IS_BROWSER ? alert(agentReqError) : console.log(agentReqError)
+
   })
 })
 

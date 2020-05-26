@@ -4,24 +4,28 @@
 import { test } from 'ramda'
 // import img from '@/svgs/one-pixel-gray-bg.svg'
 
+export const IS_BROWSER = typeof window !== 'undefined'
+
 // 环境定义
 let FORCE_PROD
-FORCE_PROD = true // 注释或反注释此行(供本地直连正式服测试)
-export const IS_PROD = FORCE_PROD || !test(/(0|localhost|\d+\.*)/, location.host)
-
-export const IS_BROWSER = typeof window !== 'undefined'
+// FORCE_PROD = true // 注释或反注释此行(供本地直连正式服测试)
+export const IS_PROD = FORCE_PROD
+  || (  IS_BROWSER && !test(/(0|localhost|\d+\.*)/, window.location.host) )
+  || ( !IS_BROWSER && (process.env.NODE_DEV === 'production') )
 
 //--------------------------------------------------
 // base url常量定义
 //--------------------------------------------------
-// 点点医院api url
-export const DDYYAPI_BASE_URL = 'https://api.diandianyy.com/'
+// ddyy api url
+export const DDYYAPI_BASE_URL = 'https://api.diandianyy.com'
 
-// 通用业务rest url(不建议使用)
-export const COMMONBIZ_REST_URL = DDYYAPI_BASE_URL + 'common-biz/rest/'
+// cms rest url
+export const CMS_REST_URL = IS_PROD
+  ? DDYYAPI_BASE_URL + '/cms/rest/'
+  : 'http://localhost:6040/'
 
 // weixin base url
-export const WX_URL = DDYYAPI_BASE_URL + 'util/weixin/app/'
+export const WX_URL = DDYYAPI_BASE_URL + '/util/weixin/app/'
 
 
 //--------------------------------------------------

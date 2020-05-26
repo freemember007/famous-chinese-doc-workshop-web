@@ -13,14 +13,29 @@ import Footer                          from '@/components/footer'
 import DivideVertical                  from '@/components/DivideVertical'
 import DivideHorizen                   from '@/components/DivideHorizen'
 // fp
-// import { join } from 'ramda'
+import { it/*, _*/ } from 'param.macro'
 // util
 import { IMAGE_PLACEHOLDER } from '@/config/constant'
+import agent from '@/util/request'
 
 // props
-export async function getServerSideProps() {
-  return { props: {} }
+export const getServerSideProps = async ({ res }) => {
+  const hos = await agent
+    .get('hos')
+    .set({ Accept: 'application/vnd.pgrst.object+json' })
+    .query({
+      id                      : 'eq.' + 1,
+      // select                  : '*, forum:hoss_id(*)',
+      select                  : '*, forums:forum(*, posts:post(*))',
+      'forums.order'          : 'created_at',
+      'forums.post.order'     : 'created_at.desc',
+    })
+    .then(it.body)
+    .then(tap(console.log))
+    .catch(err => res.end(err.response?.text))
+  return { props: { hos } }
 }
+
 
 const ScrollSlide = () => {
   return pug`
@@ -47,7 +62,7 @@ const NavBtns = () => {
       each num in [1,2,3,4,5,6,7,8]
         Item.w1-8.p2.__flex.column.a-center(key=num)
           img.circle(width=60, height=60, src="" || IMAGE_PLACEHOLDER)
-          div.mt2.f4 论文论著
+          div.mt2.f4 论文论著s
   `
 }
 
