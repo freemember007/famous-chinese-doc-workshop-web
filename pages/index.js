@@ -1,5 +1,5 @@
 // framework
-import React from 'react'
+import React                           from 'react'
 // components
 import { List, Item, Title, DateTime } from '@/components/tagName'
 import MainContainer                   from '@/components/MainContainer'
@@ -13,49 +13,60 @@ import Footer                          from '@/components/footer'
 import DivideVertical                  from '@/components/DivideVertical'
 import DivideHorizen                   from '@/components/DivideHorizen'
 // fp
-import { it/*, _*/ } from 'param.macro'
+import { map, omit, pick, tap, keys, evolve, head } from 'ramda' // eslint-disable-line
+import { it, _ }                       from 'param.macro' // eslint-disable-line
+import { matchPairs, ANY }             from 'pampy' // eslint-disable-line
+import { match, when, otherwise }      from 'mch' // eslint-disable-line
 // util
-import { IMAGE_PLACEHOLDER } from '@/config/constant'
-import agent from '@/util/request'
+import { IMAGE_PLACEHOLDER }           from '@/config/constant'
+import agent                           from '@/util/request'
+import { showJson, groupObjectArrayByAttrSumEqual } from '@/util/filters' // eslint-disable-line
+import { formatDateTime }             from '@/util/date'
 
 // props
-export const getServerSideProps = async ({ res }) => {
+export const getServerSideProps = async (/*{ res }*/) => {
   const hos = await agent
     .get('hos')
     .set({ Accept: 'application/vnd.pgrst.object+json' })
     .query({
-      id                      : 'eq.' + 1,
-      // select                  : '*, forum:hoss_id(*)',
-      select                  : '*, forums:forum(*, posts:post(*))',
-      'forums.order'          : 'created_at',
-      'forums.post.order'     : 'created_at.desc',
+      id                          : 'eq.' + 1,
+      select                      : '*, announcement:forum(*, posts:post(id, title, created_at)), homeCols:home_col(*, forum(*, posts:post(id, title)), post(*))',
+      'forum.id'                  : 'eq.' + 6,
+      'forum.order'               : 'created_at',
+      'forum.post.order'          : 'created_at.desc',
+      'home_col.order'            : 'order_num',
+      'home_col.forum.post.order' : 'created_at.desc',
     })
     .then(it.body)
-    .then(tap(console.log))
-    .catch(err => res.end(err.response?.text))
+    .then(evolve({ announcement: head }))
+    // .then(tap(console.log(_)))
+    // .catch(err => res.end(err.response?.text))
   return { props: { hos } }
 }
 
-
-const ScrollSlide = () => {
-  return pug`
-    img.fit(width="100%", height=300, src="http://www.doctorwyj.com/img/banner.png")
-    //- img(width="100%", height=300, src=IMAGE_PLACEHOLDER)
-  `
+const ScrollSlide = ({ banners }) => {
+  return <>
+    <img className="fit" width="100%" height="300" src={banners?.[0]?.image} />
+  </>
 }
 
-const HotNews = () => pug`
-  section.w12.p3.b.__flex.a-center
-    div.mr4 最新动态
-    List.flex1.f4.gray
-      each num in [1,2]
-        Item.w12.__flex.j-between(key=num)
-          div.red.mr2 new!
-          div.w12.__flex.j-between
-            Title.gray.f4 关于举办2019年“中医护理技术在痛症中的应用学习班”的通知
-            DateTime.gray.f4 2020/05/03
-`
-
+const HotNews = ({ announcement }) => {
+  console.log(announcement)
+  return <>
+    <section className="w12 p3 b __flex a-center">
+      <div className="mr4"> 最新动态 </div>
+      <List className="flex1 f4 gray">
+        <Item x-for={post in announcement.posts} className="w12 __flex j-between" key={post.id}>
+          <div className="mr2 red"> new! </div>
+          <div className="w12 __flex j-between">
+            <Title className="gray f4"> {post.title} </Title>
+            <DateTime className="gray f4"> {post.created_at |> formatDateTime} </DateTime>
+          </div>
+        </Item>
+      </List>
+    </section>
+  </>
+}
 const NavBtns = () => {
   return pug`
     List.w12.__flex.wrap
@@ -67,9 +78,12 @@ const NavBtns = () => {
 }
 
 const RowWrapper = ({ children }) => {
-  return pug`
-    section.__flex #{children}
-  `
+  return <>
+    <DivideHorizen/>
+    <section className="__flex">
+      {children}
+    </section>
+  </>
 }
 
 const RowFirst = () => {
@@ -91,7 +105,7 @@ const RowFirst = () => {
   `
 }
 
-const DocTeam = () => {
+const DocShow = () => {
   const colName = { colNameCn: '传承之路', colNameEn: 'TEAM' }
   const docs = [
     { name: '朱彩凤', title: '主任医师' },
@@ -154,37 +168,91 @@ const Video = () => {
   `
 }
 
+const DynamicCol = ({ homeCol }) => {
+  return matchPairs(homeCol,
+    [{ type: 'docShow' }                   , () => <DocShow /> ],
+    [{ type: 'docSche' }                   , () => <DocSche /> ],
+    [{ type: 'album' , col_cnt: 3 }        , () => <ThreeColAlbum /> ],
+    [{ type: 'normal', col_cnt: 3 }        , () => <ThreeColList /> ],
+    [{ post_id: Number, col_cnt: 2 }       , () => <TwoColArticle /> ],
+    [{ post_id: Number, col_cnt: 1 }       , () => <OneColArticle /> ],
+    [ANY                                   , () => '' ],
+  )
+}
+
+const DynamicColList = ({ homeCols }) => {
+  const homeColsGroupByRow = homeCols |> groupObjectArrayByAttrSumEqual('col_cnt', 3)
+  // console.log(homeColsGroupByRow)
+  return <>
+    <RowWrapper x-for={_homeCols in homeColsGroupByRow} key={_homeCols}>
+      <DynamicCol x-for={homeCol in _homeCols} key={homeCol.id} {...{ homeCol }}/>
+    </RowWrapper>
+  </>
+}
+
 // main
-const Index = () => {
-  return pug`
-    Header
-    ScrollSlide
-    MainContainer
-      RowWrapper
-        HotNews
-      DivideHorizen(height=10)
-      //- RowWrapper
-        //- NavBtns
-      //- DivideHorizen
-      RowWrapper
-        RowFirst
-      DivideHorizen
-      RowWrapper
-        DocTeam
-      DivideHorizen
-      RowWrapper
-        DocSche
-        DivideVertical
-        Video
-      DivideHorizen
-      RowWrapper
-        ThreeColList(colNameCn="医案医话", colNameEn="CASE")
-      DivideHorizen
-      RowWrapper
-        ThreeColAlbum(colNameCn="工作室环境", colNameEn="ENVIORMENT")
-    DivideHorizen
-    Footer
-  `
+const Index = ({ hos }) => {
+  const { name: hosName, logo: hosLogo, announcement, links: friendLinks, banners, homeCols } = hos
+  console.log(announcement)
+  return <>
+    {/* 头部 */}
+    <Header {...{ hosName, hosLogo }} />
+
+    {/* 大图 */}
+    <ScrollSlide {...{ banners }} />
+
+    {/*<pre> {hos |> omit(['homeCols']) |> showJson} </pre>*/}
+
+    {/* 主体 */}
+    <MainContainer>
+      {/*<pre>{announcement | showJson}</pre>*/}
+      <HotNews {...{ announcement }}/>
+      <DynamicColList {...{ homeCols }}/>
+    </MainContainer>
+
+    {/* 主体 */}
+    <MainContainer>
+      <RowWrapper>
+        {/*<HotNews {...{ announcement }}/>*/}
+      </RowWrapper>
+      <DivideHorizen height="10" />
+
+{/*      <RowWrapper>
+        <NavBtns />
+      </RowWrapper>
+      <DivideHorizen />
+*/}
+      <RowWrapper>
+        <RowFirst />
+      </RowWrapper>
+      <DivideHorizen />
+
+      <RowWrapper>
+        <DocShow />
+      </RowWrapper>
+      <DivideHorizen />
+
+      <RowWrapper>
+        <DocSche />
+        <DivideVertical />
+        <Video />
+      </RowWrapper>
+      <DivideHorizen />
+
+      <RowWrapper>
+        <ThreeColList colNameCn="医案医话" colNameEn="CASE" />
+      </RowWrapper>
+      <DivideHorizen />
+
+      <RowWrapper>
+        <ThreeColAlbum colNameCn="工作室环境" colNameEn="ENVIORMENT" />
+      </RowWrapper>
+    </MainContainer>
+
+    {/* 底部 */}
+    <DivideHorizen />
+    <Footer {...{ hosName, friendLinks }}/>
+  </>
 }
 
 export default Index

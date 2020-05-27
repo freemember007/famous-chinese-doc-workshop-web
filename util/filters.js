@@ -17,6 +17,10 @@ export const omitName = (name = '') => {
   return String(name).slice(0, 1) + '**'
 }
 
+export const showJson = (obj = {}) => {
+  return JSON.stringify(obj, null, 4)
+}
+
 // 计数为0不显示
 export const omitCount = (count = 0) => {
   if(String(count) <= '0') return ''
@@ -55,6 +59,23 @@ export const transJsonArrayValueToPgArrayStr = (input = {}) => {
       compose(prepend('{'), append('}'), join(','))
     )
   )(input)
+}
+
+// groupBySomeAttrSumEqualToNum group对象数组by某属性sum等于某num
+// 如: [{ cnt: 1}, { cnt: 2 }, {cnt: 3}] => [[{ cnt: 1}, { cnt: 2 }], [{cnt: 3}]]
+export const groupObjectArrayByAttrSumEqual = (attr, num) => arr => {
+  let startIdx = 0
+  let sum = 0
+  let newArr = []
+  arr.forEach((obj, idx) => {
+    sum += obj[attr]
+    if(sum === num) {
+      newArr.push(arr.slice(startIdx, idx + 1))
+      sum = 0
+      startIdx = idx + 1
+    }
+  })
+  return newArr
 }
 
 // test

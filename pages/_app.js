@@ -5,18 +5,16 @@
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only'
 import React/*, { useEffect }*/ from 'react'
 import { RestfulProvider } from "restful-react"
-import R from 'ramda'
 // component
 import Head from 'next/head'
 import { SkeletonTheme } from "react-loading-skeleton"
 import '@/styles/spectre.styl'
 // config
-import { IS_BROWSER, CMS_REST_URL } from '@/config/constant'
+import { CMS_REST_URL } from '@/config/constant'
 
 
 const App = ({ Component, pageProps }) => {
 
-  IS_BROWSER ? Object.assign(window, R) : Object.assign(global, R)
   return(
     <RestfulProvider base={CMS_REST_URL}>
       <Head>

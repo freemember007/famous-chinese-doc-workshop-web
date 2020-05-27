@@ -4,7 +4,7 @@
 import React from 'react'
 import { FullWidthContainer, MainContainer } from '@/components/tagName'
 import IMAGE_PLACEHOLDER from '@/config/constant'
-const Footer = () => {
+const Footer = ({ hosName, /*hosLinks*/ }) => {
   return pug`
     FullWidthContainer.py6.w12.bg-dark.__flex.j-center
       MainContainer.w8.__flex.j-center
@@ -16,7 +16,7 @@ const Footer = () => {
           div.mt4.tc.__flex.j-center.a-center
             img(height=75, width=75, src=IMAGE_PLACEHOLDER)
             div.ml8.f4.gray.lh3
-              div 杭州市中医院傅萍工作室 浙ICP备11042270号-3
+              div #{hosName} 浙ICP备11042270号-3
               div 特扬网络 技术支持
 
   `
