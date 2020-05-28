@@ -1,10 +1,11 @@
 // 柯里化函数结合管道符使用充当过滤器
-import { truncate } from 'lodash'
-import { isArray } from 'lodash/fp'
-import { tryCatch, prepend, append } from 'rambdax'
-import { isNotPlainObj } from 'ramda-adjunct'
-import { alwaysEmptyObject } from 'ramda-extension'
-import { ifElse, identity, includes, without, concat, isEmpty, map, when, join, compose } from 'ramda'
+import { truncate }                  from 'lodash' // eslint-disable-line
+import { isArray }                   from 'lodash/fp' // eslint-disable-line
+import { tryCatch, prepend, append } from 'rambdax' // eslint-disable-line
+import { isNotPlainObj }             from 'ramda-adjunct' // eslint-disable-line
+import { alwaysEmptyObject }         from 'ramda-extension' // eslint-disable-line
+import { it, _ }                     from 'param.macro' // eslint-disable-line
+import { ifElse, identity, includes, without, concat, isEmpty, map, when, join, compose } from 'ramda' // eslint-disable-line
 
 // 自定义过滤器
 // 文字缩略
@@ -17,8 +18,9 @@ export const omitName = (name = '') => {
   return String(name).slice(0, 1) + '**'
 }
 
-export const showJson = (obj = {}) => {
-  return JSON.stringify(obj, null, 4)
+// 格式化显示对象，数组，类似haskell中的show
+export const inspect = (obj = {}) => {
+  return tryCatch(JSON.stringify(_, null, 4), identity)(obj)
 }
 
 // 计数为0不显示

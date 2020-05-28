@@ -1,5 +1,5 @@
 // framework
-import React                           from 'react'
+import React, { Fragment }             from 'react' // eslint-disable-line
 // components
 import { List, Item, Title, DateTime } from '@/components/tagName'
 import MainContainer                   from '@/components/MainContainer'
@@ -20,7 +20,7 @@ import { match, when, otherwise }      from 'mch' // eslint-disable-line
 // util
 import { IMAGE_PLACEHOLDER }           from '@/config/constant'
 import agent                           from '@/util/request'
-import { showJson, groupObjectArrayByAttrSumEqual } from '@/util/filters' // eslint-disable-line
+import { inspect, groupObjectArrayByAttrSumEqual } from '@/util/filters' // eslint-disable-line
 import { formatDateTime }             from '@/util/date'
 
 // props
@@ -51,7 +51,6 @@ const ScrollSlide = ({ banners }) => {
 }
 
 const HotNews = ({ announcement }) => {
-  console.log(announcement)
   return <>
     <section className="w12 p3 b __flex a-center">
       <div className="mr4"> 最新动态 </div>
@@ -62,19 +61,20 @@ const HotNews = ({ announcement }) => {
             <Title className="gray f4"> {post.title} </Title>
             <DateTime className="gray f4"> {post.created_at |> formatDateTime} </DateTime>
           </div>
-        </Item>
+        </Item> {/* aaa */}
       </List>
     </section>
   </>
 }
 const NavBtns = () => {
-  return pug`
-    List.w12.__flex.wrap
-      each num in [1,2,3,4,5,6,7,8]
-        Item.w1-8.p2.__flex.column.a-center(key=num)
-          img.circle(width=60, height=60, src="" || IMAGE_PLACEHOLDER)
-          div.mt2.f4 论文论著s
-  `
+  return <>
+    <List className="w12 __flex wrap">
+      <Item x-for={num in [1,2,3,4,5,6,7,8]} key={num}>
+        <img className="circle" width={60} height={60} src={IMAGE_PLACEHOLDER}/>
+        <div className="mt2 f4">论文论著</div>
+      </Item>
+    </List>
+  </>
 }
 
 const RowWrapper = ({ children }) => {
@@ -115,18 +115,23 @@ const DocShow = () => {
     { name: '王永均', title: '主任医师' },
     { name: '张敏鸥 ', title: '主任医师' },
   ]
-  return pug`
-    section.w12
-      ColumnHead(...colName)
-      List.__flex.j-between
-        each doc, index in docs
-          Item.w2.tc.lh2(key=index)
-            img(width="100%", height=160, src=doc.imageUrl || IMAGE_PLACEHOLDER)
-            div         #{doc.name}
-            div.gray.f4 #{doc.title}
-          if index !== docs.length -1
-            DivideVertical(width=30)
-  `
+
+  return <>
+    <section className="w12">
+      <ColumnHead {...colName} />
+      <List className="__flex j-between">
+        <Fragment x-for={(doc, index) in docs}  key={index}>
+          <Item className="w2 tc lh2">
+            <img width="100%" height={160} src={doc.imageUrl || IMAGE_PLACEHOLDER} />
+            <div>{doc.name}</div>
+            <div className="gray f4">{doc.title}</div>
+          </Item>
+          {/* <DivideVertical width={30} /> */}
+          {(index < docs.length - 1 ) && <DivideVertical width={30} />}
+        </Fragment>
+      </List>
+    </section>
+  </>
 }
 
 const DocSche = () => {
@@ -184,7 +189,7 @@ const DynamicColList = ({ homeCols }) => {
   const homeColsGroupByRow = homeCols |> groupObjectArrayByAttrSumEqual('col_cnt', 3)
   // console.log(homeColsGroupByRow)
   return <>
-    <RowWrapper x-for={_homeCols in homeColsGroupByRow} key={_homeCols}>
+    <RowWrapper x-for={(_homeCols, index) in homeColsGroupByRow} key={index}>
       <DynamicCol x-for={homeCol in _homeCols} key={homeCol.id} {...{ homeCol }}/>
     </RowWrapper>
   </>
@@ -193,7 +198,6 @@ const DynamicColList = ({ homeCols }) => {
 // main
 const Index = ({ hos }) => {
   const { name: hosName, logo: hosLogo, announcement, links: friendLinks, banners, homeCols } = hos
-  console.log(announcement)
   return <>
     {/* 头部 */}
     <Header {...{ hosName, hosLogo }} />
@@ -201,11 +205,11 @@ const Index = ({ hos }) => {
     {/* 大图 */}
     <ScrollSlide {...{ banners }} />
 
-    {/*<pre> {hos |> omit(['homeCols']) |> showJson} </pre>*/}
+    {/* <pre> {hos |> omit(['homeCols']) |> inspect} </pre> */}
 
     {/* 主体 */}
     <MainContainer>
-      {/*<pre>{announcement | showJson}</pre>*/}
+      {/*<pre>{announcement | inspect}</pre>*/}
       <HotNews {...{ announcement }}/>
       <DynamicColList {...{ homeCols }}/>
     </MainContainer>
@@ -217,11 +221,11 @@ const Index = ({ hos }) => {
       </RowWrapper>
       <DivideHorizen height="10" />
 
-{/*      <RowWrapper>
-        <NavBtns />
-      </RowWrapper>
-      <DivideHorizen />
-*/}
+      {/* <RowWrapper> */}
+      {/*   <NavBtns /> */}
+      {/* </RowWrapper> */}
+      {/* <DivideHorizen /> */}
+
       <RowWrapper>
         <RowFirst />
       </RowWrapper>

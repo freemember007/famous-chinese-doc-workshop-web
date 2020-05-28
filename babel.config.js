@@ -49,17 +49,13 @@ const presets = [
 | plugins 插件 @see: https://babeljs.io/docs/en/plugins  |
 `------------------------------------------------------*/
 const plugins = [
-
-  // // optimize your React application transforming your imports to local variables
-  // 'react-local',
+  // // 允许使用x-if x-show x-for x-model-hook x-class等类vue指令
+  // // @see: https://github.com/peakchen90/babel-plugin-react-directives
   'react-directives',
 
   // 对pug模板的支持
   // @see: https://github.com/pugjs/babel-plugin-transform-react-pug
   'transform-react-pug',
-
-  // // 允许使用x-if x-show x-for x-model-hook x-class等类vue指令
-  // // @see: https://github.com/peakchen90/babel-plugin-react-directives
 
   // 对浏览器低版本的支持
   // @see: https://babeljs.io/docs/en/babel-plugin-transform-runtime#docsNav
@@ -103,16 +99,6 @@ const plugins = [
     'antd-mobile',
   ],
 
-  // [
-  //   "import",
-  //   {
-  //     "libraryName": "react-use",
-  //     "libraryDirectory": "lib",
-  //     "camel2DashComponentName": false
-  //   },
-  //   'react-use',
-  // ],
-
   /*
    * styled-components支持
    * @see: https://github.com/styled-components/styled-components
@@ -126,7 +112,6 @@ const plugins = [
   //  * styled-jsx支持，及styled-jsx-stylus
   //  * @see: https://github.com/zeit/styled-jsx
   //  * @see: https://github.com/omardelarosa/styled-jsx-plugin-stylus
-
   ['styled-jsx/babel', { plugins: ['styled-jsx-plugin-stylus'] }],
 
   // /*
@@ -204,41 +189,21 @@ const plugins = [
   // // @see: https://babeljs.io/docs/en/babel-plugin-proposal-optional-catch-binding
   // '@babel/plugin-proposal-optional-catch-binding',
 
-  // // 严格默认值(??操作符)
-  // // @see: https://babeljs.io/docs/en/babel-plugin-proposal-nullish-coalescing-operator
-  // '@babel/plugin-proposal-nullish-coalescing-operator',
+  // 严格默认值(??操作符)
+  // @see: https://babeljs.io/docs/en/babel-plugin-proposal-nullish-coalescing-operator
+  '@babel/plugin-proposal-nullish-coalescing-operator',
 
-  // // 逻辑赋值语句（&&=, ||=)
-  // '@babel/plugin-proposal-logical-assignment-operators',
+  // 逻辑赋值语句（&&=, ||=)
+  '@babel/plugin-proposal-logical-assignment-operators',
 
   // // ---- 其他
-
-  // // 开发局部热加载
-  // 'react-hot-loader/babel',
-
-  // // 批量import
-  // ['wildcard', { 'nostrip': true,  'noModifyCase': true, 'useCamelCase': true }],
 
   // 宏支持，方便使用param.macro提供的类似Kotlin's it lambda模式
   'macros',
 
-  // // 使用 & 操作符进行函数组合
-  // // @see: https://github.com/haskellcamargo/babel-plugin-function-composition
-  // 'function-composition',
-
-  // // 使用 :: 链式fn-call(不带curry, 注：与fn-bind操作符有冲突)
-  // // @see: https://github.com/gajus/babel-plugin-transform-function-composition
-  // // 'transform-function-composition',
-  // // 使用 | 操作符进行链式fn-call(不带curry)
-  // // @see: https://github.com/miraks/babel-plugin-pipe-operator
-  // // 'pipe-operator',
-  // // 使用 | 操作符进行链式fn-call(带curry)
-  // // @see: https://github.com/Swizz/babel-plugin-pipe-operator-curry
-  // 'pipe-operator-curry',
-
-  // // 编译期自定义操作符
-  // // https://github.com/freemember007/babel-plugin-operator-overload
-  // 'operator-overload',
+  // 使用 & 操作符进行函数组合
+  // @see: https://github.com/haskellcamargo/babel-plugin-function-composition
+  'function-composition',
 
   // // 数字 + - * / 自动清除浮动
   // 'arithmetic', // build时报minify错误, 类似的还有pampy

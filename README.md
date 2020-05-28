@@ -35,10 +35,35 @@ plugin-transform-runtime
 styled-jsx
 ```
 
+* react-hot-loader
+
+不建议使用。按以下配置测试失败：
+
+```bash
+yarn add react-hot-loader react-dom@npm:@hot-loader/react-dom
+```
+
+file: babelrc.config.js
+
+```json
+{ "plugins": ["react-hot-loader/babel"] }
+```
+
+file: src/index.js
+
+```js
+import { hot } from 'react-hot-loader/root'
+const App = () => <div>Hello World!</div>
+export default hot(App)
+```
+
 ### IDE
 
-如果使用pug模板，为在模板中正确显示pug, 尤其是if, each等，应安装pug-tmbundle，并选择pypug语法, 不要pug和sublime-pug-extened
+* pug模板
 
+强烈不推荐使用pug模板，因其极大地限制了jsx的表达能力。
+
+如确实要使用pug模板，为在模板中正确显示pug语法高亮, 尤其是if, each等，在sublime中应安装pug-tmbundle，并选择pypug语法, 不要pug和sublime-pug-extened包。
 
 ## UI and Components
 
@@ -47,7 +72,7 @@ styled-jsx
 使用了babel-plugin-styled-components，但实测并不支持ssr，故：
 
 1. 暂不使用基于styled-components的库，如styled-icons， animated-styled-components, styled-flex-component
-2. util/sementic-tags使用官方建议的styled-components/macro是否会更安全？
+2. util/sementic-tags使用官方建议的styled-components/macro是否会更安全？是，少一些警告
 ```javascript
 import styled from 'styled-components/macro'
 ```
