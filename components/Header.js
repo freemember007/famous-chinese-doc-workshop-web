@@ -3,7 +3,7 @@
  */
 import React from 'react'
 import MainContainer from '@/components/MainContainer'
-import Nav from '@/components/Nav'
+import { List, Item } from '@/components/tagName'
 // import Logo from 'svg-react-loader!../svgs/logo.svg'
 
 const TopHint = ({ hosName }) => {
@@ -24,6 +24,15 @@ const Search = () =>
     <input className="p2 form-input" type="text" placeholder="搜索"/>
   </div>
 
+const Nav = () =>
+  <MainContainer background="primary">
+    <List className="py2 __flex j-left">
+      <Item className="mr8 white" x-for={num in [1, 2, 3, 4, 5]} key={num}>
+        名医风采
+      </Item>
+    </List>
+  </MainContainer>
+
 const Header = ({ hosName, hosLogo}) => {
   return <>
     <TopHint {...{ hosName } } />
@@ -33,7 +42,7 @@ const Header = ({ hosName, hosLogo}) => {
         <Search />
       </div>
     </MainContainer>
-    <Nav />
+    <Nav/>
   </>
 }
 

@@ -8,8 +8,8 @@ import Footer                          from '@/components/footer'
 import DivideVertical                  from '@/components/DivideVertical'
 import DivideHorizen                   from '@/components/DivideHorizen'
 // fp
-import { map, omit, pick, tap, keys, evolve, head, assoc, dissocPath, defaultTo } from 'ramda' // eslint-disable-line
-import { dissocDotPath, defaultToEmptyObject } from 'ramda-extension'
+import { map, omit, always, pick, tap, keys, evolve, head, assoc, dissocPath, defaultTo } from 'ramda' // eslint-disable-line
+import { dissocDotPath, defaultToEmptyArray, defaultToEmptyObject } from 'ramda-extension'
 import { it, _ }                       from 'param.macro' // eslint-disable-line
 import { matchPairs, ANY }             from 'pampy' // eslint-disable-line
 // util
@@ -35,7 +35,7 @@ export const getServerSideProps = async ({ res }) => { // eslint-disable-line
       'homeCols.forum.posts.offset'  : 1,
     })
     .then(it.body)
-    .then(evolve({ announcement: head }))
+    .then(evolve({ announcement: defaultToEmptyArray & head & defaultToEmptyObject }))
     .then(evolve({ homeCols: map(evolve({ forum: defaultToEmptyObject })) }))
     // 考虑加个计算字段home_col.top_post，避免上面的复杂查询及这里的手动转换
     .then(evolve({ homeCols: map(homeCol => assoc('post', homeCol?.forum?.topPost?.[0] ?? {}, homeCol)) }))
@@ -83,7 +83,6 @@ const NavBtns = () => { // eslint-disable-line
 
 // 医生列表
 const DocShow = () => {
-  // const colName = { colNameCn: '传承之路', colNameEn: 'TEAM' }
   const docs = [
     { name: '朱彩凤', title: '主任医师' },
     { name: '王永均', title: '主任医师' },
@@ -112,7 +111,6 @@ const DocShow = () => {
 
 // 医生排班
 const DocSche = () => {
-  // const colName = { colNameCn: '专家排班', colNameEn: 'SCHEDULE' }
   const sches = [
     { docName: '杨少山', docTitle: '副主任医师', time: '周一上午，周二下午' },
     { docName: '杨少山', docTitle: '副主任医师', time: '周一上午，周二下午' },
@@ -154,17 +152,22 @@ const Video = () => {
 }
 
 const DynamicCol = ({ homeCol }) => {
-  const { forum, post, col_cnt } = homeCol
-  const Col = matchPairs(homeCol,
-    [{ type: 'docShow' }                   , () => <DocShow /> ],
-    [{ type: 'docSche' }                   , () => <DocSche /> ],
-    [{ type: 'album', col_cnt: 3 }         , () => <ThreeColAlbum {...{ forum }}/> ],
-    [{ type: 'normal', col_cnt: 3 }        , () => <ThreeColList {...{ forum, post }}/> ],
-    [{ col_cnt: 2 }                        , () => <TwoColArticle {...{ forum, post }}/> ],
-    [{ col_cnt: 1 }                        , () => <OneColArticle {...{ forum, post }}/> ],
-    [ANY                                   , () => '' ],
+  const { type, forum, post, col_cnt } = homeCol
+  const colNames = matchPairs(type,
+    ['docShow' , always({ colNameCn:  '传承之路', colNameEn: 'TEAM' })],
+    ['docSche' , always({ colNameCn:  '医生排班', colNameEn: 'SCHEDULE' })],
+    [ANY       , always({ colNameCn:  forum.name, colNameEn: forum.name_en })],
   )
-  return <ColWrapper {...{ colNameCn: forum.name, colNameEn: forum.name_en }} colCnt={col_cnt}>
+  const Col = matchPairs(homeCol,
+    [{ type: 'docShow' }                   , always(<DocShow />)],
+    [{ type: 'docSche' }                   , always(<DocSche />)],
+    [{ type: 'album', col_cnt: 3 }         , always(<ThreeColAlbum {...{ forum }}/>)],
+    [{ type: 'normal', col_cnt: 3 }        , always(<ThreeColList  {...{ forum, post }}/>)],
+    [{ col_cnt: 2 }                        , always(<TwoColArticle {...{ forum, post }}/>)],
+    [{ col_cnt: 1 }                        , always(<OneColArticle {...{ forum, post }}/>)],
+    [ANY                                   , always('')],
+  )
+  return <ColWrapper {...colNames} colCnt={col_cnt}>
     {Col}
   </ColWrapper>
 }
@@ -174,7 +177,10 @@ const DynamicRow = ({ homeCols }) => {
   // console.log(groupedHomeCols)
   return <>
     <RowWrapper x-for={(group, index) in groupedHomeCols} key={index}>
-      <DynamicCol x-for={homeCol in group} key={homeCol.id} {...{ homeCol }}/>
+      <Fragment x-for={(homeCol, index) in group} key={index}>
+        <DynamicCol {...{ homeCol }}/>
+        {group.length > 1 && index < group.length - 1 && <DivideVertical />}
+      </Fragment>
     </RowWrapper>
   </>
 }
@@ -219,10 +225,8 @@ function ThreeColList ({ forum, post }) {
       <img className="w5" height={300} src={post.image || IMAGE_PLACEHOLDER}/>
       <DivideVertical/>
       <section className="w7">
-        <Title>老年高血压中西医结合诊疗经验</Title>
-        <Describe className="my2 gray f4 lh15 indent t-justify">
-            关于举办2019年“中医护理技术在痛症中的应用学习班”的通知关于举办2019年“中医护理技术在痛症中的应用学习班”的通知关于举办2019年“中医护理技术在痛症中的应用学习班”的通知关于举办2019年“中医护理技术在痛症中的应用学习班”的通知关于举办2019年“中医护理技术在痛症中的应用学习班”的通知关于举办2019年“中医护理技术在痛症中的应用学习班”的通知关于举办2019年“中医护理技术在痛症中的应用学习班”的通知
-        </Describe>
+        <Title>{post.title}</Title>
+        <Describe className="my2 gray f4 lh15 indent t-justify">{post.text}</Describe>
         <List>
           <Item className="w12 __flex j-between" x-for={(post, index) in forum.posts}  key={index}>
             {/* <pre>{index}</pre> */}
