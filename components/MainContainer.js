@@ -4,10 +4,13 @@
 import React from 'react'
 
 const MainContainer = ({ background = 'white', children }) => {
-  return pug`
-    div.w12.__flex.j-center(className="bg-" + background)
-      main.w10.w11-xl #{children}
-  `
+  return <>
+    <section className={'w12 __flex j-center ' + 'bg-' + background}>
+      <main className="w10 w11-xl">
+        {children}
+      </main>
+    </section>
+  </>
 }
 
 export default MainContainer
