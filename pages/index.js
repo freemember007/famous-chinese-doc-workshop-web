@@ -8,7 +8,7 @@ import Footer                          from '@/components/footer'
 import DivideVertical                  from '@/components/DivideVertical'
 import DivideHorizen                   from '@/components/DivideHorizen'
 // fp
-import { map, omit, always, pick, tap, keys, evolve, head, assoc, dissocPath, defaultTo } from 'ramda' // eslint-disable-line
+import { map, omit, always, pick, tap, keys, evolve, head, assoc, dissocPath, defaultTo, take } from 'ramda' // eslint-disable-line
 import { dissocDotPath, defaultToEmptyArray, defaultToEmptyObject } from 'ramda-extension'
 import { it, _ }                       from 'param.macro' // eslint-disable-line
 import { matchPairs, ANY }             from 'pampy' // eslint-disable-line
@@ -25,14 +25,14 @@ export const getServerSideProps = async ({ res }) => { // eslint-disable-line
     .set({ Accept: 'application/vnd.pgrst.object+json' })
     .query({
       id                             : 'eq.' + 1,
-      select                         : '*, announcement:forum(*, posts:post(id, title, created_at)), homeCols:home_col(*, forum(*, posts:post(id, title), topPost:post(*)))',
+      select                         : '*, announcement:forum(*, posts:post(id, title, created_at)), homeCols:home_col(*, forum(*, posts:post(id, title, image, video, file), topPost:post(*)))',
       'announcement.id'              : 'eq.' + 6,
       'announcement.posts.order'     : 'created_at.desc',
       'homeCols.order'               : 'order_num',
       'homeCols.forum.posts.order'   : 'is_top,created_at.desc',
       'homeCols.forum.topPost.order' : 'is_top,created_at.desc',
       'homeCols.forum.topPost.limit' : 1,
-      'homeCols.forum.posts.offset'  : 1,
+      // 'homeCols.forum.posts.offset'  : 1, // 由具体栏目决定
     })
     .then(it.body)
     .then(evolve({ announcement: defaultToEmptyArray & head & defaultToEmptyObject }))
@@ -81,97 +81,30 @@ const NavBtns = () => { // eslint-disable-line
   </>
 }
 
-// 医生列表
-const DocShow = () => {
-  const docs = [
-    { name: '朱彩凤', title: '主任医师' },
-    { name: '王永均', title: '主任医师' },
-    { name: '张敏鸥 ', title: '主任医师' },
-    { name: '朱彩凤', title: '主任医师' },
-    { name: '王永均', title: '主任医师' },
-    { name: '张敏鸥 ', title: '主任医师' },
-  ]
-  return <>
-    <section className="w12">
-      {/* <ColWrapper {...colName} /> */}
-      <List className="__flex j-between">
-        <Fragment x-for={(doc, index) in docs}  key={index}>
-          <Item className="w2 tc lh2">
-            <img width="100%" height={160} src={doc.imageUrl || IMAGE_PLACEHOLDER} />
-            <div>{doc.name}</div>
-            <div className="gray f4">{doc.title}</div>
-          </Item>
-          {/* <DivideVertical width={30} /> */}
-          {(index < docs.length - 1 ) && <DivideVertical width={30} />}
-        </Fragment>
-      </List>
-    </section>
-  </>
-}
-
-// 医生排班
-const DocSche = () => {
-  const sches = [
-    { docName: '杨少山', docTitle: '副主任医师', time: '周一上午，周二下午' },
-    { docName: '杨少山', docTitle: '副主任医师', time: '周一上午，周二下午' },
-    { docName: '杨少山', docTitle: '副主任医师', time: '周一上午，周二下午' },
-    { docName: '杨少山', docTitle: '副主任医师', time: '周一上午，周二下午' },
-  ]
-  return <>
-    <table className="table table-striped table-hover">
-      <thead>
-        <tr>
-          <th>姓名</th>
-          <th>职称</th>
-          <th>出诊时间</th>
-        </tr>
-      </thead>
-      <tbody className="gray">
-        <tr x-for={(sche, index) in sches} key={index}>
-          <td className="dark">{sche.docName}</td>
-          <td>{sche.docTitle}</td>
-          <td>{sche.time}</td>
-        </tr>
-      </tbody>
-    </table>
-  </>
-}
-
-const Video = () => {
-  const colName = { colNameCn: '视频资料', colNameEn: 'VIDEO' }
-  return <>
-    <ColWrapper {...colName} width={1}>
-      <video className="video"
-        preload="auto"
-        controls="controls"
-        poster={IMAGE_PLACEHOLDER}
-        src="http://img.diandianys.com/lid8uKK2NKOy45WvuGoScUKlsajQ"/>
-      <div className="f4">脂肪填充真的是一个神奇的手术，这才半个月，就已经恢复这么好了</div>
-    </ColWrapper>
-  </>
-}
-
+// 动态列
 const DynamicCol = ({ homeCol }) => {
-  const { type, forum, post, col_cnt } = homeCol
+  const { type, forum: { name, name_en, posts } , post, col_cnt: colCnt } = homeCol
   const colNames = matchPairs(type,
-    ['docShow' , always({ colNameCn:  '传承之路', colNameEn: 'TEAM' })],
-    ['docSche' , always({ colNameCn:  '医生排班', colNameEn: 'SCHEDULE' })],
-    [ANY       , always({ colNameCn:  forum.name, colNameEn: forum.name_en })],
+    ['docShow' , always({ colNameCn: '传承之路2' , colNameEn: 'TEAM' })],
+    ['docSche' , always({ colNameCn: '医生排班'  , colNameEn: 'SCHEDULE' })],
+    [ANY       , always({ colNameCn: name       , colNameEn: name_en })],
   )
   const Col = matchPairs(homeCol,
-    [{ type: 'docShow' }                   , always(<DocShow />)],
-    [{ type: 'docSche' }                   , always(<DocSche />)],
-    [{ type: 'album', col_cnt: 3 }         , always(<ThreeColAlbum {...{ forum }}/>)],
-    [{ type: 'normal', col_cnt: 3 }        , always(<ThreeColList  {...{ forum, post }}/>)],
-    [{ col_cnt: 2 }                        , always(<TwoColArticle {...{ forum, post }}/>)],
-    [{ col_cnt: 1 }                        , always(<OneColArticle {...{ forum, post }}/>)],
-    [ANY                                   , always('')],
+    [{ type: 'docShow' }            , always(<DocShow />)],
+    [{ type: 'docSche' }            , always(<DocSche />)],
+    [{ type: 'video' }              , always(<VideoCol                      {...{ posts, colCnt }}/>)],
+    [{ type: 'album' }              , always(<AlbumCol                      {...{ posts, colCnt }}/>)],
+    [{ type: 'normal', col_cnt: 3 } , always(<ThreeColArticleDetailAndList  {...{ posts, post }}/>)],
+    [{ type: 'normal', col_cnt: 2 } , always(<TwoColArticleDetail           {...{ post }}/>)],
+    [{ type: 'normal', col_cnt: 1 } , always(<OneColArticleDetail           {...{ post }}/>)],
+    [ANY                            , always('')],
   )
-  return <ColWrapper {...colNames} colCnt={col_cnt}>
+  return <ColWrapper {...colNames} colCnt={colCnt}>
     {Col}
   </ColWrapper>
 }
 
+// 动态行
 const DynamicRow = ({ homeCols }) => {
   const groupedHomeCols = homeCols |> groupObjectArrayByAttrSumEqual('col_cnt', 3)
   // console.log(groupedHomeCols)
@@ -207,19 +140,26 @@ function ColWrapper({ colNameCn, colNameEn, colCnt, children }) {
     </section>
   </>
 }
-function ThreeColAlbum ({ forum }) {
+function OneColArticleDetail({ post }) {
   return <>
-    <List className="__flex j-between">
-      <Fragment x-for={(post, index) in forum.posts}  key={index}>
-        <Item className="w3">
-          <img className="w12" height={300} src={post.image || IMAGE_PLACEHOLDER}/>
-        </Item>
-        {(index < 4) && <DivideVertical/>}
-      </Fragment>
-    </List>
+    <Article>
+      <img width="100%" height={160} src={post.image || IMAGE_PLACEHOLDER}/>
+      <div className="mt2 gray f4 t-justify indent">{post.title}</div>
+    </Article>
   </>
 }
-function ThreeColList ({ forum, post }) {
+function TwoColArticleDetail ({ post }) {
+  return <>
+    <Article className="__flex">
+      <img width={320} height={200} src={post.image || IMAGE_PLACEHOLDER}/>
+      <Right className="ml2 flex1 __flex column">
+        <Title className="tc">{post.title}</Title>
+        <div className="mt2 gray f4 t-justify indent2">{post.text}</div>
+      </Right>
+    </Article>
+  </>
+}
+function ThreeColArticleDetailAndList ({ posts, post }) {
   return <>
     <section className="w12 __flex j-between">
       <img className="w5" height={300} src={post.image || IMAGE_PLACEHOLDER}/>
@@ -228,7 +168,7 @@ function ThreeColList ({ forum, post }) {
         <Title>{post.title}</Title>
         <Describe className="my2 gray f4 lh15 indent t-justify">{post.text}</Describe>
         <List>
-          <Item className="w12 __flex j-between" x-for={(post, index) in forum.posts}  key={index}>
+          <Item className="w12 __flex j-between" x-for={(post, index) in posts}  key={index}>
             {/* <pre>{index}</pre> */}
             {/* <pre>{post.id}</pre> */}
             <div className="red mr2">new!</div>
@@ -242,25 +182,89 @@ function ThreeColList ({ forum, post }) {
     </section>
   </>
 }
-
-function TwoColArticle ({ forum, post }) {
+function AlbumCol ({ posts, colCnt }) {
+  const _posts = take(colCnt*2, posts) // 按colCnt*2摘取条目
   return <>
-    <Article className="__flex">
-      <img width={320} height={200} src={post.image || IMAGE_PLACEHOLDER}/>
-      <Right className="ml2 flex1 __flex column">
-        <Title className="tc">{post.title}</Title>
-        <div className="mt2 gray f4 t-justify indent2">{post.text}</div>
-      </Right>
-    </Article>
+    <List className="__flex j-between">
+      <Fragment x-for={(post, index) in _posts}  key={index}>
+        <Item className="flex1">
+          <img width="100%" height={300} src={post.image || IMAGE_PLACEHOLDER}/>
+        </Item>
+        {_posts.length > 1 && index < _posts.length - 1 && <DivideVertical />}
+      </Fragment>
+    </List>
   </>
 }
-
-function OneColArticle({ forum, post }) {
+function VideoCol({ posts, colCnt }) {
+  const _posts = take(colCnt, posts) // 按colCnt摘取条目
   return <>
-    <Article>
-      <img width="100%" height={160} src={post.image || IMAGE_PLACEHOLDER}/>
-      <div className="mt2 gray f4 t-justify indent">{post.title}</div>
-    </Article>
+    <List className="__flex j-between" >
+      <Fragment x-for={(post, index) in _posts} key={index}>
+        <Item className="flex1"> {/* 宽度均等 */}
+          <video className="video"
+            preload="auto"
+            controls="controls"
+            poster={IMAGE_PLACEHOLDER}
+            src={post.video}/>
+          <div className="f4">{post.title}</div>
+        </Item>
+        {_posts.length > 1 && index < _posts.length - 1 && <DivideVertical />}
+      </Fragment>
+    </List>
+  </>
+}
+// 医生列表
+function DocShow() {
+  const docs = [
+    { name: '朱彩凤', title: '主任医师' },
+    { name: '王永均', title: '主任医师' },
+    { name: '张敏鸥 ', title: '主任医师' },
+    { name: '朱彩凤', title: '主任医师' },
+    { name: '王永均', title: '主任医师' },
+    { name: '张敏鸥 ', title: '主任医师' },
+  ]
+  return <>
+    <section className="w12">
+      {/* <ColWrapper {...colName} /> */}
+      <List className="__flex j-between">
+        <Fragment x-for={(doc, index) in docs}  key={index}>
+          <Item className="w2 tc lh2">
+            <img width="100%" height={300} src={doc.imageUrl || IMAGE_PLACEHOLDER} />
+            <div>{doc.name}</div>
+            <div className="gray f4">{doc.title}</div>
+          </Item>
+          {/* <DivideVertical width={30} /> */}
+          {(index < docs.length - 1 ) && <DivideVertical width={30} />}
+        </Fragment>
+      </List>
+    </section>
+  </>
+}
+// 医生排班
+function DocSche() {
+  const sches = [
+    { docName: '杨少山', docTitle: '副主任医师', time: '周一上午，周二下午' },
+    { docName: '杨少山', docTitle: '副主任医师', time: '周一上午，周二下午' },
+    { docName: '杨少山', docTitle: '副主任医师', time: '周一上午，周二下午' },
+    { docName: '杨少山', docTitle: '副主任医师', time: '周一上午，周二下午' },
+  ]
+  return <>
+    <table className="table table-striped table-hover">
+      <thead>
+        <tr>
+          <th>姓名</th>
+          <th>职称</th>
+          <th>出诊时间</th>
+        </tr>
+      </thead>
+      <tbody className="gray">
+        <tr x-for={(sche, index) in sches} key={index}>
+          <td className="dark">{sche.docName}</td>
+          <td>{sche.docTitle}</td>
+          <td>{sche.time}</td>
+        </tr>
+      </tbody>
+    </table>
   </>
 }
 
