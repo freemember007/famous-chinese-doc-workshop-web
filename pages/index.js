@@ -16,7 +16,7 @@ import { matchPairs, ANY }             from 'pampy' // eslint-disable-line
 import { IMAGE_PLACEHOLDER }           from '@/config/constant'
 import agent                           from '@/util/request'
 import { inspect, pairedByAttrSumEqualNum } from '@/util/filters' // eslint-disable-line
-import { formatDateTime }              from '@/util/date'
+import { formatDateTimeM, formatDate } from '@/util/date'
 
 // props
 export const getServerSideProps = async ({ res }) => { // eslint-disable-line
@@ -60,8 +60,8 @@ const HotNews = ({ announcement }) => {
         <Item x-for={post in announcement.posts} className="w12 __flex j-between" key={post.id}>
           <div className="mr2 red"> new! </div>
           <div className="w12 __flex j-between">
-            <Title className="gray f4"> {post.title} </Title>
-            <DateTime className="gray f4"> {post.created_at |> formatDateTime} </DateTime>
+            <Title className="gray f4">{post.title}</Title>
+            <DateTime className="gray f4">{post.created_at |> formatDateTimeM}</DateTime>
           </div>
         </Item> {/* aaa */}
       </List>
@@ -82,9 +82,10 @@ const NavBtns = () => { // eslint-disable-line
 }
 
 // 动态列
-const DynamicCol = ({ homeCol, docs }) => {const { type, forum: { name, name_en, posts } , post, col_cnt: colCnt } = homeCol
+const DynamicCol = ({ homeCol, docs }) => {
+  const { type, forum: { name, name_en, posts } , post, col_cnt: colCnt } = homeCol
   const colNames = matchPairs(type,
-    ['docShow' , always({ colNameCn: '传承之路2' , colNameEn: 'TEAM' })],
+    ['docShow' , always({ colNameCn: '传承之路' , colNameEn: 'TEAM' })],
     ['docSche' , always({ colNameCn: '医生排班'  , colNameEn: 'SCHEDULE' })],
     [ANY       , always({ colNameCn: name       , colNameEn: name_en })],
   )
@@ -94,7 +95,7 @@ const DynamicCol = ({ homeCol, docs }) => {const { type, forum: { name, name_en,
     [{ type: 'video' }                      , always(<VideoCol               {...{ posts, colCnt }}/>)],
     [{ type: 'album' }                      , always(<AlbumCol               {...{ posts, colCnt }}/>)],
     [{ type: 'articleNoList' , col_cnt: 1 } , always(<OneColArticleNoList    {...{ post }}/>)],
-    [{ type: 'articleHasList', col_cnt: 1 } , always(<OneColArticleHasList   {...{ post }}/>)],
+    [{ type: 'articleHasList', col_cnt: 1 } , always(<OneColArticleHasList   {...{ posts }}/>)],
     [{ type: 'articleNoList' , col_cnt: 2 } , always(<TwoColArticleNoList    {...{ post }}/>)],
     [{ type: 'articleHasList', col_cnt: 2 } , always(<TwoColArticleHasList   {...{ post }}/>)],
     [{ type: 'articleHasList', col_cnt: 3 } , always(<ThreeColArticleHasList {...{ posts, post }}/>)],
@@ -149,12 +150,16 @@ function OneColArticleNoList({ post }) {
     </Article>
   </>
 }
-function OneColArticleHasList({ post }) {
+function OneColArticleHasList({ posts }) {
   return <>
-    <Article>
-      <img width="100%" height={160} src={post.image || IMAGE_PLACEHOLDER}/>
-      <div className="mt2 gray f4 t-justify indent">{post.title}</div>
-    </Article>
+    <List>
+      <Item className="w12 __flex j-between" x-for={(post, index) in posts}  key={index}>
+        <div className="w12 lh2 __flex j-between">
+          <Title className="gray f4">{post.title}</Title>
+          <DateTime className="gray f4">{post.created_at |> formatDate} </DateTime>
+        </div>
+      </Item>
+    </List>
   </>
 }
 function TwoColArticleNoList ({ post }) {
