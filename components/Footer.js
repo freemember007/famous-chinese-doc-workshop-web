@@ -15,7 +15,7 @@ const Footer = ({ hosName, friendLinks, qrcode, icpNum }) => {
         </div>
         <div className="mt4 __flex j-center a-center">
           <img height={75} width={75} src={qrcode ?? IMAGE_PLACEHOLDER}/>
-          <div className="ml8 f4 gray lh3">
+          <div className="ml8 f4 gray lh2">
             <div>{[hosName, icpNum].join(' ')}</div>
             <div>特扬网络 技术支持</div>
           </div>

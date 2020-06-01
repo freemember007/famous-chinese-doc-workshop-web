@@ -25,13 +25,15 @@ const Search = () =>
   </div>
 
 const Nav = () =>
-  <MainContainer background="primary">
-    <List className="py2 __flex j-left">
-      <Item className="mr8 white" x-for={num in [1, 2, 3, 4, 5]} key={num}>
-        名医风采
-      </Item>
-    </List>
-  </MainContainer>
+  <section className="hide-sm">
+    <MainContainer background="primary">
+      <List className="py2 __flex j-left">
+        <Item className="mr8 white" x-for={num in [1, 2, 3, 4, 5]} key={num}>
+          名医风采
+        </Item>
+      </List>
+    </MainContainer>
+  </section>
 
 const Header = ({ hosName, hosLogo}) => {
   return <>

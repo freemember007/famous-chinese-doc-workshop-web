@@ -23,6 +23,8 @@
   align-items: center
   display: flex
   justify-content: center
+.hide
+  display none !important
 // 边距
 .t0
   top 0
@@ -203,6 +205,11 @@ padding-variant(8, $unit-8)
 .w1-8
   width 12.5%
 
+// Responsive breakpoints
+// $size-sm = 600px
+// $size-xl = 1280px
+// .show-sm, .show-xl
+//   display none !important
 @media (max-width: $size-xl)
   // 相对父容器
   .w0-xl
@@ -235,6 +242,10 @@ padding-variant(8, $unit-8)
     width auto
   .w1-8-xl
     width 12.5%
+  .show-xl
+    display block !important
+  .hide-xl
+    display none !important
 
 @media (max-width: $size-sm)
   // 相对父容器
@@ -268,6 +279,10 @@ padding-variant(8, $unit-8)
     width auto
   .w1-8-sm
     width 12.5%
+  .show-sm
+    display flex !important
+  .hide-sm
+    display none !important
 
 // left offset
 .l1

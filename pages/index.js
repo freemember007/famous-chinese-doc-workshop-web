@@ -8,7 +8,7 @@ import Footer                          from '@/components/footer'
 import DivideVertical                  from '@/components/DivideVertical'
 import DivideHorizen                   from '@/components/DivideHorizen'
 // fp
-import { map, omit, always, pick, tap, keys, evolve, head, assoc, dissocPath, defaultTo, take } from 'ramda' // eslint-disable-line
+import { tail, test, map, omit, always, pick, tap, keys, evolve, head, assoc, dissocPath, defaultTo, take } from 'ramda' // eslint-disable-line
 import { dissocDotPath, defaultToEmptyArray, defaultToEmptyObject } from 'ramda-extension'
 import { it, _ }                       from 'param.macro' // eslint-disable-line
 import { matchPairs, ANY }             from 'pampy' // eslint-disable-line
@@ -19,7 +19,10 @@ import { inspect, pairedByAttrSumEqualNum } from '@/util/filters' // eslint-disa
 import { formatDateTimeM, formatDate } from '@/util/date'
 
 // props
-export const getServerSideProps = async ({ res }) => { // eslint-disable-line
+export const getServerSideProps = async ({ req, res }) => { // eslint-disable-line
+  const userAgent = req.headers['user-agent']
+  const IS_MOBILE = test(/Android|OS [0-9_]+ like Mac OS X|Windows Phone/i, userAgent)
+  // res.end(IS_MOBILE |> inspect)
   const hos = await agent
     .get('hos')
     .set({ Accept: 'application/vnd.pgrst.object+json' })
@@ -40,8 +43,9 @@ export const getServerSideProps = async ({ res }) => { // eslint-disable-line
     // 考虑加个计算字段home_col.top_post，避免上面的复杂查询及这里的手动转换
     .then(evolve({ homeCols: map(homeCol => assoc('post', homeCol?.forum?.topPost?.[0] ?? {}, homeCol)) }))
     .then(evolve({ homeCols: map(homeCol => dissocDotPath('forum.topPost', homeCol)) }))
-    // .then(res.end(_ |> inspect), res.end(_ |> inspect))
-  return { props: { hos } }
+    .then(evolve({ homeCols: map(evolve({ col_cnt: col_cnt => IS_MOBILE ? 1 : col_cnt })) }))
+    // .then(res.end(_ |> pick(['homeCols']) |> inspect), res.end(_ |> inspect))
+  return { props: { hos, IS_MOBILE } }
 }
 
 // 全屏轮播大图
@@ -55,13 +59,14 @@ const ScrollSlide = ({ banners }) => {
 const HotNews = ({ announcement }) => {
   return <>
     <section className="w12 p3 b __flex a-center">
-      <div className="mr4"> 最新动态 </div>
+      <div className="mr4 hide-sm"> 最新动态 </div>
       <List className="flex1 f4 gray">
         <Item x-for={post in announcement.posts} className="w12 __flex j-between" key={post.id}>
-          <div className="mr2 red"> new! </div>
+          <div className="mr2 red hide-sm"> new! </div>
+          <div className="mr2 red show-sm"> • </div>
           <div className="w12 __flex j-between">
             <Title className="gray f4">{post.title}</Title>
-            <DateTime className="gray f4">{post.created_at |> formatDateTimeM}</DateTime>
+            <DateTime className="gray f4 hide-sm">{post.created_at |> formatDate}</DateTime>
           </div>
         </Item> {/* aaa */}
       </List>
@@ -72,17 +77,17 @@ const HotNews = ({ announcement }) => {
 // mobile端导航button
 const NavBtns = () => { // eslint-disable-line
   return <>
-    <List className="w12 __flex wrap">
-      <Item x-for={num in [1,2,3,4,5,6,7,8]} key={num}>
+    <List className="w12 __flex wrap hide show-sm">
+      <Item className="w3 mt2 tc" x-for={num in [1,2,3,4,5,6,7,8]} key={num}>
         <img className="circle" width={60} height={60} src={IMAGE_PLACEHOLDER}/>
-        <div className="mt2 f4">论文论著</div>
+        <div className="mt1 f4">论文论著</div>
       </Item>
     </List>
   </>
 }
 
 // 动态列
-const DynamicCol = ({ homeCol, docs }) => {
+const DynamicCol = ({ homeCol, docs, IS_MOBILE }) => {
   const { type, forum: { name, name_en, posts } , post, col_cnt: colCnt } = homeCol
   const colNames = matchPairs(type,
     ['docShow' , always({ colNameCn: '传承之路' , colNameEn: 'TEAM' })],
@@ -90,33 +95,39 @@ const DynamicCol = ({ homeCol, docs }) => {
     [ANY       , always({ colNameCn: name       , colNameEn: name_en })],
   )
   const Col = matchPairs(homeCol,
-    [{ type: 'docShow' }                    , always(<DocShow                {...{ docs }}/>)],
-    [{ type: 'docSche' }                    , always(<DocSche                {...{ docs }}/>)],
-    [{ type: 'video' }                      , always(<VideoCol               {...{ posts, colCnt }}/>)],
-    [{ type: 'album' }                      , always(<AlbumCol               {...{ posts, colCnt }}/>)],
-    [{ type: 'articleNoList' , col_cnt: 1 } , always(<OneColArticleNoList    {...{ post }}/>)],
-    [{ type: 'articleHasList', col_cnt: 1 } , always(<OneColArticleHasList   {...{ posts }}/>)],
-    [{ type: 'articleNoList' , col_cnt: 2 } , always(<TwoColArticleNoList    {...{ post }}/>)],
-    [{ type: 'articleHasList', col_cnt: 2 } , always(<TwoColArticleHasList   {...{ post }}/>)],
-    [{ type: 'articleHasList', col_cnt: 3 } , always(<ThreeColArticleHasList {...{ posts, post }}/>)],
-    [ANY                                    , always('')],
+    [{ type: 'docShow' }                              , always(<DocShow                {...{ docs, IS_MOBILE }}/>)],
+    [{ type: 'docSche' }                              , always(<DocSche                {...{ docs }}/>)],
+    [{ type: 'video' }                                , always(<VideoCol               {...{ posts, colCnt }}/>)],
+    [{ type: 'album' }                                , always(<AlbumCol               {...{ posts, colCnt, IS_MOBILE }}/>)],
+    [{ type: 'article', has_list: false, col_cnt: 1 } , always(<OneColArticleNoList    {...{ post }}/>)],
+    [{ type: 'article', has_list: true , col_cnt: 1 } , always(<OneColArticleHasList   {...{ posts }}/>)],
+    [{ type: 'article', has_list: false, col_cnt: 2 } , always(<TwoColArticleNoList    {...{ post }}/>)],
+    [{ type: 'article', has_list: true , col_cnt: 2 } , always(<TwoColArticleHasList   {...{ post, posts }}/>)],
+    [{ type: 'article', col_cnt: 3 }                  , always(<ThreeColArticleHasList {...{ post, posts }}/>)],
+    [ANY                                              , always('')],
   )
-  return <ColWrapper {...{ ...colNames, colCnt }}>
+  return <ColWrapper {...{ ...colNames, colCnt, IS_MOBILE }}>
     {Col}
   </ColWrapper>
 }
 
 // 动态行
-const DynamicRows = ({ homeCols, docs }) => {
+const DynamicRows = ({ homeCols, docs, IS_MOBILE }) => {
   const pairedHomeCols = homeCols |> pairedByAttrSumEqualNum('col_cnt', 3)
   // console.log(pairedHomeCols)
   return <>
-    <RowWrapper x-for={(group, index) in pairedHomeCols} key={index}>
-      <Fragment x-for={(homeCol, index) in group} key={index}>
-        <DynamicCol {...{ homeCol, docs }}/>
-        {group.length > 1 && index < group.length - 1 && <DivideVertical />}
+    {IS_MOBILE
+      ? <Fragment x-for={(homeCol, index) in homeCols} key={index}>
+        <DivideHorizen {...{ height: 20 }} />
+        <DynamicCol {...{ homeCol, docs, IS_MOBILE }}/>
       </Fragment>
-    </RowWrapper>
+      : <RowWrapper x-for={(group, index) in pairedHomeCols} key={index}>
+        <Fragment x-for={(homeCol, index) in group} key={index}>
+          <DynamicCol {...{ homeCol, docs, IS_MOBILE }}/>
+          {group.length > 1 && index < group.length - 1 && <DivideVertical />}
+        </Fragment>
+      </RowWrapper>
+    }
   </>
 }
 
@@ -129,8 +140,8 @@ function RowWrapper({ children }) {
     </section>
   </>
 }
-function ColWrapper({ colNameCn, colNameEn, colCnt, children }) {
-  const width = matchPairs(colCnt, [1, '33.33%'], [2, '66.66%'], [3, '100%'], [ANY, '100%'])
+function ColWrapper({ colNameCn, colNameEn, colCnt, IS_MOBILE, children }) {
+  const width = IS_MOBILE ? '100%' : matchPairs(colCnt, [1, '33.33%'], [2, '66.66%'], [3, '100%'], [ANY, '100%'])
   return <>
     <section style={{ width }}>
       <section className="mb4 pl4 bl bw4 b-primary">
@@ -173,16 +184,20 @@ function TwoColArticleNoList ({ post }) {
     </Article>
   </>
 }
-function TwoColArticleHasList ({ post }) {
-  return <>
-    <Article className="__flex">
-      <img width={320} height={200} src={post.image || IMAGE_PLACEHOLDER}/>
-      <Right className="ml2 flex1 __flex column">
-        <Title className="tc">{post.title}</Title>
-        <div className="mt2 gray f4 t-justify indent2">{post.text}</div>
-      </Right>
+function TwoColArticleHasList ({ post: topPost, posts }) {
+  return <section className="__flex">
+    <Article className="flex1">
+      <img width="100%" height={200} src={topPost.image || IMAGE_PLACEHOLDER}/>
+      <div className="mt2 gray f4 t-justify indent">{topPost.title}</div>
     </Article>
-  </>
+    <DivideVertical/>
+    <List className="flex1">
+      <Item className="__flex j-between" x-for={(post, index) in tail(posts)}  key={index}>
+        <Title className="gray f4">{post.title}</Title>
+        <DateTime className="gray f4">{post.created_at |> formatDate} </DateTime>
+      </Item>
+    </List>
+  </section>
 }
 function ThreeColArticleHasList ({ posts, post }) {
   return <>
@@ -193,13 +208,13 @@ function ThreeColArticleHasList ({ posts, post }) {
         <Title>{post.title}</Title>
         <Describe className="my2 gray f4 lh15 indent t-justify">{post.text}</Describe>
         <List>
-          <Item className="w12 __flex j-between" x-for={(post, index) in posts}  key={index}>
+          <Item className="w12 __flex j-between" x-for={(post, index) in tail(posts)}  key={index}>
             {/* <pre>{index}</pre> */}
             {/* <pre>{post.id}</pre> */}
             <div className="red mr2">new!</div>
             <div className="w12 __flex j-between">
-              <Title className="gray f4">关于举办2019年“中医护理技术在痛症中的应用学习班”的通知</Title>
-              <DateTime className="gray f4">2020/05/03</DateTime>
+              <Title className="gray f4">{post.title}</Title>
+              <DateTime className="gray f4">{post.created_at |> formatDate}</DateTime>
             </div>
           </Item>
         </List>
@@ -207,7 +222,7 @@ function ThreeColArticleHasList ({ posts, post }) {
     </section>
   </>
 }
-function AlbumCol ({ posts, colCnt }) {
+function AlbumCol ({ posts, colCnt, IS_MOBILE }) {
   const _posts = take(colCnt*2, posts) // 按colCnt*2摘取条目
   return <>
     <List className="__flex j-between">
@@ -215,7 +230,7 @@ function AlbumCol ({ posts, colCnt }) {
         <Item className="flex1">
           <img width="100%" height={300} src={post.image || IMAGE_PLACEHOLDER}/>
         </Item>
-        {_posts.length > 1 && index < _posts.length - 1 && <DivideVertical />}
+        {_posts.length > 1 && index < _posts.length - 1 && <DivideVertical width={IS_MOBILE ? 10 : 30}/>}
       </Fragment>
     </List>
   </>
@@ -239,19 +254,20 @@ function VideoCol({ posts, colCnt }) {
   </>
 }
 // 医生列表
-function DocShow({ docs }) {
+function DocShow({ docs, IS_MOBILE }) {
+  const _docs = take(IS_MOBILE ? 3 : 6, docs)
   return <>
     <section className="w12">
       {/* <ColWrapper {...colName} /> */}
       <List className="__flex j-between">
-        <Fragment x-for={(doc, index) in docs}  key={index}>
-          <Item className="w2 tc lh2">
-            <img width="100%" height={300} src={doc.imageUrl || IMAGE_PLACEHOLDER} />
+        <Fragment x-for={(doc, index) in _docs}  key={index}>
+          <Item className="flex1 tc lh2">
+            <img width="100%" height={IS_MOBILE ? 140 : 300} src={doc.imageUrl || IMAGE_PLACEHOLDER} />
             <div>{doc.name}</div>
             <div className="gray f4">{doc.title}</div>
           </Item>
           {/* <DivideVertical width={30} /> */}
-          {(index < docs.length - 1 ) && <DivideVertical width={30} />}
+          {index < _docs.length - 1 && <DivideVertical width={IS_MOBILE ? 10 : 30} />}
         </Fragment>
       </List>
     </section>
@@ -259,12 +275,6 @@ function DocShow({ docs }) {
 }
 // 医生排班
 function DocSche({ docs }) {
-  const sches = [
-    { docName: '杨少山', docTitle: '副主任医师', time: '周一上午，周二下午' },
-    { docName: '杨少山', docTitle: '副主任医师', time: '周一上午，周二下午' },
-    { docName: '杨少山', docTitle: '副主任医师', time: '周一上午，周二下午' },
-    { docName: '杨少山', docTitle: '副主任医师', time: '周一上午，周二下午' },
-  ]
   return <>
     <table className="table table-striped table-hover">
       <thead>
@@ -286,7 +296,7 @@ function DocSche({ docs }) {
 }
 
 // main
-const Index = ({ hos }) => {
+const Index = ({ hos, IS_MOBILE }) => {
   const { name: hosName, logo: hosLogo, announcement, banners, links: friendLinks, qrcode, icp_num: icpNum, docs, homeCols } = hos
   return <>
     {/* 头部 */}
@@ -297,11 +307,10 @@ const Index = ({ hos }) => {
     <MainContainer>
       {/*<pre>{announcement | inspect}</pre>*/}
       <HotNews {...{ announcement }}/>
-      {/* <RowWrapper> */}
-      {/*   <NavBtns /> */}
-      {/* </RowWrapper> */}
-      {/* <DivideHorizen /> */}
-      <DynamicRows {...{ homeCols, docs }}/>
+      <DivideHorizen />
+      <NavBtns />
+      <DivideHorizen />
+      <DynamicRows {...{ homeCols, docs, IS_MOBILE }}/>
     </MainContainer>
     {/* 底部 */}
     <DivideHorizen />
