@@ -63,9 +63,9 @@ export const transJsonArrayValueToPgArrayStr = (input = {}) => {
   )(input)
 }
 
-// groupBySomeAttrSumEqualToNum group对象数组by某属性sum等于某num
+// pairedByAttrSumEqualNum pair对象数组by某属性sum等于某num
 // 如: [{ cnt: 1}, { cnt: 2 }, {cnt: 3}] => [[{ cnt: 1}, { cnt: 2 }], [{cnt: 3}]]
-export const groupObjectArrayByAttrSumEqual = (attr, num) => arr => {
+export const pairedByAttrSumEqualNum = (attr, num) => arr => {
   let startIdx = 0
   let sum = 0
   let newArr = []

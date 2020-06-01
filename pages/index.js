@@ -15,7 +15,7 @@ import { matchPairs, ANY }             from 'pampy' // eslint-disable-line
 // util
 import { IMAGE_PLACEHOLDER }           from '@/config/constant'
 import agent                           from '@/util/request'
-import { inspect, groupObjectArrayByAttrSumEqual } from '@/util/filters' // eslint-disable-line
+import { inspect, pairedByAttrSumEqualNum } from '@/util/filters' // eslint-disable-line
 import { formatDateTime }              from '@/util/date'
 
 // props
@@ -25,7 +25,7 @@ export const getServerSideProps = async ({ res }) => { // eslint-disable-line
     .set({ Accept: 'application/vnd.pgrst.object+json' })
     .query({
       id                             : 'eq.' + 1,
-      select                         : '*, announcement:forum(*, posts:post(id, title, created_at)), homeCols:home_col(*, forum(*, posts:post(id, title, image, video, file), topPost:post(*)))',
+      select                         : '*, links:link(*), docs:doc(*), announcement:forum(*, posts:post(id, title, created_at)), homeCols:home_col(*, forum(*, posts:post(id, title, image, video, file), topPost:post(*)))',
       'announcement.id'              : 'eq.' + 6,
       'announcement.posts.order'     : 'created_at.desc',
       'homeCols.order'               : 'order_num',
@@ -82,36 +82,37 @@ const NavBtns = () => { // eslint-disable-line
 }
 
 // 动态列
-const DynamicCol = ({ homeCol }) => {
-  const { type, forum: { name, name_en, posts } , post, col_cnt: colCnt } = homeCol
+const DynamicCol = ({ homeCol, docs }) => {const { type, forum: { name, name_en, posts } , post, col_cnt: colCnt } = homeCol
   const colNames = matchPairs(type,
     ['docShow' , always({ colNameCn: '传承之路2' , colNameEn: 'TEAM' })],
     ['docSche' , always({ colNameCn: '医生排班'  , colNameEn: 'SCHEDULE' })],
     [ANY       , always({ colNameCn: name       , colNameEn: name_en })],
   )
   const Col = matchPairs(homeCol,
-    [{ type: 'docShow' }            , always(<DocShow />)],
-    [{ type: 'docSche' }            , always(<DocSche />)],
-    [{ type: 'video' }              , always(<VideoCol                      {...{ posts, colCnt }}/>)],
-    [{ type: 'album' }              , always(<AlbumCol                      {...{ posts, colCnt }}/>)],
-    [{ type: 'normal', col_cnt: 3 } , always(<ThreeColArticleDetailAndList  {...{ posts, post }}/>)],
-    [{ type: 'normal', col_cnt: 2 } , always(<TwoColArticleDetail           {...{ post }}/>)],
-    [{ type: 'normal', col_cnt: 1 } , always(<OneColArticleDetail           {...{ post }}/>)],
-    [ANY                            , always('')],
+    [{ type: 'docShow' }                    , always(<DocShow                {...{ docs }}/>)],
+    [{ type: 'docSche' }                    , always(<DocSche                {...{ docs }}/>)],
+    [{ type: 'video' }                      , always(<VideoCol               {...{ posts, colCnt }}/>)],
+    [{ type: 'album' }                      , always(<AlbumCol               {...{ posts, colCnt }}/>)],
+    [{ type: 'articleNoList' , col_cnt: 1 } , always(<OneColArticleNoList    {...{ post }}/>)],
+    [{ type: 'articleHasList', col_cnt: 1 } , always(<OneColArticleHasList   {...{ post }}/>)],
+    [{ type: 'articleNoList' , col_cnt: 2 } , always(<TwoColArticleNoList    {...{ post }}/>)],
+    [{ type: 'articleHasList', col_cnt: 2 } , always(<TwoColArticleHasList   {...{ post }}/>)],
+    [{ type: 'articleHasList', col_cnt: 3 } , always(<ThreeColArticleHasList {...{ posts, post }}/>)],
+    [ANY                                    , always('')],
   )
-  return <ColWrapper {...colNames} colCnt={colCnt}>
+  return <ColWrapper {...{ ...colNames, colCnt }}>
     {Col}
   </ColWrapper>
 }
 
 // 动态行
-const DynamicRow = ({ homeCols }) => {
-  const groupedHomeCols = homeCols |> groupObjectArrayByAttrSumEqual('col_cnt', 3)
-  // console.log(groupedHomeCols)
+const DynamicRows = ({ homeCols, docs }) => {
+  const pairedHomeCols = homeCols |> pairedByAttrSumEqualNum('col_cnt', 3)
+  // console.log(pairedHomeCols)
   return <>
-    <RowWrapper x-for={(group, index) in groupedHomeCols} key={index}>
+    <RowWrapper x-for={(group, index) in pairedHomeCols} key={index}>
       <Fragment x-for={(homeCol, index) in group} key={index}>
-        <DynamicCol {...{ homeCol }}/>
+        <DynamicCol {...{ homeCol, docs }}/>
         {group.length > 1 && index < group.length - 1 && <DivideVertical />}
       </Fragment>
     </RowWrapper>
@@ -140,7 +141,7 @@ function ColWrapper({ colNameCn, colNameEn, colCnt, children }) {
     </section>
   </>
 }
-function OneColArticleDetail({ post }) {
+function OneColArticleNoList({ post }) {
   return <>
     <Article>
       <img width="100%" height={160} src={post.image || IMAGE_PLACEHOLDER}/>
@@ -148,7 +149,15 @@ function OneColArticleDetail({ post }) {
     </Article>
   </>
 }
-function TwoColArticleDetail ({ post }) {
+function OneColArticleHasList({ post }) {
+  return <>
+    <Article>
+      <img width="100%" height={160} src={post.image || IMAGE_PLACEHOLDER}/>
+      <div className="mt2 gray f4 t-justify indent">{post.title}</div>
+    </Article>
+  </>
+}
+function TwoColArticleNoList ({ post }) {
   return <>
     <Article className="__flex">
       <img width={320} height={200} src={post.image || IMAGE_PLACEHOLDER}/>
@@ -159,7 +168,18 @@ function TwoColArticleDetail ({ post }) {
     </Article>
   </>
 }
-function ThreeColArticleDetailAndList ({ posts, post }) {
+function TwoColArticleHasList ({ post }) {
+  return <>
+    <Article className="__flex">
+      <img width={320} height={200} src={post.image || IMAGE_PLACEHOLDER}/>
+      <Right className="ml2 flex1 __flex column">
+        <Title className="tc">{post.title}</Title>
+        <div className="mt2 gray f4 t-justify indent2">{post.text}</div>
+      </Right>
+    </Article>
+  </>
+}
+function ThreeColArticleHasList ({ posts, post }) {
   return <>
     <section className="w12 __flex j-between">
       <img className="w5" height={300} src={post.image || IMAGE_PLACEHOLDER}/>
@@ -214,15 +234,7 @@ function VideoCol({ posts, colCnt }) {
   </>
 }
 // 医生列表
-function DocShow() {
-  const docs = [
-    { name: '朱彩凤', title: '主任医师' },
-    { name: '王永均', title: '主任医师' },
-    { name: '张敏鸥 ', title: '主任医师' },
-    { name: '朱彩凤', title: '主任医师' },
-    { name: '王永均', title: '主任医师' },
-    { name: '张敏鸥 ', title: '主任医师' },
-  ]
+function DocShow({ docs }) {
   return <>
     <section className="w12">
       {/* <ColWrapper {...colName} /> */}
@@ -241,7 +253,7 @@ function DocShow() {
   </>
 }
 // 医生排班
-function DocSche() {
+function DocSche({ docs }) {
   const sches = [
     { docName: '杨少山', docTitle: '副主任医师', time: '周一上午，周二下午' },
     { docName: '杨少山', docTitle: '副主任医师', time: '周一上午，周二下午' },
@@ -258,10 +270,10 @@ function DocSche() {
         </tr>
       </thead>
       <tbody className="gray">
-        <tr x-for={(sche, index) in sches} key={index}>
-          <td className="dark">{sche.docName}</td>
-          <td>{sche.docTitle}</td>
-          <td>{sche.time}</td>
+        <tr x-for={(doc, index) in docs} key={index}>
+          <td className="dark">{doc.name}</td>
+          <td>{doc.title}</td>
+          <td>{doc.sche}</td>
         </tr>
       </tbody>
     </table>
@@ -270,7 +282,7 @@ function DocSche() {
 
 // main
 const Index = ({ hos }) => {
-  const { name: hosName, logo: hosLogo, announcement, links: friendLinks, banners, homeCols } = hos
+  const { name: hosName, logo: hosLogo, announcement, banners, links: friendLinks, qrcode, icp_num: icpNum, docs, homeCols } = hos
   return <>
     {/* 头部 */}
     <Header {...{ hosName, hosLogo }} />
@@ -284,11 +296,11 @@ const Index = ({ hos }) => {
       {/*   <NavBtns /> */}
       {/* </RowWrapper> */}
       {/* <DivideHorizen /> */}
-      <DynamicRow {...{ homeCols }}/>
+      <DynamicRows {...{ homeCols, docs }}/>
     </MainContainer>
     {/* 底部 */}
     <DivideHorizen />
-    <Footer {...{ hosName, friendLinks }}/>
+    <Footer {...{ hosName, friendLinks, qrcode, icpNum }}/>
   </>
 }
 
