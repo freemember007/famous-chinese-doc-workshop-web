@@ -21,7 +21,7 @@ const TopHint = ({ hosName }) => {
 
 const Logo = ({ hosLogo }) =>
   <Link href={{ pathname: '/' }}>
-    <img src={hosLogo} className="w6-sm pointer"/>
+    <img src={hosLogo} className="w7-sm pointer"/>
   </Link>
 
 

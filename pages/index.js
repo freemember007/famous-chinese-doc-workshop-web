@@ -1,13 +1,15 @@
 //// index 首页
 // framework
 import React, { Fragment }             from 'react' // eslint-disable-line
+import Link                            from 'next/link'
 // components
-import { List, Item, Title, Article, Right, Describe, DateTime, Row, Col } from '@/components/tagName' // eslint-disable-line
+import { List, Item, Title, Content, Article, Right, Describe, DateTime, Row, Col, Flex } from '@/components/tagName' // eslint-disable-line
 import MainContainer                   from '@/components/MainContainer'
 import Header                          from '@/components/Header'
 import Footer                          from '@/components/footer'
 import DivideVertical                  from '@/components/DivideVertical'
 import DivideHorizen                   from '@/components/DivideHorizen'
+import LineVertical                    from '@/components/LineVertical'
 // fp
 import { tail, test, map, omit, always, pick, tap, keys, evolve, head, assoc, defaultTo, take, ifElse, identity } from 'ramda' // eslint-disable-line
 import { dissocDotPath, defaultToEmptyArray, defaultToEmptyObject } from 'ramda-extension'
@@ -44,7 +46,7 @@ export const getServerSideProps = async ({ req, res }) => { // eslint-disable-li
     // 考虑加个计算字段home_col.top_post，避免上面的复杂查询及这里的手动转换
     .then(evolve({ homeCols: map(homeCol => assoc('post', homeCol?.forum?.topPost?.[0] ?? {}, homeCol)) }))
     .then(evolve({ homeCols: map(dissocDotPath('forum.topPost')) }))
-    .then(evolve({ homeCols: map(evolve({ col_cnt: ifElse(always(IS_MOBILE), always(1), identity) })) }))
+    // .then(evolve({ homeCols: map(evolve({ col_cnt: ifElse(always(IS_MOBILE), always(1), identity) })) }))
     // .then(res.end(_ |> pick(['homeCols']) |> inspect), res.end(_ |> inspect))
   return { props: { hos, IS_MOBILE } }
 }
@@ -79,10 +81,12 @@ const HotNews = ({ announcement }) => {
 const NavBtns = ({ navMenus }) => { // eslint-disable-line
   return <section className="show-sm">
     <List className="w12 mt4 __flex wrap">
-      <Item className="w3 my2 tc" x-for={navMenu in navMenus} key={navMenu.id}>
-        <img className="circle" width={50} height={50} src={navMenu.avatar ?? IMAGE_PLACEHOLDER}/>
-        <div className="mt1 f4">{navMenu.name}</div>
-      </Item>
+      <Link href={{ pathname: 'forum', query: { id: 1 } }} x-for={navMenu in navMenus} key={navMenu.id}>
+        <Item className="w3 my2 tc" >
+          <img className="circle" width={50} height={50} src={navMenu.avatar ?? IMAGE_PLACEHOLDER}/>
+          <div className="mt1 f4">{navMenu.name}</div>
+        </Item>
+      </Link>
     </List>
   </section>
 }
@@ -110,11 +114,14 @@ const DynamicCol = ({ homeCol, docs, IS_MOBILE }) => {
   )
   return <>
     <Col style={{ width }}>
-      <section className="mb4 pl4 bl bw4 b-primary">
-        <span>{colNames.colNameCn}</span>
-        <span className="mx1 gray">/</span>
-        <span className="gray">{colNames.colNameEn}</span>
-      </section>
+      <Flex className="mb4 __flex a-center">
+        <LineVertical color="primary" width={3} height="0.9em" margin="0"/>
+        <div className="ml3">
+          <span className="bold">{colNames.colNameCn}</span>
+          <span className="mx2 gray">/</span>
+          <span className="gray">{colNames.colNameEn}</span>
+        </div>
+      </Flex>
       {matchedCol}
     </Col>
   </>
@@ -125,21 +132,19 @@ const DynamicRows = ({ homeCols, docs, IS_MOBILE }) => {
   const pairedHomeCols = homeCols |> pairedByAttrSumEqualNum('col_cnt', 3)
   // console.log(pairedHomeCols)
   return <>
-    {IS_MOBILE
-      ? <Fragment x-for={(homeCol, index) in homeCols} key={index}>
-        <DivideHorizen height={20}/>
-        <DynamicCol {...{ homeCol, docs, IS_MOBILE }}/>
-      </Fragment>
-      : <Fragment x-for={(group, rowIndex) in pairedHomeCols} key={rowIndex}>
-        <Row className="__flex" >
-          <Fragment x-for={(homeCol, colIndex) in group} key={colIndex}>
-            <DynamicCol {...{ homeCol, docs, IS_MOBILE }}/>
-            {group.length > 1 && colIndex < group.length - 1 && <DivideVertical />}
-          </Fragment>
-        </Row>
-        {pairedHomeCols.length > 1 && rowIndex < pairedHomeCols.length - 1 && <DivideHorizen />}
-      </Fragment>
-    }
+    <section x-for={(homeCol, index) in homeCols} key={index} className="show-sm">
+      <DivideHorizen height={20}/>
+      <DynamicCol {...{ homeCol, docs, IS_MOBILE }}/>
+    </section>
+    <section x-for={(group, rowIndex) in pairedHomeCols} key={rowIndex} className="hide-sm">
+      <Row className="__flex" >
+        <Fragment x-for={(homeCol, colIndex) in group} key={colIndex}>
+          <DynamicCol {...{ homeCol, docs, IS_MOBILE }}/>
+          {group.length > 1 && colIndex < group.length - 1 && <DivideVertical />}
+        </Fragment>
+      </Row>
+      {pairedHomeCols.length > 1 && rowIndex < pairedHomeCols.length - 1 && <DivideHorizen />}
+    </section>
   </>
 }
 
@@ -148,7 +153,7 @@ function OneColArticleNoList({ post }) {
   return <>
     <Article>
       <img width="100%" height={160} src={post.image || IMAGE_PLACEHOLDER}/>
-      <div className="mt2 gray f4 t-justify indent">{post.title}</div>
+      <Content className="mt2 gray f4 t-justify">{post.title}</Content>
     </Article>
   </>
 }
@@ -166,33 +171,42 @@ function OneColArticleHasList({ posts }) {
 }
 function TwoColArticleNoList ({ post }) {
   return <>
-    <Article className="__flex">
+    <Article className="__flex hide-sm">
       <img width={320} height={200} src={post.image || IMAGE_PLACEHOLDER}/>
       <Right className="ml2 flex1 __flex column">
         <Title className="tc">{post.title}</Title>
-        <div className="mt2 gray f4 t-justify indent2">{post.text}</div>
+        <Content className="mt2 gray f4 t-justify indent line8">{post.text}</Content>
       </Right>
     </Article>
+    <section className="show-sm">
+      <OneColArticleNoList {...{ post }}/>
+    </section>
+
   </>
 }
 function TwoColArticleHasList ({ post: topPost, posts }) {
-  return <section className="__flex">
-    <Article className="flex1">
-      <img width="100%" height={200} src={topPost.image || IMAGE_PLACEHOLDER}/>
-      <div className="mt2 gray f4 t-justify indent">{topPost.title}</div>
-    </Article>
-    <DivideVertical/>
-    <List className="flex1">
-      <Item className="__flex j-between" x-for={(post, index) in tail(posts)}  key={index}>
-        <Title className="gray f4">{post.title}</Title>
-        <DateTime className="gray f4">{post.created_at |> formatDate} </DateTime>
-      </Item>
-    </List>
-  </section>
+  return <>
+    <section className="__flex hide-sm">
+      <Article className="flex1">
+        <img width="100%" height={200} src={topPost.image || IMAGE_PLACEHOLDER}/>
+        <div className="mt2 gray f4 t-justify indent">{topPost.title}</div>
+      </Article>
+      <DivideVertical/>
+      <List className="flex1">
+        <Item className="__flex j-between" x-for={(post, index) in tail(posts)}  key={index}>
+          <Title className="gray f4">{post.title}</Title>
+          <DateTime className="gray f4">{post.created_at |> formatDate} </DateTime>
+        </Item>
+      </List>
+    </section>
+    <section className="show-sm">
+      <OneColArticleHasList {...{ posts }}/>
+    </section>
+  </>
 }
 function ThreeColArticleHasList ({ posts, post }) {
   return <>
-    <section className="w12 __flex j-between">
+    <section className="w12 __flex j-between hide-sm">
       <img className="w5" height={300} src={post.image || IMAGE_PLACEHOLDER}/>
       <DivideVertical/>
       <section className="w7">
@@ -210,6 +224,9 @@ function ThreeColArticleHasList ({ posts, post }) {
           </Item>
         </List>
       </section>
+    </section>
+    <section className="show-sm">
+      <OneColArticleHasList {...{ posts }}/>
     </section>
   </>
 }
