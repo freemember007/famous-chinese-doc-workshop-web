@@ -17,25 +17,25 @@ const TopHint = ({ hosName }) => {
 }
 
 const Logo = ({ hosLogo }) =>
-  <img src={hosLogo} />
+  <img src={hosLogo} className="w6-sm"/>
 
 const Search = () =>
   <div>
-    <input className="p2 form-input" type="text" placeholder="搜索"/>
+    <input className="p2 form-input hide-sm" type="text" placeholder="搜索"/>
   </div>
 
-const Nav = () =>
+const Nav = ({ navMenus }) =>
   <section className="hide-sm">
     <MainContainer background="primary">
       <List className="py2 __flex j-left">
-        <Item className="mr8 white" x-for={num in [1, 2, 3, 4, 5]} key={num}>
-          名医风采
+        <Item className="mr8 white" x-for={navMenu in navMenus} key={navMenu.id}>
+          {navMenu.name}
         </Item>
       </List>
     </MainContainer>
   </section>
 
-const Header = ({ hosName, hosLogo}) => {
+const Header = ({ hosName, hosLogo, navMenus }) => {
   return <>
     <TopHint {...{ hosName } } />
     <MainContainer>
@@ -44,7 +44,7 @@ const Header = ({ hosName, hosLogo}) => {
         <Search />
       </div>
     </MainContainer>
-    <Nav/>
+    <Nav {...{ navMenus }}/>
   </>
 }
 

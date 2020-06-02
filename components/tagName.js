@@ -11,6 +11,7 @@ export const Right              = styled.div``
 export const DateTime           = styled.div``
 export const Article            = styled.div``
 export const Row                = styled.div``
+export const Col                = styled.div``
 export const Center             = styled.div``
 export const SubTitle           = styled.div``
 export const Sub                = styled.div``

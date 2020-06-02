@@ -1,14 +1,14 @@
 // framework
 import React, { Fragment }             from 'react' // eslint-disable-line
 // components
-import { List, Item, Title, Article, Right, Describe, DateTime } from '@/components/tagName' // eslint-disable-line
+import { List, Item, Title, Article, Right, Describe, DateTime, Row, Col } from '@/components/tagName' // eslint-disable-line
 import MainContainer                   from '@/components/MainContainer'
 import Header                          from '@/components/Header'
 import Footer                          from '@/components/footer'
 import DivideVertical                  from '@/components/DivideVertical'
 import DivideHorizen                   from '@/components/DivideHorizen'
 // fp
-import { tail, test, map, omit, always, pick, tap, keys, evolve, head, assoc, dissocPath, defaultTo, take } from 'ramda' // eslint-disable-line
+import { tail, test, map, omit, always, pick, tap, keys, evolve, head, assoc, defaultTo, take, ifElse, identity } from 'ramda' // eslint-disable-line
 import { dissocDotPath, defaultToEmptyArray, defaultToEmptyObject } from 'ramda-extension'
 import { it, _ }                       from 'param.macro' // eslint-disable-line
 import { matchPairs, ANY }             from 'pampy' // eslint-disable-line
@@ -16,7 +16,7 @@ import { matchPairs, ANY }             from 'pampy' // eslint-disable-line
 import { IMAGE_PLACEHOLDER }           from '@/config/constant'
 import agent                           from '@/util/request'
 import { inspect, pairedByAttrSumEqualNum } from '@/util/filters' // eslint-disable-line
-import { formatDateTimeM, formatDate } from '@/util/date'
+import { formatDate }                  from '@/util/date'
 
 // props
 export const getServerSideProps = async ({ req, res }) => { // eslint-disable-line
@@ -42,8 +42,8 @@ export const getServerSideProps = async ({ req, res }) => { // eslint-disable-li
     .then(evolve({ homeCols: map(evolve({ forum: defaultToEmptyObject })) }))
     // 考虑加个计算字段home_col.top_post，避免上面的复杂查询及这里的手动转换
     .then(evolve({ homeCols: map(homeCol => assoc('post', homeCol?.forum?.topPost?.[0] ?? {}, homeCol)) }))
-    .then(evolve({ homeCols: map(homeCol => dissocDotPath('forum.topPost', homeCol)) }))
-    .then(evolve({ homeCols: map(evolve({ col_cnt: col_cnt => IS_MOBILE ? 1 : col_cnt })) }))
+    .then(evolve({ homeCols: map(dissocDotPath('forum.topPost')) }))
+    .then(evolve({ homeCols: map(evolve({ col_cnt: ifElse(always(IS_MOBILE), always(1), identity) })) }))
     // .then(res.end(_ |> pick(['homeCols']) |> inspect), res.end(_ |> inspect))
   return { props: { hos, IS_MOBILE } }
 }
@@ -58,7 +58,7 @@ const ScrollSlide = ({ banners }) => {
 // 最新动态
 const HotNews = ({ announcement }) => {
   return <>
-    <section className="w12 p3 b __flex a-center">
+    <section className="w12 mt2 p3 b __flex a-center">
       <div className="mr4 hide-sm"> 最新动态 </div>
       <List className="flex1 f4 gray">
         <Item x-for={post in announcement.posts} className="w12 __flex j-between" key={post.id}>
@@ -68,7 +68,7 @@ const HotNews = ({ announcement }) => {
             <Title className="gray f4">{post.title}</Title>
             <DateTime className="gray f4 hide-sm">{post.created_at |> formatDate}</DateTime>
           </div>
-        </Item> {/* aaa */}
+        </Item>
       </List>
     </section>
   </>
@@ -76,25 +76,26 @@ const HotNews = ({ announcement }) => {
 
 // mobile端导航button
 const NavBtns = ({ navMenus }) => { // eslint-disable-line
-  return <>
-    <List className="w12 __flex wrap hide show-sm">
-      <Item className="w3 mt2 tc" x-for={navMenu in navMenus} key={navMenu.id}>
+  return <section className="show-sm">
+    <List className="w12 mt4 __flex wrap">
+      <Item className="w3 my1 tc" x-for={navMenu in navMenus} key={navMenu.id}>
         <img className="circle" width={60} height={60} src={navMenu.avatar ?? IMAGE_PLACEHOLDER}/>
         <div className="mt1 f4">{navMenu.name}</div>
       </Item>
     </List>
-  </>
+  </section>
 }
 
 // 动态列
 const DynamicCol = ({ homeCol, docs, IS_MOBILE }) => {
   const { type, forum: { name, name_en, posts } , post, col_cnt: colCnt } = homeCol
+  const width = IS_MOBILE ? '100%' : matchPairs(colCnt, [1, '33.33%'], [2, '66.66%'], [3, '100%'], [ANY, '100%'])
   const colNames = matchPairs(type,
-    ['docShow' , always({ colNameCn: '传承之路' , colNameEn: 'TEAM' })],
+    ['docShow' , always({ colNameCn: '传承之路'  , colNameEn: 'TEAM' })],
     ['docSche' , always({ colNameCn: '医生排班'  , colNameEn: 'SCHEDULE' })],
     [ANY       , always({ colNameCn: name       , colNameEn: name_en })],
   )
-  const Col = matchPairs(homeCol,
+  const matchedCol = matchPairs(homeCol,
     [{ type: 'docShow' }                              , always(<DocShow                {...{ docs, IS_MOBILE }}/>)],
     [{ type: 'docSche' }                              , always(<DocSche                {...{ docs }}/>)],
     [{ type: 'video' }                                , always(<VideoCol               {...{ posts, colCnt }}/>)],
@@ -106,9 +107,16 @@ const DynamicCol = ({ homeCol, docs, IS_MOBILE }) => {
     [{ type: 'article', col_cnt: 3 }                  , always(<ThreeColArticleHasList {...{ post, posts }}/>)],
     [ANY                                              , always('')],
   )
-  return <ColWrapper {...{ ...colNames, colCnt, IS_MOBILE }}>
-    {Col}
-  </ColWrapper>
+  return <>
+    <Col style={{ width }}>
+      <section className="mb4 pl4 bl bw4 b-primary">
+        <span>{colNames.colNameCn}</span>
+        <span className="mx1 gray">/</span>
+        <span className="gray">{colNames.colNameEn}</span>
+      </section>
+      {matchedCol}
+    </Col>
+  </>
 }
 
 // 动态行
@@ -118,41 +126,23 @@ const DynamicRows = ({ homeCols, docs, IS_MOBILE }) => {
   return <>
     {IS_MOBILE
       ? <Fragment x-for={(homeCol, index) in homeCols} key={index}>
-        <DivideHorizen {...{ height: 20 }} />
+        <DivideHorizen height={20}/>
         <DynamicCol {...{ homeCol, docs, IS_MOBILE }}/>
       </Fragment>
-      : <RowWrapper x-for={(group, index) in pairedHomeCols} key={index}>
-        <Fragment x-for={(homeCol, index) in group} key={index}>
-          <DynamicCol {...{ homeCol, docs, IS_MOBILE }}/>
-          {group.length > 1 && index < group.length - 1 && <DivideVertical />}
-        </Fragment>
-      </RowWrapper>
+      : <Fragment x-for={(group, rowIndex) in pairedHomeCols} key={rowIndex}>
+        <Row className="__flex" >
+          <Fragment x-for={(homeCol, colIndex) in group} key={colIndex}>
+            <DynamicCol {...{ homeCol, docs, IS_MOBILE }}/>
+            {group.length > 1 && colIndex < group.length - 1 && <DivideVertical />}
+          </Fragment>
+        </Row>
+        {pairedHomeCols.length > 1 && rowIndex < pairedHomeCols.length - 1 && <DivideHorizen />}
+      </Fragment>
     }
   </>
 }
 
 // functions
-function RowWrapper({ children }) {
-  return <>
-    <DivideHorizen/>
-    <section className="__flex">
-      {children}
-    </section>
-  </>
-}
-function ColWrapper({ colNameCn, colNameEn, colCnt, IS_MOBILE, children }) {
-  const width = IS_MOBILE ? '100%' : matchPairs(colCnt, [1, '33.33%'], [2, '66.66%'], [3, '100%'], [ANY, '100%'])
-  return <>
-    <section style={{ width }}>
-      <section className="mb4 pl4 bl bw4 b-primary">
-        <span>{colNameCn}</span>
-        <span className="mx1 gray">/</span>
-        <span className="gray">{colNameEn}</span>
-      </section>
-      {children}
-    </section>
-  </>
-}
 function OneColArticleNoList({ post }) {
   return <>
     <Article>
@@ -307,9 +297,8 @@ const Index = ({ hos, IS_MOBILE }) => {
     <MainContainer>
       {/*<pre>{announcement | inspect}</pre>*/}
       <HotNews {...{ announcement }}/>
-      <DivideHorizen />
       <NavBtns {...{ navMenus }}/>
-      <DivideHorizen />
+      <div className="hide-sm"><DivideHorizen/></div>
       <DynamicRows {...{ homeCols, docs, IS_MOBILE }}/>
     </MainContainer>
     {/* 底部 */}
