@@ -1,6 +1,7 @@
 //// forum 版块
 // framework
 import React, { Fragment }             from 'react' // eslint-disable-line
+import Link                            from 'next/link'
 // components
 import { List, Item, Title, Article, Right, Describe, DateTime, Row, Col } from '@/components/tagName' // eslint-disable-line
 import MainContainer                   from '@/components/MainContainer'
@@ -11,7 +12,6 @@ import DivideHorizen                   from '@/components/DivideHorizen'
 import LineHorizen                     from '@/components/LineHorizen'
 // fp
 import { tail, test, map, omit, always, pick, tap, keys, evolve, head, assoc, defaultTo, take, ifElse, identity } from 'ramda' // eslint-disable-line
-import { dissocDotPath, defaultToEmptyArray, defaultToEmptyObject } from 'ramda-extension'
 import { it, _ }                       from 'param.macro' // eslint-disable-line
 import { matchPairs, ANY }             from 'pampy' // eslint-disable-line
 // util
@@ -23,8 +23,6 @@ import ensure                          from '@/util/ensure'
 
 // props
 export const getServerSideProps = async ({ req, res, query }) => { // eslint-disable-line
-  const userAgent = req.headers['user-agent']
-  const IS_MOBILE = test(/Android|OS [0-9_]+ like Mac OS X|Windows Phone/i, userAgent)
   // query params
   const {
     /* eslint-disable */
@@ -44,7 +42,7 @@ export const getServerSideProps = async ({ req, res, query }) => { // eslint-dis
     })
     .then(it.body)
     // .then(res.end(_ |> inspect), res.end(_ |> inspect))
-  return { props: { forum, IS_MOBILE } }
+  return { props: { forum } }
 }
 
 // 大图
@@ -94,10 +92,12 @@ const PostList = ({ posts }) => {
     <section className="w8 flex1 __flex">
       <List className="w12 gray">
         <Item x-for={(post, index) in posts} key={index}>
-          <div className="__flex j-between">
-            <Title className="dark">{post.title}</Title>
-            <DateTime>{post.created_at |> formatDate}</DateTime>
-          </div>
+          <Link href={{ pathname: 'post', query: { id: post.id } }}>
+            <div className="pointer __flex j-between">
+              <Title className="flex1 dark">{post.title}</Title>
+              <DateTime>{post.created_at |> formatDate}</DateTime>
+            </div>
+          </Link>
           {posts.length > 1 && index < posts.length - 1 && <LineHorizen/> }
         </Item>
       </List>
@@ -106,7 +106,7 @@ const PostList = ({ posts }) => {
 }
 
 // main
-const Forum = ({ forum, IS_MOBILE }) => {
+const Forum = ({ forum }) => {
   const { image, subForums, posts, hos } = forum
   const { name: hosName, logo: hosLogo, navMenus, qrcode, icp_num: icpNum, friendLinks } = hos
   return <>

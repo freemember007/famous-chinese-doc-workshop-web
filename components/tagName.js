@@ -17,6 +17,7 @@ export const SubTitle           = styled.div``
 export const Sub                = styled.div``
 export const Title              = styled.div``
 export const Describe           = styled.div``
+export const Content            = styled.div``
 export const Text               = styled.div``
 export const Container          = styled.div``
 export const Flex               = styled.div``

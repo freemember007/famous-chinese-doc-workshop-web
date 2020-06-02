@@ -2,15 +2,15 @@
 // framework
 import React, { Fragment }             from 'react' // eslint-disable-line
 // components
-import { List, Item, Title, Article, Right, Describe, DateTime, Row, Col } from '@/components/tagName' // eslint-disable-line
+import { List, Item, Title, Article, Content, Right, Describe, DateTime, Row, Col } from '@/components/tagName' // eslint-disable-line
 import MainContainer                   from '@/components/MainContainer'
 import Header                          from '@/components/Header'
 import Footer                          from '@/components/footer'
 import DivideVertical                  from '@/components/DivideVertical'
 import DivideHorizen                   from '@/components/DivideHorizen'
+import LineHorizen                     from '@/components/LineHorizen'
 // fp
 import { tail, test, map, omit, always, pick, tap, keys, evolve, head, assoc, defaultTo, take, ifElse, identity } from 'ramda' // eslint-disable-line
-import { dissocDotPath, defaultToEmptyArray, defaultToEmptyObject } from 'ramda-extension'
 import { it, _ }                       from 'param.macro' // eslint-disable-line
 import { matchPairs, ANY }             from 'pampy' // eslint-disable-line
 // util
@@ -18,75 +18,104 @@ import { IMAGE_PLACEHOLDER }           from '@/config/constant'
 import agent                           from '@/util/request'
 import { inspect, pairedByAttrSumEqualNum } from '@/util/filters' // eslint-disable-line
 import { formatDate }                  from '@/util/date'
+import ensure                          from '@/util/ensure'
 
 // props
-export const getServerSideProps = async ({ req, res }) => { // eslint-disable-line
-  const userAgent = req.headers['user-agent']
-  const IS_MOBILE = test(/Android|OS [0-9_]+ like Mac OS X|Windows Phone/i, userAgent)
-  // res.end(IS_MOBILE |> inspect)
-  const hos = await agent
-    .get('hos')
+export const getServerSideProps = async ({ req, res, query }) => { // eslint-disable-line
+  // query params
+  const {
+    /* eslint-disable */
+    id,           // post id
+  } = query
+
+  // ensure
+  ensure(id, '版块ID不能为空')
+
+  const post = await agent
+    .get('post')
     .set({ Accept: 'application/vnd.pgrst.object+json' })
     .query({
-      id                             : 'eq.' + 1,
-      select                         : '*, navMenus:nav_menu(*), friendLinks:link(*), docs:doc(*), announcement:forum(*, posts:post(id, title, created_at)), homeCols:home_col(*, forum(*, posts:post(id, title, image, video, file), topPost:post(*)))',
-      'announcement.id'              : 'eq.' + 6,
-      'announcement.posts.order'     : 'created_at.desc',
-      'homeCols.order'               : 'order_num',
-      'homeCols.forum.posts.order'   : 'is_top,created_at.desc',
-      'homeCols.forum.topPost.order' : 'is_top,created_at.desc',
-      'homeCols.forum.topPost.limit' : 1,
-      // 'homeCols.forum.posts.offset'  : 1, // 由具体栏目决定
+      id            : 'eq.' + 1,
+      select        : '*, forum(*, subForums:sub_forum(*)), hos(*, navMenus:nav_menu(*), friendLinks:link(*))',
+      'posts.order' : 'created_at.desc',
     })
     .then(it.body)
-    .then(evolve({ announcement: defaultToEmptyArray & head & defaultToEmptyObject }))
-    .then(evolve({ homeCols: map(evolve({ forum: defaultToEmptyObject })) }))
-    // 考虑加个计算字段home_col.top_post，避免上面的复杂查询及这里的手动转换
-    .then(evolve({ homeCols: map(homeCol => assoc('post', homeCol?.forum?.topPost?.[0] ?? {}, homeCol)) }))
-    .then(evolve({ homeCols: map(dissocDotPath('forum.topPost')) }))
-    .then(evolve({ homeCols: map(evolve({ col_cnt: ifElse(always(IS_MOBILE), always(1), identity) })) }))
-    // .then(res.end(_ |> pick(['homeCols']) |> inspect), res.end(_ |> inspect))
-  return { props: { hos, IS_MOBILE } }
+    // .then(res.end(_ |> inspect), res.end(_ |> inspect))
+  return { props: { post } }
 }
 
-// 全屏轮播大图
-const ScrollSlide = ({ banners }) => {
+// 大图
+const ScrollSlide = ({ image }) => {
   return <>
-    <img className="fit" width="100%" height="300" src={banners?.[0]?.image} />
+    <img className="fit" width="100%" height="300" src={image ?? IMAGE_PLACEHOLDER} />
   </>
 }
 
-// 最新动态
-const HotNews = ({ announcement }) => {
+// 面包屑
+const Breadcrumb = () => {
+  const breadcrumbs = ['首页', '医疗服务', '预约挂号']
+  const rightArrow = <span className="mx2 gray">›</span>
   return <>
-    <section className="w12 mt2 p3 b __flex a-center">
-      <div className="mr4 hide-sm"> 最新动态 </div>
-      <List className="flex1 f4 gray">
-        <Item x-for={post in announcement.posts} className="w12 __flex j-between" key={post.id}>
-          <div className="mr2 red hide-sm"> new! </div>
-          <div className="mr2 red show-sm"> • </div>
-          <div className="w12 __flex j-between">
-            <Title className="gray f4">{post.title}</Title>
-            <DateTime className="gray f4 hide-sm">{post.created_at |> formatDate}</DateTime>
-          </div>
+    <section className="mt4 f4 dark __flex">
+      <div>您的位置：</div>
+      <List className="__flex">
+        <Item x-for={(breadcrumb, index) in breadcrumbs} key={index}>
+          <span>{breadcrumb}</span>
+          {breadcrumbs.length > 1 && index < breadcrumbs.length - 1 && rightArrow }
         </Item>
       </List>
     </section>
   </>
 }
 
+// 子栏目导航
+const SubForumNav = () => {
+  const subForums = ['子栏目一', '子栏目三', '子栏目三']
+  return <>
+    <section className="w3 hide-sm">
+      <div className="f2 bold mb4">医疗服务</div>
+      <List className="">
+        <Item x-for={(subForum, index) in subForums} key={index}>
+          {subForum}
+          {subForums.length > 1 && index < subForums.length - 1 && <LineHorizen margin={2}/> }
+        </Item>
+      </List>
+    </section>
+    <div className="hide-sm"> <DivideVertical width={50}/> </div>
+  </>
+}
+
+// 文章列表
+const PostDetail = ({ post }) => {
+  return <>
+    <section className="w8 flex1 __flex">
+      <Article className="w12 gray">
+        <Title className="mb4 f2 tc bold dark">{post.title}</Title>
+        <DateTime className="mb8 tc gray f4">{post.created_at |> formatDate}</DateTime>
+        <Content>{post.text}</Content>
+      </Article>
+    </section>
+  </>
+}
+
 // main
-const Post = ({ hos, IS_MOBILE }) => {
-  const { name: hosName, logo: hosLogo, qrcode, icp_num: icpNum, banners, announcement, navMenus, friendLinks, docs, homeCols } = hos
+const Post = ({ post }) => {
+  const { forum, hos } = post
+  const { name: hosName, logo: hosLogo, navMenus, qrcode, icp_num: icpNum, friendLinks } = hos
+  const { subForums } = forum
   return <>
     {/* 头部 */}
     <Header {...{ hosName, hosLogo, navMenus }} />
     {/* 大图 */}
-    <ScrollSlide {...{ banners }} />
+    <ScrollSlide {...{ image: forum.image }} />
     {/* 主体 */}
     <MainContainer>
-      {/*<pre>{announcement | inspect}</pre>*/}
-      <HotNews {...{ announcement }}/>
+      <Breadcrumb {...{ }}/>
+      <LineHorizen height={2}/>
+      <section className="mt8 __flex">
+        <SubForumNav {...{ subForums }}/>
+        <PostDetail {...{ post }}/>
+      </section>
     </MainContainer>
     {/* 底部 */}
     <DivideHorizen />

@@ -1,7 +1,10 @@
 /*
  * Header
  */
+// framework
 import React from 'react'
+import Link from 'next/link'
+// components
 import MainContainer from '@/components/MainContainer'
 import { List, Item } from '@/components/tagName'
 // import Logo from 'svg-react-loader!../svgs/logo.svg'
@@ -17,7 +20,10 @@ const TopHint = ({ hosName }) => {
 }
 
 const Logo = ({ hosLogo }) =>
-  <img src={hosLogo} className="w6-sm"/>
+  <Link href={{ pathname: '/' }}>
+    <img src={hosLogo} className="w6-sm pointer"/>
+  </Link>
+
 
 const Search = () =>
   <div>
@@ -28,8 +34,10 @@ const Nav = ({ navMenus }) =>
   <section className="hide-sm">
     <MainContainer background="primary">
       <List className="py2 __flex j-left">
-        <Item className="mr8 white" x-for={navMenu in navMenus} key={navMenu.id}>
-          {navMenu.name}
+        <Item className="mr8 white pointer" x-for={navMenu in navMenus} key={navMenu.id}>
+          <Link href={{ pathname: 'forum', query: { id: 1 } }}>
+            <div>{ navMenu.name }</div>
+          </Link>
         </Item>
       </List>
     </MainContainer>
