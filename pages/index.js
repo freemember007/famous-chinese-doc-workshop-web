@@ -78,8 +78,8 @@ const HotNews = ({ announcement }) => {
 const NavBtns = ({ navMenus }) => { // eslint-disable-line
   return <section className="show-sm">
     <List className="w12 mt4 __flex wrap">
-      <Item className="w3 my1 tc" x-for={navMenu in navMenus} key={navMenu.id}>
-        <img className="circle" width={60} height={60} src={navMenu.avatar ?? IMAGE_PLACEHOLDER}/>
+      <Item className="w3 my2 tc" x-for={navMenu in navMenus} key={navMenu.id}>
+        <img className="circle" width={50} height={50} src={navMenu.avatar ?? IMAGE_PLACEHOLDER}/>
         <div className="mt1 f4">{navMenu.name}</div>
       </Item>
     </List>

@@ -143,6 +143,16 @@ margin-variant(5, $unit-5)
 margin-variant(6, $unit-6)
 margin-variant(7, $unit-7)
 margin-variant(8, $unit-8)
+
+@media (max-width: $size-sm)
+  margin-variant(1, $unit-1/2)
+  margin-variant(2, $unit-2/2)
+  margin-variant(3, $unit-3/2)
+  margin-variant(4, $unit-4/2)
+  margin-variant(5, $unit-5/2)
+  margin-variant(6, $unit-6/2)
+  margin-variant(7, $unit-7/2)
+  margin-variant(8, $unit-8/2)
 // Padding
 /*mixin*/padding-variant($id = 1, $size = $unit-1)
   .p{$id}
@@ -170,6 +180,16 @@ padding-variant(5, $unit-5)
 padding-variant(6, $unit-6)
 padding-variant(7, $unit-7)
 padding-variant(8, $unit-8)
+
+@media (max-width: $size-sm)
+  padding-variant(1, $unit-1/2)
+  padding-variant(2, $unit-2/2)
+  padding-variant(3, $unit-3/2)
+  padding-variant(4, $unit-4/2)
+  padding-variant(5, $unit-5/2)
+  padding-variant(6, $unit-6/2)
+  padding-variant(7, $unit-7/2)
+  padding-variant(8, $unit-8/2)
 
 
 //-------- Width 宽度 / 12格栅格系统 -------- //
@@ -236,6 +256,8 @@ padding-variant(8, $unit-8)
     width 83.33333%
   .w11-xl
     width 91.66667%
+  .w11-xl
+    width 91.66667%
   .w12-xl
     width 100%
   .wa-xl
@@ -273,6 +295,8 @@ padding-variant(8, $unit-8)
     width 83.33333%
   .w11-sm
     width 91.66667%
+  .w95-sm
+    width 95%
   .w12-sm
     width 100%
   .wa-sm
