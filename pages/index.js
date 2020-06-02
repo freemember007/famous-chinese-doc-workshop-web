@@ -28,7 +28,7 @@ export const getServerSideProps = async ({ req, res }) => { // eslint-disable-li
     .set({ Accept: 'application/vnd.pgrst.object+json' })
     .query({
       id                             : 'eq.' + 1,
-      select                         : '*, links:link(*), docs:doc(*), announcement:forum(*, posts:post(id, title, created_at)), homeCols:home_col(*, forum(*, posts:post(id, title, image, video, file), topPost:post(*)))',
+      select                         : '*, navMenus:nav_menu(*), friendLinks:link(*), docs:doc(*), announcement:forum(*, posts:post(id, title, created_at)), homeCols:home_col(*, forum(*, posts:post(id, title, image, video, file), topPost:post(*)))',
       'announcement.id'              : 'eq.' + 6,
       'announcement.posts.order'     : 'created_at.desc',
       'homeCols.order'               : 'order_num',
@@ -75,12 +75,12 @@ const HotNews = ({ announcement }) => {
 }
 
 // mobile端导航button
-const NavBtns = () => { // eslint-disable-line
+const NavBtns = ({ navMenus }) => { // eslint-disable-line
   return <>
     <List className="w12 __flex wrap hide show-sm">
-      <Item className="w3 mt2 tc" x-for={num in [1,2,3,4,5,6,7,8]} key={num}>
-        <img className="circle" width={60} height={60} src={IMAGE_PLACEHOLDER}/>
-        <div className="mt1 f4">论文论著</div>
+      <Item className="w3 mt2 tc" x-for={navMenu in navMenus} key={navMenu.id}>
+        <img className="circle" width={60} height={60} src={navMenu.avatar ?? IMAGE_PLACEHOLDER}/>
+        <div className="mt1 f4">{navMenu.name}</div>
       </Item>
     </List>
   </>
@@ -297,10 +297,10 @@ function DocSche({ docs }) {
 
 // main
 const Index = ({ hos, IS_MOBILE }) => {
-  const { name: hosName, logo: hosLogo, announcement, banners, links: friendLinks, qrcode, icp_num: icpNum, docs, homeCols } = hos
+  const { name: hosName, logo: hosLogo, qrcode, icp_num: icpNum, banners, announcement, navMenus, friendLinks, docs, homeCols } = hos
   return <>
     {/* 头部 */}
-    <Header {...{ hosName, hosLogo }} />
+    <Header {...{ hosName, hosLogo, navMenus }} />
     {/* 大图 */}
     <ScrollSlide {...{ banners }} />
     {/* 主体 */}
@@ -308,7 +308,7 @@ const Index = ({ hos, IS_MOBILE }) => {
       {/*<pre>{announcement | inspect}</pre>*/}
       <HotNews {...{ announcement }}/>
       <DivideHorizen />
-      <NavBtns />
+      <NavBtns {...{ navMenus }}/>
       <DivideHorizen />
       <DynamicRows {...{ homeCols, docs, IS_MOBILE }}/>
     </MainContainer>
