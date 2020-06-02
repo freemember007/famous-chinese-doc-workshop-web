@@ -1,5 +1,5 @@
 /*
- * Header
+ * DivideVertical 垂直间隔
  */
 import React from 'react'
 
