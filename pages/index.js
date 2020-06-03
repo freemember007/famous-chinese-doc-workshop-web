@@ -23,8 +23,8 @@ import { formatDate }                  from '@/util/date'
 
 // props
 export const getServerSideProps = async ({ req, res }) => { // eslint-disable-line
-  const userAgent = req.headers['user-agent']
-  const IS_MOBILE = test(/Android|OS [0-9_]+ like Mac OS X|Windows Phone/i, userAgent)
+  // const userAgent = req.headers['user-agent']
+  // const IS_MOBILE = test(/Android|OS [0-9_]+ like Mac OS X|Windows Phone/i, userAgent)
   // res.end(IS_MOBILE |> inspect)
   const hos = await agent
     .get('hos')
@@ -46,9 +46,8 @@ export const getServerSideProps = async ({ req, res }) => { // eslint-disable-li
     // 考虑加个计算字段home_col.top_post，避免上面的复杂查询及这里的手动转换
     .then(evolve({ homeCols: map(homeCol => assoc('post', homeCol?.forum?.topPost?.[0] ?? {}, homeCol)) }))
     .then(evolve({ homeCols: map(dissocDotPath('forum.topPost')) }))
-    // .then(evolve({ homeCols: map(evolve({ col_cnt: ifElse(always(IS_MOBILE), always(1), identity) })) }))
     // .then(res.end(_ |> pick(['homeCols']) |> inspect), res.end(_ |> inspect))
-  return { props: { hos, IS_MOBILE } }
+  return { props: { hos } }
 }
 
 // 全屏轮播大图
@@ -92,19 +91,19 @@ const NavBtns = ({ navMenus }) => { // eslint-disable-line
 }
 
 // 动态列
-const DynamicCol = ({ homeCol, docs, IS_MOBILE }) => {
+const DynamicCol = ({ homeCol, docs }) => {
   const { type, forum: { name, name_en, posts } , post, col_cnt: colCnt } = homeCol
-  const width = IS_MOBILE ? '100%' : matchPairs(colCnt, [1, '33.33%'], [2, '66.66%'], [3, '100%'], [ANY, '100%'])
+  const width = matchPairs(colCnt, [1, '33.33%'], [2, '66.66%'], [3, '100%'], [ANY, '100%'])
   const colNames = matchPairs(type,
     ['docShow' , always({ colNameCn: '传承之路'  , colNameEn: 'TEAM' })],
     ['docSche' , always({ colNameCn: '医生排班'  , colNameEn: 'SCHEDULE' })],
     [ANY       , always({ colNameCn: name       , colNameEn: name_en })],
   )
   const matchedCol = matchPairs(homeCol,
-    [{ type: 'docShow' }                              , always(<DocShow                {...{ docs, IS_MOBILE }}/>)],
+    [{ type: 'docShow' }                              , always(<DocShow                {...{ docs }}/>)],
     [{ type: 'docSche' }                              , always(<DocSche                {...{ docs }}/>)],
     [{ type: 'video' }                                , always(<VideoCol               {...{ posts, colCnt }}/>)],
-    [{ type: 'album' }                                , always(<AlbumCol               {...{ posts, colCnt, IS_MOBILE }}/>)],
+    [{ type: 'album' }                                , always(<AlbumCol               {...{ posts, colCnt }}/>)],
     [{ type: 'article', has_list: false, col_cnt: 1 } , always(<OneColArticleNoList    {...{ post }}/>)],
     [{ type: 'article', has_list: true , col_cnt: 1 } , always(<OneColArticleHasList   {...{ posts }}/>)],
     [{ type: 'article', has_list: false, col_cnt: 2 } , always(<TwoColArticleNoList    {...{ post }}/>)],
@@ -113,7 +112,7 @@ const DynamicCol = ({ homeCol, docs, IS_MOBILE }) => {
     [ANY                                              , always('')],
   )
   return <>
-    <Col style={{ width }}>
+    <Col style={{ width }} className="w12-sm">
       <Flex className="mb4 __flex a-center">
         <LineVertical color="primary" width={3} height="0.9em" margin="0"/>
         <div className="ml3">
@@ -128,22 +127,22 @@ const DynamicCol = ({ homeCol, docs, IS_MOBILE }) => {
 }
 
 // 动态行
-const DynamicRows = ({ homeCols, docs, IS_MOBILE }) => {
+const DynamicRows = ({ homeCols, docs }) => {
   const pairedHomeCols = homeCols |> pairedByAttrSumEqualNum('col_cnt', 3)
   // console.log(pairedHomeCols)
   return <>
     <section x-for={(homeCol, index) in homeCols} key={index} className="show-sm">
-      <DivideHorizen height={20}/>
-      <DynamicCol {...{ homeCol, docs, IS_MOBILE }}/>
+      <DivideHorizen/>
+      <DynamicCol {...{ homeCol, docs }}/>
     </section>
     <section x-for={(group, rowIndex) in pairedHomeCols} key={rowIndex} className="hide-sm">
       <Row className="__flex" >
         <Fragment x-for={(homeCol, colIndex) in group} key={colIndex}>
-          <DynamicCol {...{ homeCol, docs, IS_MOBILE }}/>
-          {group.length > 1 && colIndex < group.length - 1 && <DivideVertical />}
+          <DynamicCol {...{ homeCol, docs }}/>
+          {group.length > 1 && colIndex < group.length - 1 && <DivideVertical/>}
         </Fragment>
       </Row>
-      {pairedHomeCols.length > 1 && rowIndex < pairedHomeCols.length - 1 && <DivideHorizen />}
+      {pairedHomeCols.length > 1 && rowIndex < pairedHomeCols.length - 1 && <DivideHorizen/>}
     </section>
   </>
 }
@@ -230,15 +229,15 @@ function ThreeColArticleHasList ({ posts, post }) {
     </section>
   </>
 }
-function AlbumCol ({ posts, colCnt, IS_MOBILE }) {
+function AlbumCol ({ posts, colCnt }) {
   const _posts = take(colCnt*2, posts) // 按colCnt*2摘取条目
   return <>
-    <List className="__flex j-between">
+    <List className="hide-from-6-sm __flex j-between"> {/* hide-from-6-sm: 移动端仅显示前3个项目(Item*3+间隔*2=5) */}
       <Fragment x-for={(post, index) in _posts}  key={index}>
         <Item className="flex1">
           <img width="100%" height={300} src={post.image || IMAGE_PLACEHOLDER}/>
         </Item>
-        {_posts.length > 1 && index < _posts.length - 1 && <DivideVertical width={IS_MOBILE ? 10 : 30}/>}
+        {_posts.length > 1 && index < _posts.length - 1 && <DivideVertical/>}
       </Fragment>
     </List>
   </>
@@ -246,7 +245,7 @@ function AlbumCol ({ posts, colCnt, IS_MOBILE }) {
 function VideoCol({ posts, colCnt }) {
   const _posts = take(colCnt, posts) // 按colCnt摘取条目
   return <>
-    <List className="__flex j-between" >
+    <List className="hide-tail-sm __flex j-between" >  {/* hide-tail-sm: 移动端仅显示第1个项目 */}
       <Fragment x-for={(post, index) in _posts} key={index}>
         <Item className="flex1"> {/* 宽度均等 */}
           <video className="video"
@@ -256,26 +255,25 @@ function VideoCol({ posts, colCnt }) {
             src={post.video}/>
           <div className="f4">{post.title}</div>
         </Item>
-        {_posts.length > 1 && index < _posts.length - 1 && <DivideVertical />}
+        {_posts.length > 1 && index < _posts.length - 1 && <DivideVertical/>}
       </Fragment>
     </List>
   </>
 }
 // 医生列表
-function DocShow({ docs, IS_MOBILE }) {
-  const _docs = take(IS_MOBILE ? 3 : 6, docs)
+function DocShow({ docs }) {
+  const _docs = take(6, docs)
   return <>
     <section className="w12">
       {/* <ColWrapper {...colName} /> */}
-      <List className="__flex j-between">
+      <List className="hide-from-6-sm __flex j-between"> {/* hide-from-6-sm: 只显示前3个项目(Item*3+间隔*2=5) */}
         <Fragment x-for={(doc, index) in _docs}  key={index}>
           <Item className="flex1 tc lh2">
-            <img width="100%" height={IS_MOBILE ? 140 : 300} src={doc.imageUrl || IMAGE_PLACEHOLDER} />
+            <img width="100%" height={200} src={doc.imageUrl || IMAGE_PLACEHOLDER} />
             <div>{doc.name}</div>
             <div className="gray f4">{doc.title}</div>
           </Item>
-          {/* <DivideVertical width={30} /> */}
-          {index < _docs.length - 1 && <DivideVertical width={IS_MOBILE ? 10 : 30} />}
+          {index < _docs.length - 1 && <DivideVertical/>}
         </Fragment>
       </List>
     </section>
@@ -304,7 +302,7 @@ function DocSche({ docs }) {
 }
 
 // main
-const Index = ({ hos, IS_MOBILE }) => {
+const Index = ({ hos }) => {
   const { name: hosName, logo: hosLogo, qrcode, icp_num: icpNum, banners, announcement, navMenus, friendLinks, docs, homeCols } = hos
   return <>
     {/* 头部 */}
@@ -317,7 +315,7 @@ const Index = ({ hos, IS_MOBILE }) => {
       <HotNews {...{ announcement }}/>
       <NavBtns {...{ navMenus }}/>
       <div className="hide-sm"><DivideHorizen/></div>
-      <DynamicRows {...{ homeCols, docs, IS_MOBILE }}/>
+      <DynamicRows {...{ homeCols, docs }}/>
     </MainContainer>
     {/* 底部 */}
     <DivideHorizen />

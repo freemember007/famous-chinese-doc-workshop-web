@@ -82,7 +82,7 @@ const SubForumNav = () => {
         </Item>
       </List>
     </section>
-    <div className="hide-sm"> <DivideVertical width={50}/> </div>
+    <div className="hide-sm"> <DivideVertical width={4}/> </div>
   </>
 }
 

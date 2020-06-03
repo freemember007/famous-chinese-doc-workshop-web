@@ -251,37 +251,37 @@ padding-variant(8, $unit-8)
 @media (max-width: $size-xl)
   // 相对父容器
   .w0-xl
-    width 0
+    width 0 !important
   .w1-xl
-    width 8.33333%
+    width 8.33333% !important
   .w2-xl
-    width 16.66667%
+    width 16.66667% !important
   .w3-xl
-    width 25%
+    width 25% !important
   .w4-xl
-    width 33.33333%
+    width 33.33333% !important
   .w5-xl
-    width 41.66667%
+    width 41.66667% !important
   .w6-xl
-    width 50%
+    width 50% !important
   .w7-xl
-    width 58.33333%
+    width 58.33333% !important
   .w8-xl
-    width 66.66667%
+    width 66.66667% !important
   .w9-xl
-    width 75%
+    width 75% !important
   .w10-xl
-    width 83.33333%
+    width 83.33333% !important
   .w11-xl
-    width 91.66667%
+    width 91.66667% !important
   .w11-xl
-    width 91.66667%
+    width 91.66667% !important
   .w12-xl
-    width 100%
+    width 100% !important
   .wa-xl
-    width auto
+    width auto !important
   .w1-8-xl
-    width 12.5%
+    width 12.5% !important
   .show-xl
     display block !important
   .hide-xl
@@ -290,37 +290,37 @@ padding-variant(8, $unit-8)
 @media (max-width: $size-sm)
   // 相对父容器
   .w0-sm
-    width 0
+    width 0 !important
   .w1-sm
-    width 8.33333%
+    width 8.33333% !important
   .w2-sm
-    width 16.66667%
+    width 16.66667% !important
   .w3-sm
-    width 25%
+    width 25% !important
   .w4-sm
-    width 33.33333%
+    width 33.33333% !important
   .w5-sm
-    width 41.66667%
+    width 41.66667% !important
   .w6-sm
-    width 50%
+    width 50% !important
   .w7-sm
-    width 58.33333%
+    width 58.33333% !important
   .w8-sm
-    width 66.66667%
+    width 66.66667% !important
   .w9-sm
-    width 75%
+    width 75% !important
   .w10-sm
-    width 83.33333%
+    width 83.33333% !important
   .w11-sm
-    width 91.66667%
+    width 91.66667% !important
   .w95-sm
-    width 95%
+    width 95% !important
   .w12-sm
-    width 100%
+    width 100% !important
   .wa-sm
-    width auto
+    width auto  !important
   .w1-8-sm
-    width 12.5%
+    width 12.5%  !important
   .show-sm
     display block !important
   .hide-sm
@@ -757,3 +757,16 @@ for i in range(1, 10, 1)
     -webkit-box-orient vertical
     -webkit-line-clamp i
     overflow hidden
+
+// 隐藏除第一个外的子元素
+@media (max-width: $size-sm)
+  .hide-tail-sm
+    *:nth-child(n+2)
+      display none !important
+
+// 从第几个项目开始隐藏子元素
+@media (max-width: $size-sm)
+  for i in range(1, 10, 1)
+    .hide-from-{i}-sm
+      *:nth-child(n+{i})
+        display none !important

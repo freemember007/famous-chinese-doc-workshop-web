@@ -3,9 +3,9 @@
  */
 import React from 'react'
 
-const DivideVertical = ({ width = 30 }) => {
+const DivideVertical = ({ width = 2 }) => {
   return <>
-    <div style={{ width, height: 'auto' }}>
+    <div style={{ height: 'auto' }} className={'px' + width}>
     </div>
   </>
 }
